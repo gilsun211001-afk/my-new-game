@@ -89,8 +89,9 @@
   // reachable tiles from the entrance (BFS) — every scroll must be collectable
   const REACH = new Uint8Array(MAP_W * MAP_H); (function () { const q = [idx(22, 25)]; REACH[q[0]] = 1; while (q.length) { const c = q.shift(), cx = c % MAP_W, cy = (c / MAP_W) | 0; [[1, 0], [-1, 0], [0, 1], [0, -1]].forEach(([dx, dy]) => { const nx = cx + dx, ny = cy + dy, n = idx(nx, ny); if (inb(nx, ny) && !REACH[n] && !solid[n]) { REACH[n] = 1; q.push(n); } }); } })();
   const nearestReach = (x, y) => { let best = null, bd = 1e9; for (let j = 1; j < MAP_H - 1; j++) for (let i = 1; i < MAP_W - 1; i++) { const n = idx(i, j); if (!REACH[n] || tiles[n] !== 0) continue; const d = (i - x) ** 2 + (j - y) ** 2; if (d < bd) { bd = d; best = [i, j]; } } return best; };
-  const SCROLLS = [[22, 23]] // 입구 바로 앞 한 개 — 나머지 두 조각은 건물 안에 숨어 있다
-    .map(([x, y], i) => { const [tx, ty] = REACH[idx(x, y)] ? [x, y] : nearestReach(x, y); return { i, x: tx, y: ty, got: false }; });
+  // 기획자를 만나면 그 옆에 나타나는 한 개 — 나머지 두 조각은 건물 안에 숨어 있다
+  const SCROLLS = [[24, 21]]
+    .map(([x, y], i) => { const [tx, ty] = REACH[idx(x, y)] ? [x, y] : nearestReach(x, y); return { i, x: tx, y: ty, got: false, hidden: true }; });
   /* wandering villagers & a cat — decoration that makes the village feel alive */
   const CRITTERS = [
     { kind: "kid", x: 20 * T, y: 20 * T, style: { robe: "#c9a227", robeHi: "#e3be45", hat: "topknot", hair: "#1a1410" } },
@@ -404,7 +405,7 @@
       c.x += mx; c.y += my; c.dir = Math.abs(dx) > Math.abs(dy) ? (dx < 0 ? 2 : 3) : (dy < 0 ? 1 : 0); c.anim += dt * 7;
     });
     // collectibles
-    SCROLLS.forEach(sc => { if (sc.got) return; if (Math.hypot(pl.x + 8 - (sc.x * T + 8), pl.y + 12 - (sc.y * T + 8)) < 12) { sc.got = true; burst(sc.x * T + 8, sc.y * T + 6, "#f3dea0", 18); S.onPickup && S.onPickup(sc.i); } });
+    SCROLLS.forEach(sc => { if (sc.got || sc.hidden) return; if (Math.hypot(pl.x + 8 - (sc.x * T + 8), pl.y + 12 - (sc.y * T + 8)) < 12) { sc.got = true; burst(sc.x * T + 8, sc.y * T + 6, "#f3dea0", 18); S.onPickup && S.onPickup(sc.i); } });
     // dust when running
     if (pl.moving && k.Shift && Math.random() < .5) PARTS.push({ x: pl.x + 8 + (Math.random() - .5) * 6, y: pl.y + 15, vx: (Math.random() - .5) * 10, vy: -8, life: .4, max: .4, c: "#8a7d62", s: 1 });
     // particles
@@ -429,7 +430,7 @@
     PROPS.forEach(p => list.push({ y: p.y * T + (p.t === "well" ? 24 : 12), d: () => drawProp(g, p, t) }));
     NPCS.forEach(n => list.push({ y: n.y * T + 12, d: () => { drawPerson(g, n.x * T, n.y * T - 4 + (Math.sin(n.t * 2.4) > .6 ? -1 : 0), n.dir, 0, n.style); } }));
     CRITTERS.forEach(c => list.push({ y: c.y + 12, d: () => c.kind === "cat" ? drawCat(g, c.x, c.y, c.dir, Math.floor(c.anim) % 2) : drawKid(g, c, Math.floor(c.anim) % 2) }));
-    SCROLLS.forEach(sc => { if (sc.got) return; const bob = Math.round(Math.sin(t / 260 + sc.i) * 1.5); list.push({ y: sc.y * T + 8, d: () => drawScroll(g, sc.x * T + 4, sc.y * T + 2 + bob, t) }); });
+    SCROLLS.forEach(sc => { if (sc.got || sc.hidden) return; const bob = Math.round(Math.sin(t / 260 + sc.i) * 1.5); list.push({ y: sc.y * T + 8, d: () => drawScroll(g, sc.x * T + 4, sc.y * T + 2 + bob, t) }); });
     const pl = S.player; list.push({ y: pl.y + 12, d: () => drawPerson(g, pl.x, pl.y, pl.dir, pl.frame, S.playerStyle) });
     list.sort((a, b) => a.y - b.y).forEach(o => o.d());
     PARTS.forEach(q => { g.globalAlpha = Math.max(0, q.life / q.max); g.fillStyle = q.c; g.fillRect(Math.round(q.x), Math.round(q.y), q.s, q.s); }); g.globalAlpha = 1;
@@ -515,6 +516,7 @@
     warp(tx, ty) { S.player.x = tx * T; S.player.y = ty * T - 5; S.path = null; },
     debugInfo: () => ({ scrolls: SCROLLS.map(sc => [sc.x, sc.y, !!REACH[idx(sc.x, sc.y)]]), lanterns: LANTERNS.map(p => [p.x, p.y, p.hall]), doors: BUILDINGS.map(b => [b.id, b.door.x, b.door.y, !!REACH[idx(b.door.x, b.door.y)], tiles[idx(b.door.x, b.door.y)]]), npcs: NPCS.map(n => [n.id, n.x, n.y, tiles[idx(n.x, n.y)]]) }),
     scrolls: () => SCROLLS.map(sc => ({ i: sc.i, got: sc.got })),
+    revealScroll(i, on = true) { const sc = SCROLLS[i]; if (!sc) return; if (on && sc.hidden && !sc.got) burst(sc.x * T + 8, sc.y * T + 6, "#f3dea0", 22); sc.hidden = !on; },
     setScrolls(got) { SCROLLS.forEach(sc => sc.got = got.includes(sc.i)); },
     setLit(n, total = 6) { const v = S.visited || []; LANTERNS.forEach(p => { const was = p.lit; p.lit = !!p.hall && v.includes(p.hall); if (p.lit && !was && S.litOnce) burst(p.x * T + 8, p.y * T + 2, "#8ff0c8", 22); }); S.litOnce = true; S.dark = .38 * (1 - Math.min(1, n / total)); },
     bindInput() {
@@ -559,6 +561,8 @@
       const dest = b ? { x: b.door.x, y: b.door.y } : n ? { x: n.x, y: n.y + 1 } : null; if (!dest) return;
       const p = tileOf(S.player); S.path = findPath(p.x, p.y, dest.x, dest.y);
       S.pathThen = () => { S.player.dir = 1; S.nearby = nearest(); then && then(); };
+      // already standing at the destination (or right beside the target): act now
+      const nb = nearest(); if ((p.x === dest.x && p.y === dest.y) || (nb && nb.id === id)) { S.path = null; const f = S.pathThen; S.pathThen = null; f(); }
     },
     /* draw a portrait of a person style into a small canvas (for dialogue box) */
     portrait(canvas, style, dir = 0) {
