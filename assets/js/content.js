@@ -260,15 +260,15 @@
 
   function bookHTML(l) {
     const d = doc(l.slug), m = info(l.slug), link = LINKS[l.slug];
-    const pages = d ? (d.pages.length < total(d) ? `${total(d)}쪽 중 ${d.pages.length}쪽` : `${total(d)}쪽`) : "";
+    const pages = d && !d.altCover ? (d.pages.length < total(d) ? `${total(d)}쪽 중 ${d.pages.length}쪽` : `${total(d)}쪽`) : d ? "원본 PDF로 열람" : "";
     return `<article class="book">
-      ${d ? `<button class="cover" data-lb="${l.slug}" data-i="0" type="button" aria-label="${esc(l.t)} 넘겨 보기">${img(`assets/docs/${l.slug}/${d.pages[0]}`, l.t + " 표지")}<span class="peek">▶ 넘겨 보기</span></button>` : `<div class="cover ph" aria-hidden="true"><span>${esc(l.t)}</span><small>원본 PDF로 열람</small></div>`}
+      ${d ? `<button class="cover" data-lb="${l.slug}" data-i="0" type="button" aria-label="${esc(l.t)} 넘겨 보기">${img(`assets/docs/${l.slug}/${d.pages[0]}`, l.t + " 표지")}<span class="peek">${d.altCover ? "소개 카드" : "▶ 넘겨 보기"}</span></button>` : `<div class="cover ph" aria-hidden="true"><span>${esc(l.t)}</span><small>원본 PDF로 열람</small></div>`}
       <div class="meta"><small class="eyebrow">${esc(l.grp)}</small><b>${esc(l.t)}</b><small>${esc(l.s)}${pages ? " · " + pages : ""}</small>
         ${l.note ? `<p class="note-badge">${esc(l.note)}</p>` : ""}
         ${m.summary ? `<p class="sum">${esc(m.summary)}</p>` : ""}
         ${l.table && info(l.table).summary ? `<p class="table-note"><b>데이터 테이블</b> ${esc(info(l.table).summary)}</p>` : ""}
         ${m.points && m.points.length ? `<ul class="pts">${m.points.slice(0, 3).map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : ""}
-        <div class="acts">${d ? `<button class="btn em sm" data-lb="${l.slug}" data-i="0" type="button">페이지 보기</button>` : ""}${link ? `<a class="btn sm" ${ext(link)}>원본 ↗</a>` : ""}${l.url2 ? `<a class="btn sm" ${ext(l.url2[1])}>${esc(l.url2[0])} ↗</a>` : ""}</div></div></article>`;
+        <div class="acts">${d && !d.altCover ? `<button class="btn em sm" data-lb="${l.slug}" data-i="0" type="button">페이지 보기</button>` : ""}${link ? `<a class="btn sm" ${ext(link)}>원본 ↗</a>` : ""}${l.url2 ? `<a class="btn sm" ${ext(l.url2[1])}>${esc(l.url2[0])} ↗</a>` : ""}</div></div></article>`;
   }
 
   S.others = () => `<div class="shelf wide">${LIB.filter(l => l.grp === "개인 기획서" && has(l)).map(bookHTML).join("")}</div>`;
@@ -397,6 +397,7 @@
   function images(key) {
     if (key === "proto") return (global.PROTO_SHOTS || []).map(s => ({ src: s[0], cap: s[1] }));
     const d = doc(key); if (!d) return [];
+    if (d.altCover) return [{ src: pageSrc(d, 0), cap: `${d.title} · 소개 카드 (원본은 PDF로 열람)` }];
     return d.pages.map((p, i) => ({ src: pageSrc(d, i), cap: `${d.title} · 원본 ${srcNo(d, i)}쪽 / ${total(d)}${d.pages.length < total(d) ? ` (발췌 ${i + 1}/${d.pages.length})` : ""}` }));
   }
 
@@ -405,7 +406,7 @@
     const l = LIB.find(x => x.slug === slug) || { t: slug, s: "" }, d = doc(slug), m = info(slug);
     if (!d && !m.summary) return null;
     const extra = (l.note ? `<p class="gc-note">${esc(l.note)}</p>` : "") + (l.table && info(l.table).summary ? `<p class="gc-note"><b>데이터 테이블</b> ${esc(info(l.table).summary)}</p>` : "") ;
-    return { kind: "doc", tag: tag || l.grp, title: l.t, meta: l.s + (d ? ` · ${d.pages.length < total(d) ? total(d) + "쪽 중 " + d.pages.length + "쪽" : total(d) + "쪽"}` : " · 원본 PDF로 열람"), img: d ? pageSrc(d, 0) : null, summary: m.summary, points: m.points, html: extra, lb: d ? slug : null, url: LINKS[slug], url2: l.url2 };
+    return { kind: "doc", tag: tag || l.grp, title: l.t, meta: l.s + (d && !d.altCover ? ` · ${d.pages.length < total(d) ? total(d) + "쪽 중 " + d.pages.length + "쪽" : total(d) + "쪽"}` : " · 원본 PDF로 열람"), img: d ? pageSrc(d, 0) : null, summary: m.summary, points: m.points, html: extra, lb: d && !d.altCover ? slug : null, url: LINKS[slug], url2: l.url2 };
   }
   function halls() {
     const L = LETTER;
@@ -423,7 +424,7 @@
         { kind: "widget", tag: "체험", title: "전투 공식 계산기", lede: "v2.0 공식 그대로", summary: "무기 공격력, 속성 수치, 상대 방어력을 바꾸면 평타 · 스킬 · 패링 · 봉인 수치가 바로 계산됩니다.", open: "joseon#combat", openLabel: "계산기 열기" },
         { kind: "widget", tag: "체험", title: "인벤토리 인접 효과 퍼즐", lede: "부적을 칼끝에", summary: "퇴마 아이템을 사인검 칼끝에 붙이면 공격력 +8%가 켜지는 인접 규칙을 직접 만져 볼 수 있습니다.", open: "joseon#item", openLabel: "퍼즐 열기" }
       ].filter(Boolean) },
-      seogo: { name: "장서각 · 개인 기획서관", sub: "기존 게임에 새 콘텐츠를 얹은 기획서", intro: "원작의 규칙을 먼저 분석하고, 그 안에서 새 콘텐츠가 설 자리를 찾은 기획서들입니다.", items:
+      seogo: { name: "기획서관 · 개인 기획서", sub: "기존 게임에 새 콘텐츠를 얹은 기획서", intro: "원작의 규칙을 먼저 분석하고, 그 안에서 새 콘텐츠가 설 자리를 찾은 기획서들입니다.", items:
         ["ow2", "genshin", "limbus", "analysis", "asgard"].map(x => docItem(x, "개인 기획서")).filter(Boolean) },
       seoru: { name: "관아 · 경험과 성과관", sub: "현장에서 확인한 기획", intro: "팀 프로젝트, 보드게임 제작, 그리고 현장 업무에서 숫자로 확인한 제안들입니다.", items: [
         ...["teamproj", "boardgame", "work"].map(x => docItem(x, "경험")).filter(Boolean),

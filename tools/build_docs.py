@@ -2,9 +2,9 @@
 manifest.json(기본) 위에 manifest-joseon.json, manifest-personal.json 항목을 slug 기준으로 덮어씁니다."""
 import json, os, glob
 root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-KEYS = ("slug", "title", "pages", "pageCount", "sourcePages", "updated", "summary", "points", "pageNotes", "url")
+KEYS = ("slug", "title", "pages", "pageCount", "sourcePages", "updated", "summary", "points", "pageNotes", "url", "altCover")
 by = {}
-for name in ("manifest.json", "manifest-joseon.json", "manifest-personal.json"):
+for name in ("manifest.json", "manifest-joseon.json", "manifest-personal.json", "manifest-covers.json"):
     f = os.path.join(root, "assets/docs", name)
     if not os.path.exists(f): continue
     for d in json.load(open(f, encoding="utf-8")):

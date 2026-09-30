@@ -32,7 +32,7 @@
   };
   const ui = {
     sfx: k => Snd.fx(k),
-    toast(msg) { const t = $("#toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(ui._t); ui._t = setTimeout(() => t.classList.remove("show"), 2400); },
+    toast(msg, ms = 2400) { const t = $("#toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(ui._t); ui._t = setTimeout(() => t.classList.remove("show"), ms); },
     lightbox: (key, i) => LB.open(key, i)
   };
 
@@ -100,30 +100,41 @@
   const DESIGNER_STYLE = { robe: "#1f7a5c", robeHi: "#2fae84", hat: "gat", accent: "#34e0a1", collar: "#f4efe2", belt: "#0f1a16", tie: "#e8c66a" };
   const VISITOR_STYLE = { robe: "#3b4a6b", robeHi: "#56688f", hat: "topknot", hair: "#1a1410", collar: "#e9e3d2", belt: "#1c1a17", pants: "#d9d2bf" };
 
-  const PLACES = { seodang: "서당", gongbang: "공방", seoru: "관아", seogo: "장서각", jumak: "주막", yeokcham: "역참" };
+  const PLACES = { seogo: "기획서관", seodang: "서당", gongbang: "공방", seoru: "관아", jumak: "주막", yeokcham: "역참" };
   let visited = store.get("visited", []);
+  let gotScrolls = store.get("scrolls", []);
+  const SCROLL_FACTS = [
+    "보드게임 「창고를 털어라!!」는 보드게임 카페를 직접 돌며 수요를 조사해 만들었다.",
+    "아이템 기획서의 무기 밸런스 기준점은 장검(공격력 4~6)이다.",
+    "무당 캐릭터는 회로 노드 두 개를 아이템으로 이어야 각성한다.",
+    "전투 v2.0에서 상성을 없앴다. 속성은 이제 '켜지는 스킬의 종류'만 정한다.",
+    "게임 분석 도감에는 16개 게임의 구조 · 재화 · BM 분석이 담겨 있다.",
+    "달콤소프트에서 SuperStar 시리즈의 점수 산출 로직을 코드 테스트로 검증했다.",
+    "림버스 컴퍼니 인격 기획서에는 9종 테이블로 된 데이터 테이블이 함께 있다.",
+    "Effects 시트는 아이템이 늘어도 구조를 바꾸지 않고 행만 추가하도록 설계했다."
+  ];
   let mode = "title", worldReady = false, updateMini = null;
 
   const NPC_DEFS = [
-    { id: "designer", name: "임창민", sub: "기획자", x: 23, y: 19, style: DESIGNER_STYLE, node: "hello" },
-    { id: "hunjang", name: "훈장", sub: "서당", x: 25, y: 8, style: { robe: "#e9e3d2", robeHi: "#fff8e8", hat: "gat", accent: "#b8452f", collar: "#fff", belt: "#6b4431", hair: "#8a8a8a" }, node: "seodang" },
-    { id: "jangin", name: "장인", sub: "공방", x: 37, y: 9, style: { robe: "#5a3b28", robeHi: "#7a543b", hat: "cap", collar: "#d9cdb0", belt: "#2b1d14" }, node: "gongbang" },
-    { id: "mudang", name: "무당", sub: "신당", x: 29, y: 12, style: { robe: "#f1ece0", robeHi: "#fff", hat: "shaman", collar: "#b8452f", belt: "#b8452f", tie: "#2d6f9e", hair: "#15100d" }, node: "mudang" },
-    { id: "satto", name: "사또", sub: "관아", x: 37, y: 25, style: { robe: "#6b2d3a", robeHi: "#8a3c4c", hat: "gat", accent: "#e8c66a", collar: "#f4efe2", belt: "#e8c66a" }, node: "seoru" },
-    { id: "saseo", name: "사서", sub: "장서각", x: 12, y: 9, style: { robe: "#2d4f6e", robeHi: "#3f6a90", hat: "gat", accent: "#e8c66a", collar: "#e9e3d2", belt: "#1c2733" }, node: "seogo" },
-    { id: "jumo", name: "주모", sub: "주막", x: 11, y: 25, style: { robe: "#9a4a3a", robeHi: "#b8604e", hat: "bun", hair: "#1a1410", collar: "#f4efe2", belt: "#f4efe2" }, node: "jumak" },
-    { id: "pabal", name: "파발꾼", sub: "역참", x: 30, y: 28, style: { robe: "#3b3f3d", robeHi: "#555b58", hat: "helmet", collar: "#b8452f", belt: "#b8452f" }, node: "yeokcham" }
+    { id: "designer", name: "임창민", sub: "기획자", x: 24, y: 20, style: DESIGNER_STYLE, node: "hello" },
+    { id: "hunjang", name: "훈장", sub: "서당", x: 11, y: 15, style: { robe: "#e9e3d2", robeHi: "#fff8e8", hat: "gat", accent: "#b8452f", collar: "#fff", belt: "#6b4431", hair: "#8a8a8a" }, node: "seodang" },
+    { id: "jangin", name: "장인", sub: "공방", x: 34, y: 15, style: { robe: "#5a3b28", robeHi: "#7a543b", hat: "cap", collar: "#d9cdb0", belt: "#2b1d14" }, node: "gongbang" },
+    { id: "mudang", name: "무당", sub: "신당", x: 37, y: 17, style: { robe: "#f1ece0", robeHi: "#fff", hat: "shaman", collar: "#b8452f", belt: "#b8452f", tie: "#2d6f9e", hair: "#15100d" }, node: "mudang" },
+    { id: "satto", name: "사또", sub: "관아", x: 35, y: 22, style: { robe: "#6b2d3a", robeHi: "#8a3c4c", hat: "gat", accent: "#e8c66a", collar: "#f4efe2", belt: "#e8c66a" }, node: "seoru" },
+    { id: "saseo", name: "사서", sub: "기획서관", x: 25, y: 10, style: { robe: "#2d4f6e", robeHi: "#3f6a90", hat: "gat", accent: "#e8c66a", collar: "#e9e3d2", belt: "#1c2733" }, node: "seogo" },
+    { id: "jumo", name: "주모", sub: "주막", x: 9, y: 22, style: { robe: "#9a4a3a", robeHi: "#b8604e", hat: "bun", hair: "#1a1410", collar: "#f4efe2", belt: "#f4efe2" }, node: "jumak" },
+    { id: "pabal", name: "파발꾼", sub: "역참", x: 31, y: 27, style: { robe: "#3b3f3d", robeHi: "#555b58", hat: "helmet", collar: "#b8452f", belt: "#b8452f" }, node: "yeokcham" }
   ];
 
   /* dialogue script: text | choices [label, action] ; action: "node:x" | "open:a,b" | "end" | fn */
   const REVIEW_LINES = PF.REVIEWS.map(r => `「${r.n}」 말이우? "${r.k}"`);
   const D = {
     hello: [{ t: `오셨군요! 저는 이 마을의 기록을 걸어 둔 기획자 ${PROFILE.name}입니다.` },
-      { t: "서당 · 공방 · 장서각 · 관아에는 전시관을, 주막과 역참에는 이야기를 두었어요. 한 곳을 둘러보실 때마다 마을의 등불이 하나씩 다시 켜집니다.\n여섯 곳을 모두 밝혀 주시면, 광장에서 마지막 이야기를 들려드릴게요.", c: [["서당(자기소개서관)부터 갈게요", "walk:seodang"], ["어디부터 가면 좋을까요?", "node:route"], ["당신은 어떤 기획자인가요?", "node:who"], ["혼자 둘러볼게요", "end"]] }],
+      { t: "기획서관 · 서당 · 공방 · 관아에는 전시관을, 주막과 역참에는 이야기를 두었어요. 한 곳을 둘러보실 때마다 마을의 등불이 하나씩 다시 켜집니다.\n여섯 곳을 모두 밝혀 주시면, 광장에서 마지막 이야기를 들려드릴게요.\n참, 마을 곳곳에 흩어진 '기획 조각' 여덟 개도 찾아보세요. 제 이야기가 한 줄씩 적혀 있습니다.", c: [["서당(자기소개서관)부터 갈게요", "walk:seodang"], ["어디부터 가면 좋을까요?", "node:route"], ["당신은 어떤 기획자인가요?", "node:who"], ["혼자 둘러볼게요", "end"]] }],
     route: [{ t: "처음이시라면 북쪽 서당에서 제 자기소개서를 먼저 읽어 주세요.\n그다음 동쪽 공방에서 지금 하고 있는 조선 판타지 프로젝트를 보시면 됩니다.", c: [["서당으로 데려다 줘요", "walk:seodang"], ["공방으로 데려다 줘요", "walk:gongbang"], ["관아로 데려다 줘요", "walk:seoru"], ["혼자 돌아볼게요", "end"]] }],
     who: [{ t: `"${PROFILE.headline}"\n게임을 하면 재미의 구조부터 뜯어 보고, 그걸 표와 공식으로 옮기는 게 제 일이에요.` },
       { t: "문서로 끝내지 않고, 필요하면 AI로 화면 목업까지 만들어 팀과 같은 그림을 봅니다.", c: [["자기소개서를 보여줘요", "open:letter,career"], ["고마워요", "end"]] }],
-    finale: [{ t: "보세요, 마을의 등불이 전부 켜졌습니다.\n누군가 제 기록을 끝까지 봐 준 덕분이에요. 정말 감사합니다." }, { t: "마음에 드셨다면 편하게 연락 주세요. 함께 기억에 남는 게임을 만들고 싶습니다.", c: [["연락처 보기", "open:contact"], ["자기소개서 전체 보기", "act:resume"], ["마을을 더 둘러볼게요", "end"]] }],
+    finale: [{ t: "보세요, 마을의 등불이 전부 켜졌습니다.\n누군가 제 기록을 끝까지 봐 준 덕분이에요. 정말 감사합니다." }, { t: () => gotScrolls.length >= 8 ? "기획 조각까지 여덟 개를 모두 모으셨군요! 이 마을의 모든 이야기를 아는 분은 당신이 처음입니다." : `기획 조각은 ${gotScrolls.length}/8개 모으셨네요. 남은 조각은 마을 가장자리 숲 근처에 있어요.` }, { t: "마음에 드셨다면 편하게 연락 주세요. 함께 기억에 남는 게임을 만들고 싶습니다.", c: [["연락처 보기", "open:contact"], ["자기소개서 전체 보기", "act:resume"], ["마을을 더 둘러볼게요", "end"]] }],
     seodang: [{ t: "허허, 서당에 온 걸 환영하네. 안쪽 전시관에 그 기획자의 자기소개서가 한 폭씩 걸려 있지." },
       { t: `이 사람의 목표가 무엇인지 아는가?\n"${PROFILE.goal}"`, c: [["전시관에 들어간다", "hall:seodang"], ["자기소개서 원본 PDF", "act:pdf"], ["다음에 올게요", "end"]] }],
     gongbang: [{ t: "여긴 Project Joseon 공방이오. 조선 판타지 탑뷰 액션이지.\n캐릭터 강함은 레벨이 아니라 인벤토리에 뭘 붙이느냐로만 정해진다네." },
@@ -132,7 +143,7 @@
       { t: "기획자는 '연결을 지켜내는 행동' 자체로 내 광기를 느끼게 하고 싶었대.\n...그런데 벌이 없는 힘은 광기가 아니라고, 스스로 적어 두었더군.", c: [["무당 캐릭터 기획서 보기", "open:joseon#chars"], ["물러난다", "end"]] }],
     seoru: [{ t: "에헴, 관아에 온 걸 환영하오. 이 기획자가 현장에서 무슨 일을 했는지 여기 기록이 다 있소." },
       { t: "달콤소프트에서는 SuperStar 시리즈 라이브 서비스 개선안을 기획하고 점수 산출 로직을 검증했지.\n팀 프로젝트와 보드게임 제작 기록도 안쪽에 걸려 있소.", c: [["전시관에 들어간다", "hall:seoru"], ["경력 · 학력 보기", "open:career"], ["물러가겠습니다", "end"]] }],
-    seogo: [{ t: "쉿, 장서각입니다. 그분이 기존 게임에 새 콘텐츠를 얹어 본 기획서들이 걸려 있어요.\n몇 권은 너무 두꺼워서, 해설과 원본 링크로만 모셔 두었지요." },
+    seogo: [{ t: "쉿, 기획서관입니다. 마을 한가운데, 그분이 가장 아끼는 곳이지요. 그분이 기존 게임에 새 콘텐츠를 얹어 본 기획서들이 걸려 있어요.\n몇 권은 너무 두꺼워서, 해설과 원본 링크로만 모셔 두었지요." },
       { t: "오버워치2, 원신, 림버스 컴퍼니, 테일즈런너, 아스가르드 폴… 작품 앞에 서면 어떤 내용인지 해설이 열립니다.", c: [["전시관에 들어간다", "hall:seogo"], ["작업 방식을 보고 싶어요", "open:process"], ["조용히 나간다", "end"]] }],
     jumak: [{ t: "어서 오시우! 우리 기획자 양반은 게임만 하면 꼭 여기 앉아서 분석을 적더라고." },
       { t: () => REVIEW_LINES[Math.floor(Math.random() * REVIEW_LINES.length)], c: [["분석 도감 전부 보기", "open:reviews"], ["다른 얘기도 해줘요", "node:jumak2"], ["잘 먹고 갑니다", "end"]] }],
@@ -159,11 +170,12 @@
         if (!it || !Dlg.closed) { p.hidden = true; return; }
         p.hidden = false; p.innerHTML = `<kbd>${matchMedia("(pointer: coarse)").matches ? "탭" : "Space"}</kbd>${esc(it.name)}${it.sub ? ` <span style="color:#93b3a6">· ${esc(it.sub)}</span>` : ""}`;
       },
-      onStep: () => Snd.fx("step")
+      onStep: () => Snd.fx("step"),
+      onPickup: (i, n, total) => { gotScrolls = World.scrolls().filter(x => x.got).map(x => x.i); store.set("scrolls", gotScrolls); Snd.fx("quest"); paintQuest(); ui.toast(`기획 조각 ${n}/${total} · ${SCROLL_FACTS[i % SCROLL_FACTS.length]}`, 5200); if (n === total) setTimeout(() => ui.toast("기획 조각을 모두 모았습니다! 광장의 기획자가 기다립니다", 4200), 5400); }
     });
     updateMini = World.minimap($("#mini"));
     setInterval(() => { if (mode === "game" && Dlg.closed && $("#scroll").hidden) updateMini(visited); }, 250);
-    paintQuest(); paintTravel(); World.setLit(visited.length);
+    World.setScrolls(gotScrolls); World.setVisited(visited); paintQuest(); paintTravel(); World.setLit(visited.length);
     Gallery.init({ esc, style: VISITOR_STYLE, step: () => Snd.fx("step"), move: () => Snd.fx("move"), lightbox: (k, i) => LB.open(k, i), openPanel: a => Scroll.open(a, null),
       exit: hall => { if (hall && hall.id && Gallery.seen > 0) markVisit(hall.id); else if (hall && hall.id && !visited.includes(hall.id)) setTimeout(() => ui.toast("작품을 하나 이상 감상하면 등불이 켜집니다"), 400); mode = "game"; World.sleep(false); World.pause(false); $("#game").hidden = false; Snd.fx("close"); $("#world").focus({ preventScroll: true }); } });
   }
@@ -181,10 +193,10 @@
   function markVisit(place) {
     if (!place || visited.includes(place)) return;
     visited.push(place); store.set("visited", visited); paintQuest(); paintTravel();
-    World.setLit(visited.length); Snd.fx("quest"); ui.toast(`등불 하나가 켜졌습니다 · ${PLACES[place]} (${visited.length}/6)`);
+    World.setVisited(visited); World.setLit(visited.length); Snd.fx("quest"); ui.toast(`등불 하나가 켜졌습니다 · ${PLACES[place]} (${visited.length}/6)`);
     if (visited.length === 6) setTimeout(() => { ui.toast("모든 등불이 켜졌습니다! 광장의 기획자에게 안내합니다"); World.walkTo("designer", () => World.interact()); }, 2200);
   }
-  function paintQuest() { $("#qText").innerHTML = `밝힌 등불 <b>${visited.length}</b>/6`; $("#qBar").style.width = (visited.length / 6 * 100) + "%"; }
+  function paintQuest() { $("#qText").innerHTML = `등불 <b>${visited.length}</b>/6 · 기획 조각 <b>${gotScrolls.length}</b>/8`; $("#qBar").style.width = (visited.length / 6 * 100) + "%"; }
   function paintTravel() {
     $("#travel").innerHTML = `<button class="hbtn" data-walk="designer" type="button">${visited.length >= 6 ? '<span class="v">★</span>' : "·"} 광장 <span style="color:#6a8a7e">기획자 임창민</span></button>` + Object.entries(PLACES).map(([id, n]) => `<button class="hbtn" data-walk="${id}" type="button">${visited.includes(id) ? '<span class="v">✓</span>' : "·"} ${n} <span style="color:#6a8a7e">${World.BUILDINGS.find(b => b.id === id).sub}</span></button>`).join("");
   }
@@ -230,7 +242,7 @@
       else if (kind === "open") { this.close(true); Scroll.open(arg, this.who); }
       else if (kind === "walk") { this.close(); World.walkTo(arg, () => { }); }
       else if (kind === "hall") { this.close(true); enterHall(arg); }
-      else if (kind === "act") { this.close(); if (arg === "reset") { visited = []; store.set("visited", []); store.set("greeted", false); location.hash = ""; location.reload(); return; } if (arg === "resume") go("resume"); if (arg === "pdf") window.open(PF.LETTER_PDF, "_blank", "noopener"); if (arg === "copy") { navigator.clipboard && navigator.clipboard.writeText(PROFILE.email).then(() => ui.toast("이메일을 복사했습니다")).catch(() => ui.toast(PROFILE.email)); } }
+      else if (kind === "act") { this.close(); if (arg === "reset") { visited = []; store.set("visited", []); store.set("scrolls", []); store.set("greeted", false); location.hash = ""; location.reload(); return; } if (arg === "resume") go("resume"); if (arg === "pdf") window.open(PF.LETTER_PDF, "_blank", "noopener"); if (arg === "copy") { navigator.clipboard && navigator.clipboard.writeText(PROFILE.email).then(() => ui.toast("이메일을 복사했습니다")).catch(() => ui.toast(PROFILE.email)); } }
     },
     moveSel(d) { const bs = $$("#dlgChoices button"); if (!bs.length) return; this.sel = (this.sel + d + bs.length) % bs.length; bs.forEach((b, j) => b.classList.toggle("sel", j === this.sel)); bs[this.sel].focus({ preventScroll: true }); Snd.fx("move"); },
     close(keepPaused) { clearInterval(this._iv); this.closed = true; $("#dlg").hidden = true; if (!keepPaused) World.pause(false); Snd.fx("close"); }
