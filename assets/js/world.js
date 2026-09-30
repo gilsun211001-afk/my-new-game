@@ -517,6 +517,13 @@
     debugInfo: () => ({ scrolls: SCROLLS.map(sc => [sc.x, sc.y, !!REACH[idx(sc.x, sc.y)]]), lanterns: LANTERNS.map(p => [p.x, p.y, p.hall]), doors: BUILDINGS.map(b => [b.id, b.door.x, b.door.y, !!REACH[idx(b.door.x, b.door.y)], tiles[idx(b.door.x, b.door.y)]]), npcs: NPCS.map(n => [n.id, n.x, n.y, tiles[idx(n.x, n.y)]]) }),
     scrolls: () => SCROLLS.map(sc => ({ i: sc.i, got: sc.got })),
     drawScrollIcon(c) { const g = c.getContext("2d"), k = c.width / 12; g.imageSmoothingEnabled = false; g.clearRect(0, 0, c.width, c.height); g.setTransform(k, 0, 0, k, 0, 0); drawScroll(g, 2, 1, 0); g.setTransform(1, 0, 0, 1, 0, 0); },
+    // 첫 만남 직후: 플레이어 바로 옆 빈 칸에 조각을 만든다
+    spawnScrollNear(i) {
+      const sc = SCROLLS[i]; if (!sc || sc.got) return; const p = tileOf(S.player);
+      const free = (x, y) => inb(x, y) && REACH[idx(x, y)] && !solid[idx(x, y)] && !NPCS.some(n => n.x === x && n.y === y);
+      const c = [[1, 0], [-1, 0], [0, 1], [2, 0], [-2, 0], [0, 2]].map(([dx, dy]) => [p.x + dx, p.y + dy]).find(([x, y]) => free(x, y)) || nearestReach(p.x + 1, p.y);
+      sc.x = c[0]; sc.y = c[1]; sc.hidden = false; burst(sc.x * T + 8, sc.y * T + 6, "#f3dea0", 26);
+    },
     revealScroll(i, on = true) { const sc = SCROLLS[i]; if (!sc) return; if (on && sc.hidden && !sc.got) burst(sc.x * T + 8, sc.y * T + 6, "#f3dea0", 22); sc.hidden = !on; },
     setScrolls(got) { SCROLLS.forEach(sc => sc.got = got.includes(sc.i)); },
     setLit(n, total = 6) { const v = S.visited || []; LANTERNS.forEach(p => { const was = p.lit; p.lit = !!p.hall && v.includes(p.hall); if (p.lit && !was && S.litOnce) burst(p.x * T + 8, p.y * T + 2, "#8ff0c8", 22); }); S.litOnce = true; S.dark = .38 * (1 - Math.min(1, n / total)); },
