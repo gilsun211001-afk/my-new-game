@@ -206,8 +206,9 @@
         <div class="box"><h4>기획 의도 <span class="chip">v1.0 · 상성은 v2.0에서 폐기</span></h4>
           <ul class="list"><li><b>인벤토리를 퍼즐로.</b> 칸수가 클수록 강하고, 옆에 붙이면 효과가 켜진다.</li><li><b>상성은 있지만 승부를 정하지 않는다.</b> 유리 +20% / 불리 −15%의 의도적 비대칭.</li><li><b>인접 효과를 무기에도.</b> 사인검은 칼끝, 귀검은 자루가 접합면.</li><li><b>세계관을 수치로.</b> 고증은 속성 배분에 설득력을 주는 수단.</li></ul>
           <p class="quote">큰 아이템일수록 조건을 넓게, 작은 아이템일수록 조건을 좁게.<cite>칸수와 인접 조건 · 아이템 기획서 v1.0</cite></p></div>
-        <div class="box"><h4>직접 해보기 · 인접 효과</h4><p class="muted" style="font-size:.86rem;margin-bottom:12px">「부적」을 끌어 사인검 칼끝(오른쪽 칸)에 붙여 보세요. 방향키로도 움직일 수 있습니다.</p>
-          <div class="inv" data-inv></div><p class="mono muted" data-inv-out style="margin-top:10px">사인검 공격력 5~7 · 인접 효과 꺼짐</p></div>
+        <div class="box"><h4>핵심 규칙 · 인접 효과 <span class="chip">개념 요약</span></h4>
+          <ul class="list"><li><b>접합면이 곧 조건.</b> 무기마다 효과가 켜지는 면(칼끝 · 자루)이 다르다.</li><li><b>배치가 곧 빌드.</b> 같은 아이템도 어디에 붙이느냐로 성능이 달라진다.</li><li><b>공간이 곧 대가.</b> 강한 아이템일수록 인벤토리를 크게 차지한다.</li></ul>
+          <p class="note" style="margin-top:10px">🔒 세부 수치 · 조합 규칙은 공개 범위를 제한했습니다. 면접에서 원본으로 설명드립니다.</p></div>
       </div>
       <div class="table-wrap" style="margin-top:16px"><table><thead><tr><th>무기</th><th>크기</th><th>공격력</th><th>비고</th></tr></thead><tbody>
         <tr><td>단검</td><td>2×1</td><td>1~2</td><td class="muted">—</td></tr><tr><td>장검</td><td>4×1</td><td>4~6</td><td class="muted">밸런스 기준점</td></tr><tr><td>활</td><td>2×2</td><td>2~3</td><td class="muted">—</td></tr><tr><td>창</td><td>5×1</td><td>5~7</td><td class="muted">최고 화력 ↔ 최대 인벤토리 부담</td></tr><tr><td>사인검</td><td>4×1</td><td>5~7</td><td class="muted">신력 · 칼끝 퇴마 +8%</td></tr><tr><td>귀검</td><td>4×1</td><td>6~9</td><td class="muted">요력 · 자루 저주 +8%</td></tr>
@@ -220,13 +221,9 @@
         <div class="box"><h4>기획 변경 이력</h4>
           <div class="seg" data-ver style="margin:4px 0 12px"><button data-v="1" aria-pressed="false">v1.0 상성</button><button data-v="2" aria-pressed="true">v2.0 상성 제거</button></div>
           <div data-ver-body></div></div>
-        <div class="box"><h4>전투 공식 계산기 · v2.0</h4><p class="muted" style="font-size:.82rem">문서 공식 그대로 · 정수 · 최소 피해 1</p>
-          <div style="display:grid;gap:8px;margin-top:10px">
-            <div class="range"><label>무기 공격력 <output data-o="atk">8</output></label><input type="range" data-c="atk" min="1" max="20" value="8" aria-label="무기 공격력"></div>
-            <div class="range"><label>속성 수치 n <output data-o="n">6</output></label><input type="range" data-c="n" min="0" max="12" value="6" aria-label="속성 수치"></div>
-            <div class="range"><label>상대 방어력 <output data-o="def">5</output></label><input type="range" data-c="def" min="0" max="15" value="5" aria-label="상대 방어력"></div>
-            <div class="chips" data-mon><button class="chip" data-def="4" type="button">몰이꾼형 4</button><button class="chip" data-def="3" type="button">잔주술형 3</button><button class="chip" data-def="5" type="button">두억신 5</button></div>
-          </div><div class="res" data-calc></div></div>
+        <div class="box"><h4>전투 공식 설계 방향 · v2.0 <span class="chip">개념 요약</span></h4>
+          <ul class="list"><li><b>역할 분리.</b> 무기는 공격력, 방어구는 방어력, 장신구는 속성 수치만 담당한다.</li><li><b>속성은 스킬을 켠다.</b> 속성 수치는 피해량보다 스킬의 종류와 지속을 바꾼다.</li><li><b>최소 피해 보장.</b> 방어가 아무리 높아도 전투가 멈추지 않게 했다.</li></ul>
+          <p class="note" style="margin-top:10px">🔒 실제 공식 · 계수는 공개 범위를 제한했습니다. 면접에서 원본으로 설명드립니다.</p></div>
       </div>
       <div class="table-wrap" style="margin-top:16px"><table><thead><tr><th>몬스터</th><th>공격</th><th>방어</th><th>요 / 기 / 신</th><th>체력</th></tr></thead><tbody><tr><td>몰이꾼형</td><td>7</td><td>4</td><td>1 / 5 / 1</td><td>20</td></tr><tr><td>잔주술형</td><td>6</td><td>3</td><td>7 / 1 / 2</td><td>15</td></tr><tr><td>두억신 (보스)</td><td>12</td><td>5</td><td>9 / 4 / 3</td><td>200</td></tr></tbody></table></div>
       <div style="margin-top:16px">${strip("combat-v2")}</div>
@@ -326,8 +323,6 @@
     });
     // lightbox triggers
     root.addEventListener("click", e => { const el = e.target.closest("[data-lb]"); if (!el) return; e.preventDefault(); ui.lightbox(el.dataset.lb, +el.dataset.i || 0); });
-    // inventory
-    root.querySelectorAll("[data-inv]").forEach(el => invWidget(el, root.querySelector("[data-inv-out]"), ui));
     // version compare
     root.querySelectorAll("[data-ver]").forEach(seg => {
       const body = seg.parentElement.querySelector("[data-ver-body]");
@@ -335,19 +330,6 @@
                   2: `<ul class="list"><li><b>문제</b> 가위바위보식 상성 때문에 빌드 자유도가 준다는 회의 피드백</li><li><b>해결</b> 상성을 없애고, 속성은 켜지는 스킬의 종류만 정한다</li><li><b>장비 역할</b> 무기 = 공격력, 방어구 = 방어력, 장신구 = 속성 수치</li></ul><p class="quote">기력은 세게 밀어붙이고, 신력은 안정적으로 관리하고, 요력은 걸고 크게 딴다.<cite>전투 시스템 속성 체계 v2.0</cite></p>` };
       const paint = v => { seg.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v == v)); body.innerHTML = V[v]; };
       seg.addEventListener("click", e => { const b = e.target.closest("button"); if (b) { paint(b.dataset.v); ui.sfx && ui.sfx("move"); } }); paint(2);
-    });
-    // calculator
-    root.querySelectorAll("[data-calc]").forEach(out => {
-      const box = out.parentElement, get = k => +box.querySelector(`[data-c="${k}"]`).value;
-      const calc = () => {
-        const a = get("atk"), n = get("n"), d = get("def");
-        box.querySelector('[data-o="atk"]').textContent = a; box.querySelector('[data-o="n"]').textContent = n; box.querySelector('[data-o="def"]').textContent = d;
-        box.querySelectorAll("[data-mon] .chip").forEach(c => c.setAttribute("aria-pressed", +c.dataset.def === d));
-        out.innerHTML = `<div><b>${Math.max(1, a - d)}</b><span>평타</span><code>${a} − ${d}</code></div><div><b>${Math.max(1, a + n * 2 - d)}</b><span>공격 스킬</span><code>${a} + ${n}×2 − ${d}</code></div><div><b>${n * 100}ms</b><span>패링 구간</span><code>n × 100ms</code></div><div><b>${Math.ceil(n / 2)}/s</b><span>가호 회복</span><code>⌈n ÷ 2⌉</code></div><div><b>${n * 300}ms</b><span>봉인</span><code>n × 300ms</code></div><div><b>${n * 10}%</b><span>흡혈 (대가 −${n})</span><code>피해 × n×10%</code></div>`;
-      };
-      box.querySelectorAll("input[type=range]").forEach(r => r.addEventListener("input", calc));
-      box.querySelector("[data-mon]").addEventListener("click", e => { const c = e.target.closest(".chip"); if (!c) return; box.querySelector('[data-c="def"]').value = c.dataset.def; calc(); });
-      calc();
     });
     // reviews
     root.querySelectorAll("[data-reviews]").forEach(list => {
@@ -374,25 +356,6 @@
     requestAnimationFrame(() => { const w = f.clientWidth || 940, k = Math.min(1, w / 940); f.querySelector(".scaler").style.transform = `scale(${k})`; f.style.height = (820 * k) + "px"; });
   }
 
-  function invWidget(el, out, ui) {
-    const INV = { cols: 6, rows: 4, items: [{ id: "sword", n: "사인검", x: 0, y: 1, w: 4, h: 1, c: "w" }, { id: "tal", n: "부적", x: 4, y: 3, w: 1, h: 1, c: "c" }] };
-    let done = false;
-    const can = (it, x, y) => x >= 0 && y >= 0 && x + it.w <= INV.cols && y + it.h <= INV.rows && !INV.items.some(o => o !== it && x < o.x + o.w && x + it.w > o.x && y < o.y + o.h && y + it.h > o.y);
-    function paint(focusId) {
-      el.innerHTML = ""; el.style.gridTemplateRows = `repeat(${INV.rows},1fr)`;
-      for (let y = 0; y < INV.rows; y++) for (let x = 0; x < INV.cols; x++) { const c = document.createElement("div"); c.className = "cell"; c.style.gridArea = `${y + 1}/${x + 1}`; el.appendChild(c); }
-      const [sw, tl] = INV.items, on = tl.y === sw.y && tl.x === sw.x + sw.w;
-      INV.items.forEach(it => { const d = document.createElement("div"); d.className = `itm ${it.c} ${on ? "on" : ""}`; d.textContent = it.n; d.dataset.id = it.id; d.tabIndex = 0; d.style.gridArea = `${it.y + 1}/${it.x + 1}/span ${it.h}/span ${it.w}`; d.setAttribute("aria-label", `${it.n} ${it.x + 1}열 ${it.y + 1}행, 방향키로 이동`); el.appendChild(d); });
-      if (out) out.innerHTML = on ? `<span style="color:var(--em)">접합 성공 · 사인검 5~7 → 5.4~7.6 (+8%, v1.0)</span>` : "사인검 공격력 5~7 · 인접 효과 꺼짐";
-      if (on && !done) { done = true; ui.sfx && ui.sfx("ok"); }
-      if (focusId) el.querySelector(`[data-id="${focusId}"]`).focus();
-    }
-    let drag = null;
-    el.addEventListener("pointerdown", e => { const d = e.target.closest(".itm"); if (!d) return; drag = INV.items.find(i => i.id === d.dataset.id); d.setPointerCapture(e.pointerId); });
-    el.addEventListener("pointerup", e => { if (!drag) return; const r = el.getBoundingClientRect(); const x = Math.floor((e.clientX - r.left) / (r.width / INV.cols)), y = Math.floor((e.clientY - r.top) / (r.height / INV.rows)); if (can(drag, x, y)) { drag.x = x; drag.y = y; } drag = null; paint(); });
-    el.addEventListener("keydown", e => { const d = e.target.closest(".itm"); if (!d) return; const m = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[e.key]; if (!m) return; e.preventDefault(); e.stopPropagation(); const it = INV.items.find(i => i.id === d.dataset.id); if (can(it, it.x + m[0], it.y + m[1])) { it.x += m[0]; it.y += m[1]; } paint(it.id); });
-    paint();
-  }
 
   /* lightbox image sets */
   function images(key) {
@@ -421,8 +384,7 @@
         { kind: "text", tag: "프로젝트", title: "Project Joseon", lede: "2026.08 합류 · 팀 기획", summary: "조정 · 반란군 · 귀 세 진영이 등장하는 조선 판타지 탑뷰 액션입니다. 아이템 · 데이터 · 전투 체계, 캐릭터, 맵, UIUX 문서를 맡고 있습니다.", open: "joseon", openLabel: "프로젝트 자세히" },
         ...["coreloop", "item-v1", "combat-v2", "effects", "mudang", "seonbi", "map", "enemy", "weapon", "uiux"].map(x => docItem(x, "기획서")).filter(Boolean),
         (global.PROTO_SHOTS || [])[0] ? { kind: "doc", tag: "AI 목업", title: "AI로 만든 인벤토리 UI 목업", meta: "inventory_uiux.html · 2026.08", img: global.PROTO_SHOTS[0][0], summary: "UIUX 기획서의 의식판(인벤토리) 화면을 AI로 HTML 목업까지 만들어, 배치와 인접 규칙을 화면에서 바로 검토할 수 있게 했습니다. 2026.08 초기 컨셉(익스트랙션) 시점의 목업이라 탈출 게이지 같은 당시 요소가 남아 있습니다.", lb: "proto" } : null,
-        { kind: "widget", tag: "체험", title: "전투 공식 계산기", lede: "v2.0 공식 그대로", summary: "무기 공격력, 속성 수치, 상대 방어력을 바꾸면 평타 · 스킬 · 패링 · 봉인 수치가 바로 계산됩니다.", open: "joseon#combat", openLabel: "계산기 열기" },
-        { kind: "widget", tag: "체험", title: "인벤토리 인접 효과 퍼즐", lede: "부적을 칼끝에", summary: "퇴마 아이템을 사인검 칼끝에 붙이면 공격력 +8%가 켜지는 인접 규칙을 직접 만져 볼 수 있습니다.", open: "joseon#item", openLabel: "퍼즐 열기" }
+        { kind: "widget", tag: "개념", title: "인접 효과 · 전투 공식 설계", lede: "개념 요약 · 세부는 면접에서", summary: "인벤토리 배치가 곧 빌드가 되는 인접 규칙과, 장비 역할을 나눈 전투 공식의 설계 방향입니다. 실제 수치와 공식은 공개 범위를 제한하고 면접에서 원본으로 설명드립니다.", open: "joseon#item", openLabel: "설계 방향 보기" }
       ].filter(Boolean) },
       seogo: { name: "기획서관 · 개인 기획서", sub: "기존 게임에 새 콘텐츠를 얹은 기획서", intro: "원작의 규칙을 먼저 분석하고, 그 안에서 새 콘텐츠가 설 자리를 찾은 기획서들입니다.", items:
         ["ow2", "genshin", "limbus", "analysis", "asgard"].map(x => docItem(x, "개인 기획서")).filter(Boolean) },

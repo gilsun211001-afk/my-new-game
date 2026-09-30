@@ -263,12 +263,6 @@ tr:last-child td{border-bottom:0}
 .step .tools{margin-top:10px}
 
 /* interactive widgets */
-.inv{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;max-width:340px}
-.cell{aspect-ratio:1;border-radius:5px;border:1px dashed var(--line);background:var(--paper-2)}
-.itm{border-radius:6px;display:flex;align-items:center;justify-content:center;font:400 .72rem var(--f-pixel);text-align:center;padding:2px;border:1px solid transparent;cursor:grab;user-select:none;touch-action:none}
-.itm.w{background:color-mix(in srgb,var(--gold) 22%,var(--paper));border-color:var(--gold)}
-.itm.c{background:color-mix(in srgb,var(--em) 22%,var(--paper));border-color:var(--em)}
-.itm.on{box-shadow:0 0 0 2px var(--em),0 0 18px color-mix(in srgb,var(--em) 50%,transparent)}
 .range{display:grid;gap:2px}
 .range label{display:flex;justify-content:space-between;font-size:.86rem}
 .range output{font-family:var(--f-mono);color:var(--em);font-weight:600}
@@ -576,8 +570,26 @@ h1,h2,h3,h4{word-break:keep-all}
 .obj-banner small{display:block;font:400 .78rem var(--f-pixel);color:#2ee6a6;margin-bottom:6px}
 .obj-banner.out{opacity:0}
 .reward-mail.phone{font-size:clamp(1.1rem,3.4vw,1.5rem);margin-top:-8px}
-@media (max-width:1100px){.objective{left:14px;right:14px;transform:none;max-width:none;top:calc(64px + env(safe-area-inset-top,0px))}}
-@media (max-width:1100px){.travel{top:calc(118px + env(safe-area-inset-top,0px))}}
+@media (max-width:1480px){.objective{left:14px;right:14px;transform:none;max-width:none;top:calc(64px + env(safe-area-inset-top,0px))}}
+@media (max-width:1480px){.travel{top:calc(118px + env(safe-area-inset-top,0px))}}
+@media (min-width:1101px) and (max-width:1480px){.objective{left:50%;right:auto;transform:translateX(-50%);max-width:min(760px,calc(100% - 420px))}}
 .seal{overflow:hidden;background:radial-gradient(circle at 50% 35%,#1f7a5c,#0a3a2b)}
 .seal canvas,.logo-mark canvas{width:100%;height:100%;image-rendering:pixelated;display:block}
 .logo-mark{overflow:hidden;background:radial-gradient(circle at 50% 35%,#1f7a5c,#0a3a2b)}
+/* 기록첩 · 다시하기 */
+.hbtn b{font-weight:400;color:#2ee6a6}
+.hbtn.warn{border-color:#e8c66a;color:#f3dea0;background:rgba(58,40,6,.9)}
+.journal-box{width:min(880px,100%)}
+.journal-box h4 span{color:#93b3a6;margin-left:6px}
+.jgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+.jgrid.three{grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
+.jcard{display:flex;flex-direction:column;gap:6px;padding:14px;border-radius:12px;border:2px dashed #1e3a30;background:#0a1612;color:#7f9c91;min-height:150px}
+.jcard b{font:700 1rem var(--f-display);color:#56736a}
+.jcard p{margin:0;font-size:.82rem;line-height:1.55;flex:1}
+.jcard .jtag{font:400 .72rem var(--f-pixel);color:#6a8a7e}
+.jcard .btn{align-self:flex-start}
+.jcard.on{border-style:solid;border-color:#2ee6a6;background:#0f231c;color:#d5e8df;box-shadow:0 0 18px rgba(46,230,166,.15)}
+.jcard.on b{color:#f3fbf7}.jcard.on .jtag{color:#2ee6a6}
+.jcard.on.gold{border-color:#e8c66a;box-shadow:0 0 18px rgba(232,198,106,.18)}.jcard.on.gold .jtag{color:#e8c66a}
+.reward-link{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:20px}
+@media (max-width:600px){.hud .quest{display:none}}

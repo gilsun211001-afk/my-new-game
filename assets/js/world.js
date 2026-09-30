@@ -512,6 +512,7 @@
     /* story: light n of the lanterns (0..6 halls visited) */
     setVisited(v) { S.visited = v.slice(); },
     debugMap: () => S.staticLayer.toDataURL(),
+    debugWarp(tx, ty) { S.player.x = tx * T; S.player.y = ty * T - 5; S.path = null; },
     debugInfo: () => ({ scrolls: SCROLLS.map(sc => [sc.x, sc.y, !!REACH[idx(sc.x, sc.y)]]), lanterns: LANTERNS.map(p => [p.x, p.y, p.hall]), doors: BUILDINGS.map(b => [b.id, b.door.x, b.door.y, !!REACH[idx(b.door.x, b.door.y)], tiles[idx(b.door.x, b.door.y)]]), npcs: NPCS.map(n => [n.id, n.x, n.y, tiles[idx(n.x, n.y)]]) }),
     scrolls: () => SCROLLS.map(sc => ({ i: sc.i, got: sc.got })),
     setScrolls(got) { SCROLLS.forEach(sc => sc.got = got.includes(sc.i)); },
