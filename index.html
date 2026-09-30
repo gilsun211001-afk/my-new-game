@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>임창민 기획 포트폴리오</title>
+<meta name="description" content="게임 기획자 임창민의 포트폴리오. 시스템·아이템·전투 기획, 플레이 가능한 프로토타입, 게임 분석 아카이브.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hahmlet:wght@500;700;900&family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: 게임 타이틀 화면처럼 — 왼쪽 인물 소개, 오른쪽 메뉴 버튼. 버튼을 누르면 해당 "화면"으로 전환 */
+:root{
+  --bg:#12141c; --surface:#1a1e29; --surface-2:#222736; --line:#2e3446;
+  --fg:#ebe7dc; --muted:#9ba1b2; --accent:#e3a83f; --accent-ink:#1a1206; --accent-2:#74b8ac;
+  --good:#7cc49a; --warn:#e3a83f; --bad:#e07a6a;
+  --glow:rgba(227,168,63,.18); --shadow:0 18px 40px -18px rgba(0,0,0,.7);
+  --f-display:"Hahmlet","Nanum Myeongjo",Georgia,serif;
+  --f-body:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  --r:10px; --gutter:clamp(16px,4vw,40px);
+  color-scheme:dark;
+}
+@media (prefers-color-scheme: light){ :root:not([data-theme="dark"]){
+  --bg:#eef0f4; --surface:#ffffff; --surface-2:#f4f5f8; --line:#d8dce5;
+  --fg:#1b1e28; --muted:#5d6475; --accent:#a86a0e; --accent-ink:#ffffff; --accent-2:#2c7a6f;
+  --good:#2f8a55; --warn:#a86a0e; --bad:#b8483a;
+  --glow:rgba(168,106,14,.12); --shadow:0 18px 40px -22px rgba(30,35,60,.35); color-scheme:light }}
+:root[data-theme="light"]{
+  --bg:#eef0f4; --surface:#ffffff; --surface-2:#f4f5f8; --line:#d8dce5;
+  --fg:#1b1e28; --muted:#5d6475; --accent:#a86a0e; --accent-ink:#ffffff; --accent-2:#2c7a6f;
+  --good:#2f8a55; --warn:#a86a0e; --bad:#b8483a;
+  --glow:rgba(168,106,14,.12); --shadow:0 18px 40px -22px rgba(30,35,60,.35); color-scheme:light }
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0}
+body{background:var(--bg);color:var(--fg);font:15px/1.7 var(--f-body);min-height:100vh;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.25}
+p{margin:0}
+.mono{font-family:var(--f-mono);font-size:.78rem;letter-spacing:.06em}
+.eyebrow{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.muted{color:var(--muted)}
+#ambient{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:.55}
+
+/* ── Top bar ── */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;display:flex;align-items:center;gap:12px;
+  padding:12px var(--gutter);background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;margin-right:auto;min-width:0}
+.brand-mark{width:30px;height:30px;border-radius:7px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font:900 15px var(--f-display);flex:none}
+.brand-text{font-family:var(--f-mono);font-size:.74rem;letter-spacing:.12em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.icon-btn{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 10px;border-radius:8px;border:1px solid var(--line);background:var(--surface);cursor:pointer;font-size:.8rem}
+.icon-btn:hover{border-color:var(--accent)}
+.icon-btn svg{width:16px;height:16px}
+.xp{display:flex;align-items:center;gap:8px;height:34px;padding:0 10px;border-radius:8px;border:1px solid var(--line);background:var(--surface);cursor:pointer;font-size:.78rem}
+.xp-track{width:64px;height:6px;border-radius:3px;background:var(--line);overflow:hidden}
+.xp-fill{height:100%;width:0;background:var(--accent);transition:width .5s}
+@media (max-width:560px){.xp-track{display:none}.hide-sm{display:none}}
+
+/* ── Screens ── */
+main{position:relative;z-index:1;padding:clamp(20px,4vw,44px) var(--gutter) 64px;max-width:1180px;margin:0 auto}
+.screen{display:none;animation:enter .35s ease both}
+.screen.active{display:block}
+@keyframes enter{from{opacity:.4;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.screen{animation:none}#ambient{display:none}}
+
+.back{display:inline-flex;align-items:center;gap:8px;padding:6px 12px 6px 8px;border-radius:8px;border:1px solid var(--line);background:var(--surface);cursor:pointer;font-size:.82rem;margin-bottom:22px}
+.back:hover{border-color:var(--accent)}
+.back kbd{font-family:var(--f-mono);font-size:.68rem;color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:0 5px}
+.screen-head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:26px}
+.screen-head h2{font-size:clamp(1.7rem,3.4vw,2.4rem);font-weight:900}
+.screen-head p{max-width:60ch;color:var(--muted);margin-top:6px}
+
+/* ── Home / title screen ── */
+.home{display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(28px,5vw,64px);align-items:center;min-height:calc(100vh - 160px)}
+@media (max-width:880px){.home{grid-template-columns:1fr;min-height:0}}
+.hero-name{font-size:clamp(2.6rem,7vw,4.8rem);font-weight:900;letter-spacing:-.02em;margin:14px 0 6px}
+.hero-name span{color:var(--accent)}
+.hero-role{font-family:var(--f-display);font-size:clamp(1.05rem,2vw,1.35rem);font-weight:500;color:var(--muted)}
+.hero-lede{margin-top:22px;max-width:52ch;font-size:1.02rem}
+.hero-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:26px;max-width:620px}
+@media (max-width:1100px){.hero-stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.stat{padding:10px 14px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);min-width:0}
+.stat b{display:block;font:700 1.35rem var(--f-display);font-variant-numeric:tabular-nums}
+.stat span{font-size:.76rem;color:var(--muted)}
+.press{margin-top:28px;font-family:var(--f-mono);font-size:.74rem;letter-spacing:.2em;color:var(--muted)}
+.press b{color:var(--accent);animation:blink 1.4s steps(2) infinite}
+@keyframes blink{50%{opacity:.25}}
+@media (prefers-reduced-motion:reduce){.press b{animation:none}}
+
+.menu{display:flex;flex-direction:column;gap:10px}
+.menu-btn{position:relative;display:grid;grid-template-columns:34px 1fr auto;align-items:center;gap:14px;width:100%;text-align:left;
+  padding:15px 18px;border-radius:12px;border:1px solid var(--line);background:var(--surface);cursor:pointer;transition:transform .15s,border-color .15s,background .15s}
+.menu-btn .key{font-family:var(--f-mono);font-size:.72rem;color:var(--muted);border:1px solid var(--line);border-radius:6px;height:26px;display:grid;place-items:center}
+.menu-btn .t{font:700 1.08rem var(--f-display)}
+.menu-btn .s{display:block;font-size:.8rem;color:var(--muted);margin-top:1px}
+.menu-btn .arrow{opacity:0;transform:translateX(-6px);transition:.15s;color:var(--accent)}
+.menu-btn:hover,.menu-btn.sel{border-color:var(--accent);background:linear-gradient(90deg,var(--glow),transparent 70%),var(--surface);transform:translateX(4px)}
+.menu-btn:hover .arrow,.menu-btn.sel .arrow{opacity:1;transform:none}
+.menu-btn.sel .key,.menu-btn:hover .key{border-color:var(--accent);color:var(--accent)}
+.menu-btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.menu-btn.primary .s,.menu-btn.primary .key{color:var(--accent-ink);border-color:color-mix(in srgb,var(--accent-ink) 40%,transparent)}
+.menu-btn.primary .arrow{color:var(--accent-ink)}
+.menu-btn.primary:hover,.menu-btn.primary.sel{background:var(--accent);filter:brightness(1.07)}
+.menu-hint{font-family:var(--f-mono);font-size:.7rem;color:var(--muted);margin-top:6px;text-align:right}
+
+/* ── Generic blocks ── */
+.panel{border:1px solid var(--line);border-radius:14px;background:var(--surface);padding:clamp(18px,3vw,28px)}
+.grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+@media (max-width:880px){.grid-2,.grid-3{grid-template-columns:1fr}}
+.chip-row{display:flex;flex-wrap:wrap;gap:8px}
+.chip{padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);cursor:pointer;font-size:.8rem}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+.tag{display:inline-block;font-family:var(--f-mono);font-size:.68rem;letter-spacing:.06em;padding:2px 8px;border-radius:5px;border:1px solid var(--line);color:var(--muted)}
+.tag.team{color:var(--accent-2);border-color:color-mix(in srgb,var(--accent-2) 50%,transparent)}
+.tag.solo{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 50%,transparent)}
+.tag.play{color:var(--good);border-color:color-mix(in srgb,var(--good) 50%,transparent)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 16px;border-radius:9px;border:1px solid var(--line);background:var(--surface-2);cursor:pointer;text-decoration:none;font-weight:600;font-size:.88rem;transition:border-color .15s,transform .15s}
+.btn:hover{border-color:var(--accent);transform:translateY(-1px)}
+.btn.accent{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn svg{width:15px;height:15px}
+ul.clean{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.quote{border-left:3px solid var(--accent);padding:4px 0 4px 16px;font-family:var(--f-display);font-size:1.02rem}
+.quote cite{display:block;font:500 .76rem var(--f-mono);color:var(--muted);margin-top:6px;font-style:normal}
+
+/* ── About ── */
+.char{display:grid;grid-template-columns:260px minmax(0,1fr);gap:24px}
+@media (max-width:880px){.char{grid-template-columns:1fr}}
+.portrait{aspect-ratio:3/4;max-width:100%;border-radius:12px;border:1px solid var(--line);background:
+  radial-gradient(circle at 50% 38%,var(--glow),transparent 60%),var(--surface-2);display:grid;place-items:center;position:relative;overflow:hidden}
+.portrait .mono-big{font:900 5rem var(--f-display);color:var(--accent)}
+.portrait .cap{position:absolute;left:12px;right:12px;bottom:12px;display:flex;justify-content:space-between;font-family:var(--f-mono);font-size:.68rem;color:var(--muted)}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:6px 18px;font-size:.9rem}
+.kv dt{color:var(--muted);font-family:var(--f-mono);font-size:.74rem;letter-spacing:.06em;padding-top:3px}
+.kv dd{margin:0}
+.skill{display:grid;gap:4px}
+.skill-top{display:flex;justify-content:space-between;font-size:.88rem}
+.skill-top span:last-child{font-family:var(--f-mono);font-size:.72rem;color:var(--muted)}
+.skill-bar{height:8px;border-radius:4px;background:var(--line);overflow:hidden}
+.skill-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--accent-2),var(--accent));width:var(--w)}
+.timeline{position:relative;display:grid;gap:18px;padding-left:22px}
+.timeline::before{content:"";position:absolute;left:5px;top:6px;bottom:6px;width:2px;background:var(--line)}
+.tl{position:relative}
+.tl::before{content:"";position:absolute;left:-22px;top:7px;width:12px;height:12px;border-radius:50%;background:var(--bg);border:2px solid var(--accent)}
+.tl .when{font-family:var(--f-mono);font-size:.72rem;color:var(--accent)}
+.tl h4{margin:2px 0 2px;font-size:.98rem}
+.tl p{font-size:.86rem;color:var(--muted)}
+
+/* ── Projects ── */
+.proj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
+.proj{display:flex;flex-direction:column;text-align:left;border:1px solid var(--line);border-radius:14px;background:var(--surface);overflow:hidden;cursor:pointer;padding:0;transition:transform .18s,border-color .18s,box-shadow .18s}
+.proj:hover{transform:translateY(-3px);border-color:var(--accent);box-shadow:var(--shadow)}
+.proj-cover{height:150px;position:relative;overflow:hidden;border-bottom:1px solid var(--line)}
+.proj-cover canvas{width:100%;height:100%;display:block}
+.proj-cover .doc{position:absolute;left:14px;top:12px;font-family:var(--f-mono);font-size:.66rem;letter-spacing:.1em;color:var(--fg);background:color-mix(in srgb,var(--bg) 70%,transparent);padding:3px 7px;border-radius:5px}
+.proj-body{padding:16px 18px 18px;display:flex;flex-direction:column;gap:8px;flex:1}
+.proj-body h3{font-size:1.2rem}
+.proj-body p{font-size:.86rem;color:var(--muted)}
+.proj-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto;padding-top:6px}
+
+/* project detail */
+.detail-hero{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:24px;align-items:start;margin-bottom:22px}
+@media (max-width:880px){.detail-hero{grid-template-columns:1fr}}
+.detail-hero h2{font-size:clamp(1.8rem,4vw,2.7rem);font-weight:900;margin:8px 0}
+.facts{display:grid;gap:10px;font-size:.86rem}
+.facts div{display:flex;justify-content:space-between;gap:12px;border-bottom:1px dashed var(--line);padding-bottom:8px}
+.facts div span:first-child{color:var(--muted);font-family:var(--f-mono);font-size:.72rem;letter-spacing:.06em}
+.facts div span:last-child{text-align:right}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:22px;overflow-x:auto}
+.tab{padding:10px 14px;border:0;background:none;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;color:var(--muted);font-weight:600;font-size:.9rem}
+.tab[aria-selected="true"]{color:var(--fg);border-bottom-color:var(--accent)}
+.tabpanel{display:none}.tabpanel.active{display:block;animation:enter .25s ease both}
+.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:.86rem;font-variant-numeric:tabular-nums}
+th,td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-family:var(--f-mono);font-size:.7rem;letter-spacing:.08em;color:var(--muted);background:var(--surface-2);font-weight:600}
+tr:last-child td{border-bottom:0}
+.doc-list{display:grid;gap:10px}
+.doc-item{display:flex;align-items:center;gap:14px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--surface-2);text-decoration:none}
+.doc-item:hover{border-color:var(--accent)}
+.doc-ico{width:36px;height:36px;border-radius:8px;display:grid;place-items:center;background:var(--surface);border:1px solid var(--line);font-family:var(--f-mono);font-size:.62rem;flex:none;color:var(--accent)}
+.doc-item b{display:block;font-size:.9rem}
+.doc-item small{color:var(--muted);font-size:.78rem}
+.doc-item .go{margin-left:auto;color:var(--muted)}
+
+/* calculator */
+.calc{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px}
+@media (max-width:880px){.calc{grid-template-columns:1fr}}
+.range{display:grid;gap:4px}
+.range label{display:flex;justify-content:space-between;font-size:.86rem}
+.range output{font-family:var(--f-mono);color:var(--accent);font-weight:600}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.result{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.result div{padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--surface-2)}
+.result b{display:block;font:700 1.5rem var(--f-display);font-variant-numeric:tabular-nums;color:var(--fg)}
+.result span{font-size:.74rem;color:var(--muted)}
+.result code{display:block;font-family:var(--f-mono);font-size:.68rem;color:var(--muted);margin-top:4px;white-space:normal}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+.seg button{border:0;background:var(--surface);padding:7px 12px;cursor:pointer;font-size:.8rem}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);font-weight:600}
+
+/* inventory mini grid */
+.inv{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;max-width:360px}
+.cell{aspect-ratio:1;border-radius:5px;border:1px dashed var(--line);background:var(--surface-2)}
+.itm{border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;text-align:center;line-height:1.2;padding:2px;border:1px solid transparent;cursor:grab;user-select:none;touch-action:none}
+.itm.w{background:color-mix(in srgb,var(--accent) 22%,var(--surface));border-color:var(--accent)}
+.itm.c{background:color-mix(in srgb,var(--accent-2) 22%,var(--surface));border-color:var(--accent-2)}
+.itm.on{box-shadow:0 0 0 2px var(--good),0 0 18px color-mix(in srgb,var(--good) 45%,transparent)}
+
+/* ── Play ── */
+.game-frame{position:relative;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#0a0805}
+.game-frame .scaler{transform-origin:0 0;width:940px}
+.game-frame iframe{width:940px;height:820px;border:0;display:block}
+.game-cover{position:absolute;inset:0;display:grid;place-items:center;background:radial-gradient(ellipse at 50% 30%,#3a2a1066,transparent 60%),#0a0805e6;color:#f1e6cf;text-align:center;padding:20px}
+.game-cover h3{font-size:clamp(1.6rem,4vw,2.4rem);color:#f1c46a}
+.game-cover p{color:#c9bca3;margin:8px 0 18px}
+.game-cover .btn{background:#e3a83f;border-color:#e3a83f;color:#1a1206}
+.ending-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+.ending{padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--surface-2)}
+.ending b{font-family:var(--f-display)}
+.ending p{font-size:.8rem;color:var(--muted);margin-top:4px}
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.flow span{padding:8px 12px;border-radius:8px;border:1px solid var(--line);background:var(--surface-2);font-size:.84rem}
+.flow i{color:var(--accent);font-style:normal}
+
+/* ── Archive ── */
+.search{display:flex;align-items:center;gap:8px;padding:0 12px;height:42px;border:1px solid var(--line);border-radius:10px;background:var(--surface);min-width:min(320px,100%)}
+.search input{border:0;background:none;outline:none;color:var(--fg);font:inherit;width:100%}
+.search svg{width:16px;height:16px;color:var(--muted);flex:none}
+.review-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-top:18px}
+.review{display:flex;flex-direction:column;gap:8px;padding:16px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+.review h3{font-size:1.08rem}
+.review .g{font-size:.76rem;color:var(--muted)}
+.review p{font-size:.86rem}
+.review a{margin-top:auto;font-size:.8rem;color:var(--accent);text-decoration:none;font-weight:600}
+.review a:hover{text-decoration:underline}
+.empty{padding:40px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:12px;margin-top:18px}
+
+/* ── Notion hub ── */
+.link-card{display:flex;flex-direction:column;gap:10px;padding:18px;border:1px solid var(--line);border-radius:12px;background:var(--surface);text-decoration:none;transition:border-color .15s,transform .15s}
+.link-card:hover{border-color:var(--accent);transform:translateY(-2px)}
+.link-card h3{font-size:1.1rem;display:flex;align-items:center;gap:10px}
+.link-card p{font-size:.86rem;color:var(--muted)}
+.link-card .row{display:flex;justify-content:space-between;align-items:center;margin-top:auto}
+.n-ico{width:28px;height:28px;border-radius:6px;background:var(--fg);color:var(--bg);display:grid;place-items:center;font:900 .9rem var(--f-display);flex:none}
+
+/* ── Contact ── */
+.contact-big{font-family:var(--f-display);font-size:clamp(1.3rem,4vw,2.2rem);font-weight:700;word-break:break-all;user-select:all}
+
+/* ── Overlays ── */
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);opacity:0;z-index:60;padding:11px 16px;border-radius:10px;background:var(--fg);color:var(--bg);font-size:.86rem;font-weight:600;transition:.25s;pointer-events:none;display:flex;gap:10px;align-items:center;max-width:calc(100vw - 32px)}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.modal{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:16px;background:rgba(5,6,10,.6);backdrop-filter:blur(3px)}
+.modal[hidden]{display:none}
+.modal-box{width:min(560px,100%);max-height:86vh;overflow:auto;border:1px solid var(--line);border-radius:14px;background:var(--surface);padding:24px;box-shadow:var(--shadow)}
+.modal-box h3{font-size:1.3rem;margin-bottom:14px}
+.ach{display:grid;grid-template-columns:40px 1fr;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.ach:last-child{border-bottom:0}
+.ach .b{width:40px;height:40px;border-radius:9px;display:grid;place-items:center;border:1px solid var(--line);background:var(--surface-2);color:var(--muted);font-family:var(--f-mono);font-size:.8rem}
+.ach.done .b{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.ach b{font-size:.92rem}.ach p{font-size:.78rem;color:var(--muted)}
+.keys{display:grid;grid-template-columns:auto 1fr;gap:8px 16px;font-size:.88rem}
+.keys kbd{font-family:var(--f-mono);font-size:.74rem;border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:1px 7px;background:var(--surface-2);justify-self:start}
+footer{position:relative;z-index:1;text-align:center;padding:24px var(--gutter) 40px;color:var(--muted);font-size:.76rem;font-family:var(--f-mono)}
+</style>
+</head>
+<body>
+<canvas id="ambient" aria-hidden="true"></canvas>
+
+<header class="bar">
+  <a class="brand" href="#home" data-go="home" aria-label="홈으로">
+    <span class="brand-mark">林</span>
+    <span class="brand-text">LIM CHANG MIN · GAME DESIGNER</span>
+  </a>
+  <button class="xp" id="xpBtn" type="button" aria-label="탐험 기록 보기">
+    <span class="hide-sm">탐험 기록</span>
+    <span class="xp-track"><span class="xp-fill" id="xpFill"></span></span>
+    <span class="mono" id="xpText">0/6</span>
+  </button>
+  <button class="icon-btn" id="soundBtn" type="button" aria-pressed="false" aria-label="효과음 켜기/끄기">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5 6 9H2v6h4l5 4z"/><path id="soundWave" d="M23 9l-6 6M17 9l6 6"/></svg><span class="hide-sm" id="soundLbl">효과음</span>
+  </button>
+  <button class="icon-btn" id="themeBtn" type="button" aria-label="화면 테마 전환">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+  </button>
+  <button class="icon-btn hide-sm" id="helpBtn" type="button" aria-label="단축키 보기">?</button>
+</header>
+
+<main id="main">
+
+<!-- ═════════ HOME ═════════ -->
+<section class="screen" id="s-home" data-screen="home" aria-label="메인 메뉴">
+  <div class="home">
+    <div>
+      <div class="eyebrow">Game Designer · 시스템 / 콘텐츠 기획</div>
+      <h1 class="hero-name">임창민<span>.</span></h1>
+      <p class="hero-role">아이디어를 표와 수식으로 옮기는 기획자</p>
+      <p class="hero-lede">인벤토리 배치가 곧 빌드가 되는 아이템 시스템을 설계했고, 선택지 하나가 한 해의 전쟁을 바꾸는 디펜스 게임을 직접 만들어 플레이할 수 있게 올려두었습니다. 플레이한 게임은 재화 구조와 리텐션 설계까지 뜯어서 기록합니다.</p>
+      <div class="hero-stats">
+        <div class="stat"><b id="stItems">49</b><span>설계한 아이템 수</span></div>
+        <div class="stat"><b>12</b><span>이펙트 유형 정의</span></div>
+        <div class="stat"><b>8</b><span>프로토타입 결말</span></div>
+        <div class="stat"><b id="stReviews">0</b><span>정리한 게임 리뷰</span></div>
+      </div>
+      <p class="press"><b>▶</b> PRESS 1 – 6 · 버튼을 눌러 시작</p>
+    </div>
+    <nav class="menu" id="menu" aria-label="포트폴리오 메뉴">
+      <button class="menu-btn primary" data-go="projects"><span class="key">1</span><span><span class="t">프로젝트</span><span class="s">Project Joseon · Castle Survival · 신규 모드 기획</span></span><span class="arrow">▶</span></button>
+      <button class="menu-btn" data-go="play"><span class="key">2</span><span><span class="t">지금 플레이</span><span class="s">직접 만든 HTML5 디펜스 프로토타입</span></span><span class="arrow">▶</span></button>
+      <button class="menu-btn" data-go="about"><span class="key">3</span><span><span class="t">캐릭터 정보</span><span class="s">소개 · 역량 · 연혁</span></span><span class="arrow">▶</span></button>
+      <button class="menu-btn" data-go="archive"><span class="key">4</span><span><span class="t">게임 분석 도감</span><span class="s">플레이한 게임의 구조·BM 분석</span></span><span class="arrow">▶</span></button>
+      <button class="menu-btn" data-go="notion"><span class="key">5</span><span><span class="t">노션 아카이브</span><span class="s">기획 문서와 리뷰 원문 링크</span></span><span class="arrow">▶</span></button>
+      <button class="menu-btn" data-go="contact"><span class="key">6</span><span><span class="t">연락하기</span><span class="s">이메일 복사 · 포트폴리오 폴더</span></span><span class="arrow">▶</span></button>
+      <p class="menu-hint">↑↓ 이동 · Enter 선택 · Esc 뒤로 · ? 도움말</p>
+    </nav>
+  </div>
+</section>
+
+<!-- ═════════ PROJECTS ═════════ -->
+<section class="screen" id="s-projects" data-screen="projects" aria-label="프로젝트">
+  <button class="back" data-go="home">← 메뉴 <kbd>Esc</kbd></button>
+  <div class="screen-head">
+    <div><div class="eyebrow">Quest Board</div><h2>프로젝트</h2><p>팀 프로젝트와 개인 작업을 나눠 표시했습니다. 카드를 누르면 기획 의도, 수치, 원본 문서를 볼 수 있습니다.</p></div>
+    <div class="chip-row" id="projFilter" role="group" aria-label="프로젝트 필터">
+      <button class="chip" data-f="all" aria-pressed="true">전체</button>
+      <button class="chip" data-f="team" aria-pressed="false">팀</button>
+      <button class="chip" data-f="solo" aria-pressed="false">개인</button>
+      <button class="chip" data-f="play" aria-pressed="false">플레이 가능</button>
+    </div>
+  </div>
+  <div class="proj-grid" id="projGrid"></div>
+</section>
+
+<!-- ═════════ PROJECT: JOSEON ═════════ -->
+<section class="screen" id="s-p-joseon" data-screen="p-joseon" aria-label="Project Joseon">
+  <button class="back" data-go="projects">← 프로젝트 <kbd>Esc</kbd></button>
+  <div class="detail-hero">
+    <div>
+      <span class="tag team">TEAM PROJECT</span>
+      <h2>Project Joseon</h2>
+      <p class="muted" style="max-width:62ch">조선 배경의 탑뷰 액션. 그리드 인벤토리 「의식판」에 아이템을 어떻게 붙여 놓느냐가 곧 빌드가 됩니다. 익스트랙션 기반 PvPvE 수집형 액션으로 기획이 진행 중이며, 2026년 8월 기획자로 합류해 아이템·데이터·전투 시스템과 캐릭터 기획을 맡고 있습니다.</p>
+    </div>
+    <div class="panel facts">
+      <div><span>ROLE</span><span>아이템 · 시스템 · 캐릭터 기획</span></div>
+      <div><span>JOINED</span><span>2026.08</span></div>
+      <div><span>PLATFORM</span><span>PC · 탑뷰 액션</span></div>
+      <div><span>CONTROLS</span><span>WASD · 마우스 · 1/2/3 · Tab</span></div>
+      <div><span>OUTPUT</span><span>기획서 5종 · ItemData 테이블</span></div>
+    </div>
+  </div>
+  <div class="tabs" role="tablist" data-tabs="joseon">
+    <button class="tab" role="tab" aria-selected="true" data-tab="j-item">아이템 기획 v1.0</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="j-combat">전투·속성 v2.0</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="j-effects">Effects 스키마</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="j-mudang">무당 캐릭터</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="j-docs">문서</button>
+  </div>
+
+  <div class="tabpanel active" id="j-item">
+    <div class="grid-2">
+      <div class="panel">
+        <div class="eyebrow">기획 의도</div>
+        <ul class="clean" style="margin-top:12px">
+          <li><b>인벤토리를 퍼즐로 만든다.</b> <span class="muted">칸수가 클수록 강하고, 옆에 붙이면 효과가 발동합니다.</span></li>
+          <li><b>상성은 있지만 승부를 정하지 않는다.</b> <span class="muted">유리 +20%, 불리 −15%의 의도적 비대칭.</span></li>
+          <li><b>인접 효과를 무기에도 적용한다.</b> <span class="muted">사인검은 칼끝, 귀검은 자루 쪽 칸이 접합면.</span></li>
+          <li><b>세계관 설정을 수치에 반영한다.</b> <span class="muted">고증은 속성 배분에 설득력을 주는 수단.</span></li>
+        </ul>
+        <p class="quote" style="margin-top:18px">큰 아이템일수록 조건을 넓게, 작은 아이템일수록 조건을 좁게.<cite>— 칸수와 인접 조건의 관계 · 아이템 기획서 v1.0</cite></p>
+      </div>
+      <div class="panel">
+        <div class="eyebrow">직접 해보기 · 인접 효과</div>
+        <p class="muted" style="font-size:.86rem;margin:8px 0 14px">퇴마 아이템 「부적」을 끌어서 사인검 칼끝(오른쪽 칸)에 붙여 보세요. 접합면이 맞으면 +8%가 켜집니다.</p>
+        <div class="inv" id="inv" aria-label="의식판 인벤토리 예시"></div>
+        <p class="mono" id="invOut" style="margin-top:12px;color:var(--muted)">사인검 공격력 5~7 · 인접 효과 꺼짐</p>
+      </div>
+    </div>
+    <div class="panel" style="margin-top:18px">
+      <div class="screen-head" style="margin-bottom:12px"><div><div class="eyebrow">무기 테이블 발췌</div><h3 style="margin-top:4px">총 49종 · 무기 6 / 방어구 9 / 장신구 2 / 유물 2 / 주술 20 / 귀물 10</h3></div></div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>무기</th><th>크기</th><th>공격력</th><th>비고</th></tr></thead>
+        <tbody>
+          <tr><td>단검</td><td>2×1</td><td>1~2</td><td class="muted">—</td></tr>
+          <tr><td>장검</td><td>4×1</td><td>4~6</td><td class="muted">밸런스 기준점</td></tr>
+          <tr><td>활</td><td>2×2</td><td>2~3</td><td class="muted">—</td></tr>
+          <tr><td>창</td><td>5×1</td><td>5~7</td><td class="muted">최고 화력 ↔ 최대 인벤토리 부담</td></tr>
+          <tr><td>사인검</td><td>4×1</td><td>5~7</td><td class="muted">신력 · 칼끝에 퇴마 아이템 +8%</td></tr>
+          <tr><td>귀검</td><td>4×1</td><td>6~9</td><td class="muted">요력 · 자루에 저주 아이템 +8%</td></tr>
+        </tbody>
+      </table></div>
+      <p class="quote" style="margin-top:18px">0효과 스타팅 아이템을 하나 둬서, 나머지 방어구를 고르는 행위 자체에 의미를 부여했다.<cite>— 짚신 · 아이템별 기획 의도</cite></p>
+    </div>
+  </div>
+
+  <div class="tabpanel" id="j-combat">
+    <div class="grid-2">
+      <div class="panel">
+        <div class="eyebrow">기획 변경 이력</div>
+        <div class="seg" id="verSeg" role="group" aria-label="버전 선택" style="margin:12px 0 14px">
+          <button data-v="1" aria-pressed="false">v1.0 상성 있음</button>
+          <button data-v="2" aria-pressed="true">v2.0 상성 제거</button>
+        </div>
+        <div id="verBody"></div>
+      </div>
+      <div class="panel">
+        <div class="eyebrow">전투 공식 계산기 (v2.0)</div>
+        <p class="muted" style="font-size:.84rem;margin:6px 0 14px">문서의 공식을 그대로 옮겼습니다. 모든 값은 정수, 최소 피해 1.</p>
+        <div class="calc" style="grid-template-columns:1fr">
+          <div style="display:grid;gap:12px">
+            <div class="range"><label for="cAtk">무기 공격력 <output id="oAtk">8</output></label><input type="range" id="cAtk" min="1" max="20" value="8"></div>
+            <div class="range"><label for="cAttr">속성 수치 n <output id="oAttr">6</output></label><input type="range" id="cAttr" min="0" max="12" value="6"></div>
+            <div class="range"><label for="cDef">상대 방어력 <output id="oDef">5</output></label><input type="range" id="cDef" min="0" max="15" value="5"></div>
+            <div class="chip-row" id="monPick" role="group" aria-label="몬스터 방어력 불러오기">
+              <button class="chip" data-def="4" aria-pressed="false">몰이꾼형 방어 4</button>
+              <button class="chip" data-def="3" aria-pressed="false">잔주술형 방어 3</button>
+              <button class="chip" data-def="5" aria-pressed="true">두억신 방어 5</button>
+            </div>
+          </div>
+          <div class="result" id="calcOut"></div>
+        </div>
+      </div>
+    </div>
+    <div class="panel" style="margin-top:18px">
+      <div class="eyebrow">몬스터 설계</div>
+      <div class="table-wrap" style="margin-top:12px"><table>
+        <thead><tr><th>몬스터</th><th>공격</th><th>방어</th><th>요 / 기 / 신</th><th>체력</th></tr></thead>
+        <tbody>
+          <tr><td>몰이꾼형</td><td>7</td><td>4</td><td>1 / 5 / 1</td><td>20</td></tr>
+          <tr><td>잔주술형</td><td>6</td><td>3</td><td>7 / 1 / 2</td><td>15</td></tr>
+          <tr><td>두억신 (보스)</td><td>12</td><td>5</td><td>9 / 4 / 3</td><td>200</td></tr>
+        </tbody>
+      </table></div>
+      <p class="quote" style="margin-top:18px">같은 장비를 인벤토리에서 다른 방식으로 접합·배치한 결정이, 전투에서 체감되는 차이를 만드는가.<cite>— 검증 목표 · 전투 시스템 속성 체계 v2.0</cite></p>
+    </div>
+  </div>
+
+  <div class="tabpanel" id="j-effects">
+    <div class="grid-2">
+      <div class="panel">
+        <div class="eyebrow">설계 원칙</div>
+        <p style="margin-top:10px">아이템이 전투에 주는 모든 영향을 한 가지 형식으로 적는 시트입니다. 아이템 종류가 늘어나도 구조는 그대로 두고 <b>행만 추가</b>하면 되도록 설계했습니다.</p>
+        <div class="eyebrow" style="margin-top:20px">한 행을 읽는 순서</div>
+        <div class="flow" style="margin-top:10px">
+          <span>언제 <small class="muted">TriggerType</small></span><i>→</i>
+          <span>누구 <small class="muted">TargetType</small></span><i>→</i>
+          <span>무엇 <small class="muted">EffectType</small></span><i>→</i>
+          <span>어떻게 <small class="muted">Add·Multiply·Apply</small></span><i>→</i>
+          <span>얼마나 <small class="muted">ValueMin~Max</small></span><i>→</i>
+          <span>확률 <small class="muted">ChancePercent</small></span>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="eyebrow">예시 행 · 사인검</div>
+        <div class="table-wrap" style="margin-top:12px"><table>
+          <thead><tr><th>컬럼</th><th>값</th></tr></thead>
+          <tbody>
+            <tr><td>TriggerType</td><td>Adjacent</td></tr>
+            <tr><td>TriggerCellPosition</td><td>Right (칼끝)</td></tr>
+            <tr><td>조건</td><td>퇴마 계열 아이템 접촉</td></tr>
+            <tr><td>효과</td><td>공격력 +8%</td></tr>
+          </tbody>
+        </table></div>
+        <ul class="clean" style="margin-top:16px;font-size:.88rem">
+          <li><b>TriggerType 5종</b> <span class="muted">Passive · OnHit · OnKill · OnUse · Adjacent</span></li>
+          <li><b>수치 규칙</b> <span class="muted">희귀 등급 = 일반 × 1.4</span></li>
+          <li><b>연산 순서</b> <span class="muted">팀원의 스탯 공식 (Base+Item+Effect)×(1+Rate)에 6단계로 정렬</span></li>
+          <li><b>성능</b> <span class="muted">Adjacent는 배치가 바뀔 때만 재계산. 매 프레임 판정 불필요</span></li>
+          <li><b>데이터 QA</b> <span class="muted">값 표기 불일치, 누락 트리거(OnDamaged) 등 문제 7건을 직접 찾아 정리</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="tabpanel" id="j-mudang">
+    <div class="grid-2">
+      <div class="panel">
+        <div class="eyebrow">컨셉</div>
+        <h3 style="font-size:1.5rem;margin:8px 0 10px">신을 제어하지 못하고 광기에 지배당한 무당</h3>
+        <p class="muted">연인을 잃은 직후 원치 않는 신내림을 받은 20~30대 초반 여성. 평소에는 멍하게 가라앉아 있다가 각성하면 울면서 광분합니다.</p>
+        <p class="quote" style="margin-top:18px">'연결을 지켜내는 행동' 자체가 무당의 광기 서사를 메커닉으로 체감시키는 것이 목표.<cite>— 핵심 재미 가설</cite></p>
+      </div>
+      <div class="panel">
+        <div class="eyebrow">메커닉</div>
+        <ul class="clean" style="margin-top:12px">
+          <li><b>각성 조건</b> <span class="muted">회로 노드 2개를 아이템으로 연결</span></li>
+          <li><b>각성 효과</b> <span class="muted">신력·요력 ×2, 연결이 끊기면 즉시 해제</span></li>
+          <li><b>제약</b> <span class="muted">액티브 스킬·레벨업 없음, 전방 직사각형 범위 공격</span></li>
+        </ul>
+        <div class="eyebrow" style="margin-top:20px">스스로 남긴 검수 메모</div>
+        <p style="margin-top:8px">페널티 없는 순수 버프는 '통제 상실'이라는 서사와 메커닉적으로 이어지지 않는다. <span class="muted">→ 다음 버전에서 각성의 대가를 설계할 과제로 남김</span></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="tabpanel" id="j-docs">
+    <p class="muted" style="margin-bottom:14px;font-size:.86rem">팀 프로젝트 문서입니다. 팀 공유 범위에 따라 열람 권한 요청이 필요할 수 있습니다.</p>
+    <div class="doc-list" id="joseonDocs"></div>
+  </div>
+</section>
+
+<!-- ═════════ PROJECT: CASTLE ═════════ -->
+<section class="screen" id="s-p-castle" data-screen="p-castle" aria-label="Castle Survival">
+  <button class="back" data-go="projects">← 프로젝트 <kbd>Esc</kbd></button>
+  <div class="detail-hero">
+    <div>
+      <span class="tag solo">SOLO</span> <span class="tag play">PLAYABLE</span>
+      <h2>Castle Survival: Chronicle</h2>
+      <p class="muted" style="max-width:62ch">마왕이 1년 뒤 쳐들어온다는 예언을 받은 작은 왕국 에테리아. 매달 조언자 에이라와 함께 징집·훈련·보급을 결정하고 그 결과로 방어전을 치릅니다. 내러티브 선택과 타워 디펜스를 한 루프로 묶은 개인 프로토타입으로, 12개월 구조 중 1~2월이 플레이 가능합니다.</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px">
+        <button class="btn accent" data-go="play">▶ 지금 플레이</button>
+        <a class="btn" href="games/castle-survival/index.html" target="_blank" rel="noopener">새 탭에서 열기 ↗</a>
+      </div>
+    </div>
+    <div class="panel facts">
+      <div><span>ROLE</span><span>기획 · 구현 (1인)</span></div>
+      <div><span>GENRE</span><span>내러티브 + 타워 디펜스</span></div>
+      <div><span>BUILD</span><span>HTML5 · 단일 파일</span></div>
+      <div><span>SCOPE</span><span>12개월 설계 · 1–2월 구현</span></div>
+      <div><span>RESULTS</span><span>엔딩 7종 + 패배</span></div>
+    </div>
+  </div>
+  <div class="grid-2">
+    <div class="panel">
+      <div class="eyebrow">코어 루프</div>
+      <div class="flow" style="margin-top:12px">
+        <span>월간 결정 <small class="muted">에이라와 대화</small></span><i>→</i>
+        <span>자원 변동 <small class="muted">인망·자원·병력</small></span><i>→</i>
+        <span>방어전 <small class="muted">구조물·유닛 배치</small></span><i>→</i>
+        <span>지휘 결정 카드</span><i>→</i>
+        <span>다음 달</span>
+      </div>
+      <ul class="clean" style="margin-top:18px;font-size:.9rem">
+        <li><b>세 가지 자원의 긴장.</b> <span class="muted">대규모 징집은 병력 +30 대신 인망 −2. 자원자만 받으면 병력 +10, 인망 +1. 같은 목표에 다른 대가를 붙였습니다.</span></li>
+        <li><b>막을 수 없는 방벽.</b> <span class="muted">방벽은 경로를 유도할 뿐 완전히 막지 못합니다. 골렘은 방벽 자체를 부수며 들어옵니다.</span></li>
+        <li><b>전투 중 결정.</b> <span class="muted">적을 처치해 게이지를 채우면 전투가 멈추고 카드 3장 중 하나를 고릅니다. 필요한 게이지는 9에서 시작해 매번 5씩 늘어납니다.</span></li>
+        <li><b>병과 트리.</b> <span class="muted">2월 스토리 선택으로 궁수·기사·마법사 중 하나를 해금하고, 전투 중 선택지로 사냥꾼/석궁병, 광전사/왕의기사, 저주술사/대마법사로 전직합니다.</span></li>
+      </ul>
+    </div>
+    <div class="panel">
+      <div class="eyebrow">시작 수치</div>
+      <div class="result" style="margin-top:12px">
+        <div><b>10</b><span>인망 (최대 10)</span></div>
+        <div><b>100</b><span>자원</span></div>
+        <div><b>50</b><span>병력</span></div>
+        <div><b>500</b><span>성 HP</span></div>
+      </div>
+      <div class="eyebrow" style="margin-top:20px">구조물</div>
+      <div class="table-wrap" style="margin-top:10px"><table>
+        <thead><tr><th>구조물</th><th>Lv1</th><th>Lv2</th><th>Lv3</th></tr></thead>
+        <tbody>
+          <tr><td>화살탑</td><td>ATK18 범위2.5</td><td>ATK30 범위3</td><td>ATK48 범위3.5</td></tr>
+          <tr><td>마법진</td><td>이속−60% 범위2</td><td>이속−80% ATK5</td><td>이속−90% ATK12</td></tr>
+          <tr><td>투석기</td><td>ATK40 충격파</td><td>ATK90 광역</td><td class="muted">—</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+  <div class="panel" style="margin-top:18px">
+    <div class="eyebrow">결말 설계</div>
+    <p class="muted" style="font-size:.86rem;margin:6px 0 14px">성이 버티면 남은 인망에 따라 결말이 갈리고, 인망이 0이 되면 반란, 성이 무너지면 패배입니다.</p>
+    <div class="ending-grid" id="endings"></div>
+  </div>
+</section>
+
+<!-- ═════════ PROJECT: ASGARD ═════════ -->
+<section class="screen" id="s-p-asgard" data-screen="p-asgard" aria-label="아스가르드 폴 오리진스 신규 모드">
+  <button class="back" data-go="projects">← 프로젝트 <kbd>Esc</kbd></button>
+  <div class="detail-hero">
+    <div>
+      <span class="tag solo">SOLO</span> <span class="tag">CONTENT PROPOSAL</span>
+      <h2>라그나로크 모드</h2>
+      <p class="muted" style="max-width:62ch">로그라이크 「아스가르드 폴 오리진스」에 붙이는 신규 모드 제안서. 반복적인 전투 흐름 때문에 금세 지루해지고 전략적 선택의 폭이 좁다는 문제를, 확률로 터지는 돌발 퀘스트로 풀었습니다.</p>
+    </div>
+    <div class="panel facts">
+      <div><span>ROLE</span><span>콘텐츠 기획 (1인)</span></div>
+      <div><span>DATE</span><span>2024.12</span></div>
+      <div><span>TYPE</span><span>신규 모드 제안서 · PDF</span></div>
+      <div><span>MAP</span><span>일반 맵의 2배</span></div>
+    </div>
+  </div>
+  <div class="grid-2">
+    <div class="panel">
+      <div class="eyebrow">돌발 퀘스트 규칙</div>
+      <ul class="clean" style="margin-top:12px;font-size:.9rem">
+        <li><b>발동 조건</b> <span class="muted">필요 조건 수 N → N×2 → N×4로 증가</span></li>
+        <li><b>발동 확률</b> <span class="muted">1회차 10% → 2회차 5% → 3회차 1%, 실패 시 확률 20% 감소</span></li>
+        <li><b>누적 보상</b> <span class="muted">1회 경험치 → 3회 스킬 레벨업 → 5회 특수 스킬</span></li>
+      </ul>
+      <div class="eyebrow" style="margin-top:20px">확률 시뮬레이터</div>
+      <p class="muted" style="font-size:.84rem;margin:6px 0 10px">문서의 발동 확률로 한 판을 1,000번 돌려 봅니다.</p>
+      <button class="btn" id="simBtn" type="button">1,000판 시뮬레이션</button>
+      <div class="result" id="simOut" style="margin-top:12px"></div>
+    </div>
+    <div class="panel">
+      <div class="eyebrow">퀘스트 3종</div>
+      <div class="table-wrap" style="margin-top:12px"><table>
+        <thead><tr><th>퀘스트</th><th>방식</th><th>실패 시</th></tr></thead>
+        <tbody>
+          <tr><td>발키리의 가호</td><td>100M 안 발키리 보호 (디펜스)</td><td>몬스터 체력·공격 N% 상승</td></tr>
+          <tr><td>로키의 분신</td><td>체력 1000 분신 추격</td><td>몬스터 9마리 소환</td></tr>
+          <tr><td>발할라의 결투장</td><td>보스 체력 5000, 흑백 연출</td><td>사망 · 클리어 시 보스가 동료로</td></tr>
+        </tbody>
+      </table></div>
+      <div class="eyebrow" style="margin-top:20px">클리어 스킬</div>
+      <ul class="clean" style="margin-top:10px;font-size:.88rem">
+        <li><b>심판의 창</b> <span class="muted">전방 30M 적 처치</span></li>
+        <li><b>요르문간드</b> <span class="muted">80m/s 직선 5회 공격</span></li>
+        <li><b>보스 동료 소환</b> <span class="muted">스킬 위력 60%</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="doc-list" style="margin-top:18px" id="asgardDocs"></div>
+</section>
+
+<!-- ═════════ PLAY ═════════ -->
+<section class="screen" id="s-play" data-screen="play" aria-label="지금 플레이">
+  <button class="back" data-go="home">← 메뉴 <kbd>Esc</kbd></button>
+  <div class="screen-head">
+    <div><div class="eyebrow">Playable Prototype</div><h2>Castle Survival: Chronicle</h2><p>매달의 선택이 인망·자원·병력을 바꾸고, 그 결과로 방어전을 치릅니다. 현재 1~2월 분량이 플레이 가능합니다.</p></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn" data-go="p-castle">기획 노트</button>
+      <a class="btn" href="games/castle-survival/index.html" target="_blank" rel="noopener">새 탭에서 열기 ↗</a>
+    </div>
+  </div>
+  <div class="game-frame" id="gameFrame">
+    <div class="scaler" id="gameScaler"></div>
+    <div class="game-cover" id="gameCover">
+      <div>
+        <div class="eyebrow" style="color:#e3a83f">Chapter 1 · 1월</div>
+        <h3>마왕까지 남은 시간, 1년</h3>
+        <p>효과음이 있습니다. 모바일에서는 새 탭으로 여는 편이 편합니다.</p>
+        <button class="btn" id="bootGame" type="button">▶ 게임 불러오기</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═════════ ABOUT ═════════ -->
+<section class="screen" id="s-about" data-screen="about" aria-label="캐릭터 정보">
+  <button class="back" data-go="home">← 메뉴 <kbd>Esc</kbd></button>
+  <div class="screen-head"><div><div class="eyebrow">Character Sheet</div><h2>캐릭터 정보</h2></div></div>
+  <div class="char">
+    <div class="portrait"><span class="mono-big">林</span><div class="cap"><span>SINCE 2024</span><span>CLASS · PLANNER</span></div></div>
+    <div style="display:grid;gap:18px;min-width:0">
+      <div class="panel">
+        <dl class="kv">
+          <dt>NAME</dt><dd>임창민 (Lim Chang Min)</dd>
+          <dt>CLASS</dt><dd>게임 기획자 · 시스템 / 아이템 / 콘텐츠</dd>
+          <dt>EDU</dt><dd>대구대학교 산림자원학과 졸업</dd>
+          <dt>NOW</dt><dd>Project Joseon 팀 기획 참여 (2026.08~)</dd>
+        </dl>
+        <p style="margin-top:16px">게임 기획자가 되기 위해 다양한 기획서를 쓰고 보드게임을 만들어 봤습니다. 가장 어렵다고 느낀 건 아이디어를 숫자로 옮기고 밸런스를 검증하는 일이었고, 그래서 지금은 기획서마다 공식과 테이블, 검증 목표를 먼저 적습니다.</p>
+      </div>
+      <div class="panel">
+        <div class="eyebrow">주력 역량</div>
+        <p class="muted" style="font-size:.8rem;margin:4px 0 14px">막대 길이는 포트폴리오에 담긴 작업 비중을 나타냅니다.</p>
+        <div style="display:grid;gap:14px" id="skills"></div>
+      </div>
+    </div>
+  </div>
+  <div class="grid-2" style="margin-top:18px">
+    <div class="panel">
+      <div class="eyebrow">연혁</div>
+      <div class="timeline" style="margin-top:14px" id="timeline"></div>
+    </div>
+    <div class="panel">
+      <div class="eyebrow">작업 방식</div>
+      <ul class="clean" style="margin-top:12px">
+        <li><b>의도 → 규칙 → 수치 순서로 쓴다.</b> <span class="muted">모든 아이템에 한 줄 기획 의도를 붙이고, 수치는 기준점(장검 4~6)에서 파생합니다.</span></li>
+        <li><b>확장을 전제로 데이터를 설계한다.</b> <span class="muted">Effects 시트는 아이템이 90종으로 늘어도 행만 추가하면 됩니다.</span></li>
+        <li><b>피드백으로 방향을 바꾼다.</b> <span class="muted">회의에서 상성이 자유도를 줄인다는 지적을 받고 v2.0에서 상성을 제거했습니다.</span></li>
+        <li><b>직접 만들어 확인한다.</b> <span class="muted">Castle Survival은 기획을 플레이 가능한 형태로 검증해 본 결과물입니다.</span></li>
+      </ul>
+      <div class="eyebrow" style="margin-top:20px">사용 도구</div>
+      <div class="chip-row" style="margin-top:10px">
+        <span class="tag">Google Sheets / Excel</span><span class="tag">PowerPoint · Slides</span><span class="tag">Notion</span><span class="tag">HTML · JavaScript</span><span class="tag">Discord 협업</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═════════ ARCHIVE ═════════ -->
+<section class="screen" id="s-archive" data-screen="archive" aria-label="게임 분석 도감">
+  <button class="back" data-go="home">← 메뉴 <kbd>Esc</kbd></button>
+  <div class="screen-head">
+    <div><div class="eyebrow">Bestiary of Games</div><h2>게임 분석 도감</h2><p>플레이한 게임을 인게임·아웃게임·재화·BM 관점으로 정리한 기록입니다. 카드의 링크는 노션 원문으로 연결됩니다.</p></div>
+    <label class="search" for="q"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q" type="search" placeholder="게임 이름이나 키워드 (예: 리텐션)" autocomplete="off"></label>
+  </div>
+  <div class="chip-row" id="genreFilter" role="group" aria-label="장르 필터"></div>
+  <div class="review-grid" id="reviews"></div>
+  <div class="empty" id="reviewEmpty" hidden>검색 결과가 없습니다. 다른 키워드로 찾아보세요.</div>
+</section>
+
+<!-- ═════════ NOTION ═════════ -->
+<section class="screen" id="s-notion" data-screen="notion" aria-label="노션 아카이브">
+  <button class="back" data-go="home">← 메뉴 <kbd>Esc</kbd></button>
+  <div class="screen-head"><div><div class="eyebrow">Notion Archive</div><h2>노션 아카이브</h2><p>게임 리뷰, 업계 스크랩, 프로젝트 문서를 노션에 정리하고 있습니다. 버튼을 누르면 새 탭에서 열립니다.</p></div></div>
+  <div class="grid-3" id="notionLinks"></div>
+</section>
+
+<!-- ═════════ CONTACT ═════════ -->
+<section class="screen" id="s-contact" data-screen="contact" aria-label="연락하기">
+  <button class="back" data-go="home">← 메뉴 <kbd>Esc</kbd></button>
+  <div class="screen-head"><div><div class="eyebrow">Save &amp; Contact</div><h2>연락하기</h2><p>함께 일할 기회나 포트폴리오에 대한 피드백은 언제든 환영합니다.</p></div></div>
+  <div class="grid-2">
+    <div class="panel">
+      <div class="eyebrow">E-mail</div>
+      <p class="contact-big" id="email" style="margin:10px 0 16px"></p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn accent" id="copyEmail" type="button">이메일 주소 복사</button>
+        <a class="btn" id="mailLink" href="#">메일 앱 열기</a>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="eyebrow">Links</div>
+      <div class="doc-list" style="margin-top:12px" id="contactLinks"></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>© 2026 LIM CHANG MIN · 이 사이트의 수치와 인용은 모두 원본 기획 문서에서 가져왔습니다.</footer>
+
+<!-- overlays -->
+<div class="modal" id="achModal" hidden role="dialog" aria-modal="true" aria-labelledby="achTitle">
+  <div class="modal-box"><h3 id="achTitle">탐험 기록</h3><div id="achList"></div>
+    <div style="display:flex;justify-content:space-between;gap:10px;margin-top:16px"><button class="btn" id="achReset" type="button">기록 초기화</button><button class="btn accent" data-close type="button">닫기</button></div></div>
+</div>
+<div class="modal" id="helpModal" hidden role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+  <div class="modal-box"><h3 id="helpTitle">단축키</h3>
+    <div class="keys"><kbd>1 – 6</kbd><span>메뉴 바로 이동</span><kbd>↑ ↓</kbd><span>메뉴 선택 이동</span><kbd>Enter</kbd><span>선택한 메뉴 열기</span><kbd>Esc</kbd><span>이전 화면 / 창 닫기</span><kbd>/</kbd><span>도감 검색으로 이동</span><kbd>T</kbd><span>테마 전환</span><kbd>M</kbd><span>효과음 켜기/끄기</span><kbd>?</kbd><span>이 도움말</span></div>
+    <div style="text-align:right;margin-top:18px"><button class="btn accent" data-close type="button">닫기</button></div></div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* ────────────────────────────────────────────
+   CONFIG — 링크·연락처는 여기서만 고치면 됩니다
+   ──────────────────────────────────────────── */
+const CONFIG = {
+  email: "gilsun211001@gmail.com",
+  portfolioFolder: "https://drive.google.com/drive/folders/1eDNftRVk24wi-I0Kanss1-VjuLNKcqYf?usp=sharing",
+  github: "https://github.com/gilsun211001-afk/my-new-game",
+  gamePath: "games/castle-survival/index.html"
+};
+
+const NOTION = [
+  { t:"My Game Design Insights", d:"플레이해 본 게임의 장단점과 분석 자료를 종합한 메인 노션.", u:"https://www.notion.so/23e5bb2a4bb380feaa84f6f4bd089b75?v=23e5bb2a4bb381e6ba11000c90f76c0c&source=copy_link", tag:"대표" },
+  { t:"게임 리뷰 데이터베이스", d:"리뷰 페이지를 한곳에 모은 두 번째 노션 데이터베이스.", u:"https://www.notion.so/123dac2a20db4e8490e230cb0841472f?v=2aee0f66b97845ebaa723d821230b502&source=copy_link", tag:"대표" },
+  { t:"게임 분석 자료", d:"게임 리뷰, 업계 스크랩, 제작 정보, 용어 사전을 묶은 허브.", u:"https://app.notion.com/p/314c1342e11f80aa9a65c7666a35977a", tag:"허브" },
+  { t:"게임 리뷰", d:"기억에 남는 게임 8종과 플레이한 게임 약 30종의 플레이 시간·평가 표.", u:"https://app.notion.com/p/314c1342e11f809cb2b1e2abb4bcb34a", tag:"리뷰" },
+  { t:"플레이한 캐주얼 모바일 게임", d:"캐주얼 모바일 게임 약 20종의 매출·논란·강점/개선점 분석 표.", u:"https://app.notion.com/p/375c1342e11f808f9ef9f5b12174c343", tag:"리뷰" },
+  { t:"게임 리뷰 & 분석 DB", d:"인게임 / 아웃게임 / 재화 / 느낀점 구조로 쓴 개별 분석 페이지.", u:"https://app.notion.com/p/38bc1342e11f806b8989cfcb1ddb0220", tag:"리뷰" },
+  { t:"포인트 블랭크 정밀 리뷰", d:"로비·모드별 분석, 7개 항목 분석표, '랜덤 믹스 모드' 개선 제안.", u:"https://app.notion.com/p/31cc1342e11f804c810ae37ed03c9a2c", tag:"정밀 리뷰" },
+  { t:"스타 세이비어 정밀 리뷰", d:"서브컬처 전략 RPG의 UI·BM 분석과 '용도별 분류 필터' 제안.", u:"https://app.notion.com/p/335c1342e11f8022a0b2e3fe50b3d018", tag:"정밀 리뷰" },
+  { t:"스크랩 기사", d:"업계 기사 요약과 기획자 관점의 평가.", u:"https://app.notion.com/p/314c1342e11f80fb9f1bdc77e817ad26", tag:"업계" },
+  { t:"게임업계 용어", d:"GDD, QA, 서바이벌 슈터 등 용어 정의와 기획자 관점의 리스크.", u:"https://app.notion.com/p/363c1342e11f80a788ecc9518b028470", tag:"업계" },
+  { t:"Project Jinsal · Concept v0.1.1", d:"익스트랙션 PvPvE 컨셉 문서. 준비 → 입장 → 탐색·파밍·경쟁 → 탈출.", u:"https://app.notion.com/p/0b6c1342e11f8391a38581de69fc33dd", tag:"프로젝트" },
+  { t:"조선 게임 팀 워크스페이스", d:"타임라인, 디자인·아트·개발 문서, 회의록.", u:"https://app.notion.com/p/3c4c1342e11f80eab394db8b25608800", tag:"프로젝트" }
+];
+
+const REVIEWS = [
+  { n:"포인트 블랭크", g:"FPS", meta:"20시간 플레이", k:"검증된 FPS 컨벤션 위에 독자적 물리 엔진으로 개성적인 콘텐츠와 직관적인 전투를 구현. 모드는 많지만 데스매치·폭파 미션에 쏠리는 문제를 짚고, 매 라운드 모드가 바뀌는 '랜덤 믹스 모드'를 제안.", u:"https://app.notion.com/p/31cc1342e11f804c810ae37ed03c9a2c" },
+  { n:"스타 세이비어", g:"RPG", meta:"45시간 · 50LV", k:"검증된 시스템의 융합과 고퀄리티 서사가 돋보이지만, 반복 플레이 피로와 복잡한 재화 구조 완화가 필요. 인벤토리에 용도별 분류 필터 도입을 제안.", u:"https://app.notion.com/p/335c1342e11f8022a0b2e3fe50b3d018" },
+  { n:"로얄 킹덤", g:"퍼즐", meta:"매치3 + 왕국 건설", k:"쉬운 구간 → 갑작스러운 벽 → 다시 완화의 반복. 벽 구간이 곧 결제 유도 지점이며, 실패 직후 '2회 추가 이동' 팝업은 잔여 블록 수 기반 트리거로 추정.", u:"https://app.notion.com/p/375c1342e11f808f9ef9f5b12174c343" },
+  { n:"화이트아웃 서바이벌", g:"SLG", meta:"4X 전략", k:"과금 보상이 자신뿐 아니라 길드 전체에 돌아가는 구조라서, 과금에 거부감이 큰 서구권에서도 과금이 일어난다.", u:"https://app.notion.com/p/375c1342e11f808f9ef9f5b12174c343" },
+  { n:"라스트 워 서바이벌", g:"SLG", meta:"전략", k:"챕터 승리 조건이 등급이 아니라 생존이라 스트레스가 적다. 매우 저렴한 패키지는 최대 다수에게 판매하는 전략으로 분석.", u:"https://app.notion.com/p/375c1342e11f808f9ef9f5b12174c343" },
+  { n:"페르소나 5: 더 팬텀 X", g:"RPG", meta:"턴제", k:"천장을 80/160연차로 낮췄지만 캐릭터와 전용 무기를 따로 뽑게 한다. 심리적 부담을 줄이면서 소비 항목을 늘리는 이중 설계.", u:"https://app.notion.com/p/375c1342e11f808f9ef9f5b12174c343" },
+  { n:"메이플 키우기", g:"방치형", meta:"방치형 RPG", k:"방치 수익 상한이 4~6시간이라 하루 2회 이상 접속을 유도하는 구조.", u:"https://app.notion.com/p/375c1342e11f808f9ef9f5b12174c343" },
+  { n:"언더다크: 디펜스", g:"디펜스", meta:"타워 디펜스 + 뱀서라이크", k:"건물 배치에 따라 적의 진입 경로가 바뀌어 변수가 풍부하다. 다만 코인 재화는 후반 사용처가 거의 없고, 아이템 종류가 많아 관리 피로도가 높다.", u:"https://app.notion.com/p/393c1342e11f80be8801d50691436e97" },
+  { n:"데이브 더 다이브", g:"어드벤처", meta:"80시간 플레이", k:"잠수와 레스토랑 운영이라는 두 루프가 하나의 사이클로 맞물리고, 유저가 지칠 즈음 새 자극을 넣는 설계.", u:"https://app.notion.com/p/314c1342e11f809cb2b1e2abb4bcb34a" },
+  { n:"파티 애니멀즈", g:"파티", meta:"약 100시간 플레이", k:"불편한 조작감이 오히려 재미를 키우고, 탈락 후에도 참여할 요소를 줘서 마지막까지 즐길 수 있다.", u:"https://app.notion.com/p/314c1342e11f809cb2b1e2abb4bcb34a" },
+  { n:"악마단 돌겨억", g:"RPG", meta:"랜덤 룰렛 전투", k:"세분화된 아웃게임이 초반 이탈의 원인. D1·D7 리텐션을 위해 7일 한정 1회 구매 육성 패키지를 제안. 단기 수익은 줄어도 장기 과금 유저가 늘 것으로 예상.", u:"https://app.notion.com/p/38bc1342e11f80c28f2de2d65990efae" },
+  { n:"협타디", g:"디펜스", meta:"협동 타워 디펜스", k:"합성·협력에 난이도별 개인 목표까지 있어 플레이 방식을 고를 수 있다. 후반엔 최종 유닛으로 칸이 차서 방치형처럼 보이고, 재화 소모처가 부족하다.", u:"https://app.notion.com/p/38bc1342e11f8038ae22f1685e93a6bf" },
+  { n:"Gear Defence", g:"디펜스", meta:"전략 디펜스", k:"기어 시스템으로 오토마타 구조를 강화·전략화한 신선한 조합. 그러나 유저 반응은 '재미있는 아이디어인데 버그로 망했다'가 지배적.", u:"https://app.notion.com/p/394c1342e11f80bfaa0ed0db7d703723" },
+  { n:"드드드드릴", g:"캐주얼", meta:"땅파기 + 드래프트", k:"독특한 땅파기 콘셉트와 드래프트로 차별화했지만, 코인 외 성장 요소가 없어 콘텐츠 소비가 빠르고 장기 리텐션이 어렵다.", u:"https://app.notion.com/p/399c1342e11f80099fcbd18483ef952d" },
+  { n:"Slice Master", g:"캐주얼", meta:"하이퍼캐주얼", k:"단순한 슬라이싱 조작에 배율 계산이라는 전략 요소를 더해 차별화. 단기 소비형 중에서도 콘텐츠 소비 속도가 빠른 편.", u:"https://app.notion.com/p/39ac1342e11f80828ca1ec8c0278a553" },
+  { n:"Octo Crush", g:"퍼즐", meta:"색 매칭", k:"색 매칭과 연쇄 반응으로 킬링타임에 최적화. 장기 리텐션을 위해 스테이지별 새 장애물과 클리어 조건 다양화가 필요.", u:"https://app.notion.com/p/396c1342e11f807d9a8ee59e7dee57c7" }
+];
+
+const JOSEON_DOCS = [
+  { t:"아이템 기획서 v1.0", s:"19장 · 49종 아이템, 속성 삼각구조, 인접 효과", ty:"PPT", u:"https://drive.google.com/file/d/1HE1NOY11l5wSSzgAcfalWGWdGwj6ycLp/view" },
+  { t:"전투 시스템 · 속성 체계 v2.0", s:"상성 제거, 전투 공식, 몬스터 표", ty:"SLIDE", u:"https://docs.google.com/presentation/d/1my0YYH3V_wk5lBW0z9zCdJGBBuYW0wVx3guSf9Kx8sI/edit" },
+  { t:"Effects 시트 기획 의도 및 설명", s:"이펙트 스키마와 데이터 QA 7건", ty:"DOC", u:"https://docs.google.com/document/d/1eOxPIN-cfuHhgEHZ3-cJtbQJyiQDhsInpcZprmjwvA0/edit" },
+  { t:"무당 캐릭터 기획 체크시트", s:"컨셉, 각성 메커닉, 전투 플로우", ty:"SLIDE", u:"https://docs.google.com/presentation/d/1CF45KX1Ev6U7PBB1TmMEeshHfmOqFbDhLu37t9TlyD0/edit" },
+  { t:"ItemData 신규 아이템 테이블 v0.1", s:"아이템 데이터 테이블", ty:"XLSX", u:"https://drive.google.com/file/d/1iZzhwGtjvrhTl8PO-AbYbwdE7vQoPEjI/view" },
+  { t:"코어루프 기획서 v0.3", s:"18장", ty:"SLIDE", u:"https://docs.google.com/presentation/d/1DFkp94NCJynU_s3fq9BSCXQytGSPqCkKZthp43naTAY/edit" },
+  { t:"맵 기획서 v1.1", s:"맵 구조와 동선", ty:"SLIDE", u:"https://docs.google.com/presentation/d/103awi5bn8avSCu66FKHb3BTnx_fv_b2hBkpN8ywix64/edit" },
+  { t:"선비 캐릭터 기획서 v1.1", s:"캐릭터 기획", ty:"SLIDE", u:"https://docs.google.com/presentation/d/1_0rZYLFeRonpQFMFWqvQZRDy0RA3fnGqFitlkSPN5Kc/edit" },
+  { t:"맵 설정 기획서 · 스토리와 튜토리얼 동선", s:"v1.0 · 2026.09.29 · 29쪽", ty:"PDF", u:"https://drive.google.com/file/d/11FspCQPtE3kL-o57hPRpTh3TwZdHEHFR/view" }
+];
+
+const PROJECTS = [
+  { id:"p-joseon", title:"Project Joseon", doc:"ITEM v1.0 · COMBAT v2.0", f:["team"], hue:"celadon",
+    d:"조선 배경 탑뷰 액션. 인벤토리 배치가 빌드가 되는 아이템 49종과 전투 공식, 이펙트 데이터 스키마를 설계.",
+    tags:[["team","TEAM"],["","아이템"],["","시스템"],["","캐릭터"]] },
+  { id:"p-castle", title:"Castle Survival: Chronicle", doc:"HTML5 PROTOTYPE", f:["solo","play"], hue:"ember",
+    d:"매달의 선택이 방어전을 바꾸는 내러티브 디펜스. 결말 8종 설계, 1~2월 플레이 가능. 브라우저에서 바로 실행.",
+    tags:[["solo","SOLO"],["play","PLAYABLE"],["","내러티브"],["","디펜스"]] },
+  { id:"p-asgard", title:"라그나로크 모드", doc:"ASGARD FALL ORIGINS", f:["solo"], hue:"frost",
+    d:"로그라이크의 반복 피로를 확률형 돌발 퀘스트 3종으로 푸는 신규 모드 제안서.",
+    tags:[["solo","SOLO"],["","콘텐츠"],["","로그라이크"]] }
+];
+
+const ENDINGS = [
+  ["완전한 평화 · 인망 10","성벽 위에서 바라본 왕국은 환희로 가득 차 있다."],
+  ["영웅왕 · 인망 8–9","왕은 전설이 되었다."],
+  ["불완전한 승리 · 인망 6–7","불안정한 평화 속에서, 나는 왕으로 남았다."],
+  ["상처뿐인 승리 · 인망 4–5","우리는 승리했다. 그러나 그 대가는 너무 컸다."],
+  ["고독한 군주 · 인망 2–3","곁에 남은 이는 거의 없었다. 그래도 끝까지 자리를 지켰다."],
+  ["몰락한 폭군 · 인망 1","나는 괴물이 되었다."],
+  ["반란 · 인망 0","백성들의 분노는 하늘을 가릴 만큼 거셌다."],
+  ["패배 · 성 함락","그... 모든 희생 끝에 결국 실패했다."]
+];
+
+const SKILLS = [["시스템 · 데이터 설계",90,"Effects 스키마, ItemData"],["아이템 · 밸런스 수치",85,"49종, 전투 공식"],["게임 분석 · BM",80,"리뷰 30여 종"],["내러티브 · 분기 설계",70,"결말 8종"],["캐릭터 기획",60,"무당, 선비"],["프로토타이핑",55,"HTML5 단일 파일"]];
+
+const TIMELINE = [
+  ["2024.12","라그나로크 모드 기획","아스가르드 폴 오리진스 신규 모드 제안서 작성"],
+  ["2025.09","MY GAME DESIGN INSIGHTS","포트폴리오 링크집과 노션 분석 아카이브 정리"],
+  ["2026.07","캐주얼 모바일 게임 분석","약 20종을 인게임·아웃게임·재화 구조로 분석"],
+  ["2026.08","Project Joseon 합류","아이템 기획서 v1.0, Effects 시트, ItemData 테이블"],
+  ["2026.09","전투·속성 v2.0 · 무당 캐릭터","회의 피드백을 반영해 상성 제거, 캐릭터 체크시트 작성"],
+  ["2026","Castle Survival: Chronicle","내러티브 디펜스 프로토타입 제작 및 공개"]
+];
+
+const ACH = {
+  home:["첫 접속","타이틀 화면에 도착"],
+  projects:["의뢰 게시판","프로젝트 목록 열람"],
+  play:["출정","프로토타입 플레이 화면 방문"],
+  archive:["도감 수집가","게임 분석 도감 열람"],
+  notion:["서고 입장","노션 아카이브 방문"],
+  contact:["연락처 획득","연락하기 화면 방문"]
+};
+
+/* ── helpers ── */
+const $ = (s,r=document)=>r.querySelector(s);
+const $$ = (s,r=document)=>[...r.querySelectorAll(s)];
+const store = {
+  get(k,d){ try{ const v=localStorage.getItem("lcm."+k); return v===null?d:JSON.parse(v);}catch(e){return d;} },
+  set(k,v){ try{ localStorage.setItem("lcm."+k,JSON.stringify(v)); }catch(e){} }
+};
+const esc = s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function toast(msg){ const t=$("#toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(toast._t); toast._t=setTimeout(()=>t.classList.remove("show"),2200); }
+function extLink(u){ return `href="${esc(u)}" target="_blank" rel="noopener"`; }
+
+/* ── sound (WebAudio blips, off by default) ── */
+const Sound = {
+  on: store.get("sound", false), ctx:null,
+  blip(freq=660, dur=.06, type="square", vol=.04){
+    if(!this.on) return;
+    try{
+      this.ctx = this.ctx || new (window.AudioContext||window.webkitAudioContext)();
+      const o=this.ctx.createOscillator(), g=this.ctx.createGain(), t=this.ctx.currentTime;
+      o.type=type; o.frequency.setValueAtTime(freq,t); o.frequency.exponentialRampToValueAtTime(freq*1.5,t+dur);
+      g.gain.setValueAtTime(vol,t); g.gain.exponentialRampToValueAtTime(.0001,t+dur+.05);
+      o.connect(g).connect(this.ctx.destination); o.start(t); o.stop(t+dur+.06);
+    }catch(e){}
+  },
+  move(){this.blip(520,.04)}, select(){this.blip(740,.08,"triangle",.06)}, back(){this.blip(330,.06,"triangle",.05)},
+  unlock(){ [660,880,1100].forEach((f,i)=>setTimeout(()=>this.blip(f,.08,"triangle",.05),i*90)); }
+};
+function paintSound(){
+  $("#soundBtn").setAttribute("aria-pressed",Sound.on);
+  $("#soundLbl").textContent = Sound.on ? "효과음 켬" : "효과음";
+  $("#soundWave").setAttribute("d", Sound.on ? "M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14" : "M23 9l-6 6M17 9l6 6");
+}
+function toggleSound(){ Sound.on=!Sound.on; store.set("sound",Sound.on); paintSound(); Sound.select(); toast(Sound.on?"효과음을 켰습니다":"효과음을 껐습니다"); }
+
+/* ── theme ── */
+function currentTheme(){ const a=document.documentElement.dataset.theme; if(a) return a; return matchMedia("(prefers-color-scheme: light)").matches?"light":"dark"; }
+function setTheme(t){ document.documentElement.dataset.theme=t; store.set("theme",t); }
+(function(){ const t=store.get("theme",null); if(t) document.documentElement.dataset.theme=t; })();
+function toggleTheme(){ setTheme(currentTheme()==="dark"?"light":"dark"); Sound.select(); drawCovers(); }
+
+/* ── achievements ── */
+let seen = store.get("seen", []);
+function unlock(key){
+  if(!ACH[key] || seen.includes(key)) return;
+  seen.push(key); store.set("seen",seen); paintXP();
+  if(key!=="home"){ toast(`업적 달성 · ${ACH[key][0]}`); Sound.unlock(); }
+  if(seen.length===Object.keys(ACH).length) setTimeout(()=>toast("모든 탐험 완료! 끝까지 봐주셔서 감사합니다"),2400);
+}
+function paintXP(){
+  const total=Object.keys(ACH).length, n=seen.filter(k=>ACH[k]).length;
+  $("#xpFill").style.width=(n/total*100)+"%"; $("#xpText").textContent=`${n}/${total}`;
+  $("#achList").innerHTML = Object.entries(ACH).map(([k,[t,d]],i)=>`<div class="ach ${seen.includes(k)?"done":""}"><span class="b">${seen.includes(k)?"✓":i+1}</span><div><b>${t}</b><p>${d}</p></div></div>`).join("");
+}
+
+/* ── routing (button-driven screens) ── */
+const SCREENS = $$(".screen").map(s=>s.dataset.screen);
+const PARENT = {"p-joseon":"projects","p-castle":"projects","p-asgard":"projects"};
+let current = null;
+function go(name, push=true){
+  if(!SCREENS.includes(name)) name="home";
+  if(name===current) return;
+  $$(".screen").forEach(s=>s.classList.toggle("active", s.dataset.screen===name));
+  current=name;
+  if(push){ try{ history.pushState(null,"","#"+name); }catch(e){ location.hash=name; } }
+  window.scrollTo(0,0);
+  unlock(name); if(PARENT[name]) unlock(PARENT[name]);
+  document.title = name==="home" ? "임창민 기획 포트폴리오" : `${$(`[data-screen="${name}"]`).getAttribute("aria-label")} · 임창민`;
+  if(name==="play") fitGame();
+  const h=$(`[data-screen="${name}"] h2`); if(h && name!=="home"){ h.setAttribute("tabindex","-1"); h.focus({preventScroll:true}); }
+}
+addEventListener("popstate",()=>go(location.hash.slice(1)||"home",false));
+document.addEventListener("click",e=>{
+  const b=e.target.closest("[data-go]"); if(!b) return;
+  e.preventDefault(); const to=b.dataset.go;
+  if(b.classList.contains("back")) Sound.back(); else Sound.select();
+  go(to);
+});
+
+/* ── menu keyboard nav ── */
+let sel=0; const menuBtns=$$("#menu .menu-btn");
+function paintSel(){ menuBtns.forEach((b,i)=>b.classList.toggle("sel",i===sel)); }
+menuBtns.forEach((b,i)=>b.addEventListener("mouseenter",()=>{ if(sel!==i){sel=i;paintSel();Sound.move();} }));
+document.addEventListener("keydown",e=>{
+  const tag=(e.target.tagName||"").toLowerCase();
+  const typing = tag==="input"||tag==="textarea";
+  if(e.key==="Escape"){
+    const open=$$(".modal").find(m=>!m.hidden); if(open){ open.hidden=true; return; }
+    if(typing){ e.target.blur(); return; }
+    if(current!=="home"){ Sound.back(); go(PARENT[current]||"home"); } return;
+  }
+  if(typing || e.metaKey || e.ctrlKey || e.altKey) return;
+  if(current==="home"){
+    if(e.key==="ArrowDown"){ e.preventDefault(); sel=(sel+1)%menuBtns.length; paintSel(); Sound.move(); menuBtns[sel].focus(); return; }
+    if(e.key==="ArrowUp"){ e.preventDefault(); sel=(sel-1+menuBtns.length)%menuBtns.length; paintSel(); Sound.move(); menuBtns[sel].focus(); return; }
+  }
+  if(/^[1-6]$/.test(e.key)){ const b=menuBtns[+e.key-1]; if(b){ Sound.select(); go(b.dataset.go); } return; }
+  if(e.key==="/"){ e.preventDefault(); go("archive"); setTimeout(()=>$("#q").focus(),50); return; }
+  if(e.key==="t"||e.key==="T"){ toggleTheme(); return; }
+  if(e.key==="m"||e.key==="M"){ toggleSound(); return; }
+  if(e.key==="?"){ $("#helpModal").hidden=false; return; }
+});
+
+/* ── modals ── */
+$("#xpBtn").onclick=()=>{ paintXP(); $("#achModal").hidden=false; Sound.select(); };
+$("#helpBtn").onclick=()=>{ $("#helpModal").hidden=false; Sound.select(); };
+$$(".modal").forEach(m=>m.addEventListener("click",e=>{ if(e.target===m||e.target.closest("[data-close]")){ m.hidden=true; Sound.back(); } }));
+$("#achReset").onclick=()=>{ seen=[]; store.set("seen",seen); unlock(current); paintXP(); toast("탐험 기록을 초기화했습니다"); };
+$("#soundBtn").onclick=toggleSound;
+$("#themeBtn").onclick=toggleTheme;
+
+/* ── projects ── */
+function renderProjects(filter="all"){
+  $("#projGrid").innerHTML = PROJECTS.filter(p=>filter==="all"||p.f.includes(filter)).map(p=>`
+    <button class="proj" data-go="${p.id}" type="button">
+      <div class="proj-cover"><canvas data-hue="${p.hue}" data-seed="${p.id.length*7+p.title.length}"></canvas><span class="doc">${esc(p.doc)}</span></div>
+      <div class="proj-body"><h3>${esc(p.title)}</h3><p>${esc(p.d)}</p>
+        <div class="proj-meta">${p.tags.map(([c,t])=>`<span class="tag ${c}">${esc(t)}</span>`).join("")}</div></div>
+    </button>`).join("");
+  drawCovers();
+}
+$("#projFilter").addEventListener("click",e=>{
+  const c=e.target.closest(".chip"); if(!c) return;
+  $$("#projFilter .chip").forEach(x=>x.setAttribute("aria-pressed",x===c)); Sound.move(); renderProjects(c.dataset.f);
+});
+/* generative covers: 격자(의식판) / 성벽 / 룬 */
+function rnd(seed){ let s=seed; return ()=>(s=(s*16807)%2147483647)/2147483647; }
+function drawCovers(){
+  const cs=getComputedStyle(document.documentElement);
+  const acc=cs.getPropertyValue("--accent").trim(), acc2=cs.getPropertyValue("--accent-2").trim(), line=cs.getPropertyValue("--line").trim(), bg=cs.getPropertyValue("--surface-2").trim();
+  $$(".proj-cover canvas").forEach(cv=>{
+    const r=cv.getBoundingClientRect(), dpr=Math.min(devicePixelRatio||1,2);
+    const W=cv.width=Math.max(1,r.width*dpr), H=cv.height=Math.max(1,r.height*dpr), x=cv.getContext("2d"), R=rnd(+cv.dataset.seed+1);
+    x.fillStyle=bg; x.fillRect(0,0,W,H);
+    const hue=cv.dataset.hue;
+    if(hue==="celadon"){ // inventory grid with placed items
+      const c=22*dpr, cols=Math.ceil(W/c), rows=Math.ceil(H/c);
+      x.strokeStyle=line; x.lineWidth=1;
+      for(let i=0;i<=cols;i++){x.beginPath();x.moveTo(i*c,0);x.lineTo(i*c,H);x.stroke();}
+      for(let j=0;j<=rows;j++){x.beginPath();x.moveTo(0,j*c);x.lineTo(W,j*c);x.stroke();}
+      const shapes=[[4,1],[2,2],[5,1],[2,1],[3,2],[1,1]];
+      for(let k=0;k<9;k++){ const [w,h]=shapes[k%shapes.length]; const gx=Math.floor(R()*(cols-w)), gy=Math.floor(R()*(rows-h));
+        x.fillStyle=(k%3? acc2:acc)+"44"; x.strokeStyle=k%3?acc2:acc; x.lineWidth=1.5*dpr;
+        x.fillRect(gx*c+2,gy*c+2,w*c-4,h*c-4); x.strokeRect(gx*c+2,gy*c+2,w*c-4,h*c-4); }
+    } else if(hue==="ember"){ // castle silhouette + embers
+      const g=x.createLinearGradient(0,0,0,H); g.addColorStop(0,acc+"22"); g.addColorStop(1,bg); x.fillStyle=g; x.fillRect(0,0,W,H);
+      x.fillStyle=line; const base=H*.72; x.fillRect(0,base,W,H-base);
+      for(let i=0;i<W;i+=16*dpr){ x.fillRect(i,base-10*dpr,9*dpr,10*dpr); }
+      const tw=[.18,.5,.82]; tw.forEach((p,i)=>{ const tx=W*p, th=H*(i===1?.55:.4); x.fillRect(tx-18*dpr,base-th,36*dpr,th); for(let k=-18;k<18;k+=10) x.fillRect(tx+k*dpr,base-th-8*dpr,6*dpr,8*dpr); });
+      x.fillStyle=acc; x.fillRect(W*.5-4*dpr,base-H*.42,8*dpr,12*dpr);
+      for(let i=0;i<40;i++){ x.globalAlpha=R()*.8; x.fillRect(R()*W,R()*base,2*dpr,2*dpr);} x.globalAlpha=1;
+    } else { // runes / probability rings
+      x.strokeStyle=acc2; x.lineWidth=1.2*dpr;
+      [.1,.05,.01].forEach((p,i)=>{ x.globalAlpha=.9-i*.25; x.beginPath(); x.arc(W*.72,H*.5,(28+i*26)*dpr,0,Math.PI*2*(1-p*3)); x.stroke(); });
+      x.globalAlpha=1; x.fillStyle=acc; x.font=`700 ${13*dpr}px ${cs.getPropertyValue("--f-mono")}`;
+      ["10%","5%","1%"].forEach((t,i)=>x.fillText(t,W*.72+(34+i*26)*dpr,H*.5-4*dpr));
+      x.strokeStyle=line; for(let i=0;i<14;i++){ const px=R()*W*.5, py=R()*H; x.beginPath(); x.moveTo(px,py); x.lineTo(px+R()*20*dpr,py+R()*24*dpr); x.lineTo(px+R()*30*dpr,py); x.stroke(); }
+    }
+  });
+}
+
+/* ── Joseon: tabs ── */
+$$("[data-tabs]").forEach(list=>{
+  list.addEventListener("click",e=>{
+    const t=e.target.closest(".tab"); if(!t) return;
+    $$(".tab",list).forEach(x=>x.setAttribute("aria-selected",x===t));
+    const scope=list.parentElement; $$(".tabpanel",scope).forEach(p=>p.classList.toggle("active",p.id===t.dataset.tab)); Sound.move();
+  });
+  list.addEventListener("keydown",e=>{
+    if(!["ArrowLeft","ArrowRight"].includes(e.key)) return;
+    const tabs=$$(".tab",list), i=tabs.findIndex(x=>x.getAttribute("aria-selected")==="true");
+    const n=tabs[(i+(e.key==="ArrowRight"?1:-1)+tabs.length)%tabs.length]; n.click(); n.focus(); e.stopPropagation();
+  });
+});
+
+/* ── Joseon: adjacency mini-inventory (6×4) ── */
+const INV={cols:6,rows:4, items:[{id:"sword",n:"사인검",x:0,y:1,w:4,h:1,c:"w"},{id:"tal",n:"부적",x:4,y:3,w:1,h:1,c:"c"}]};
+function renderInv(){
+  const el=$("#inv"); el.style.gridTemplateRows=`repeat(${INV.rows},1fr)`; el.innerHTML="";
+  for(let y=0;y<INV.rows;y++) for(let x=0;x<INV.cols;x++){ const c=document.createElement("div"); c.className="cell"; c.style.gridArea=`${y+1}/${x+1}`; c.dataset.x=x; c.dataset.y=y; el.appendChild(c); }
+  const sw=INV.items[0], tl=INV.items[1];
+  const on = tl.y===sw.y && tl.x===sw.x+sw.w; // 칼끝(오른쪽) 접합면
+  INV.items.forEach(it=>{
+    const d=document.createElement("div"); d.className=`itm ${it.c} ${on?"on":""}`; d.textContent=it.n; d.dataset.id=it.id;
+    d.style.gridArea=`${it.y+1}/${it.x+1}/span ${it.h}/span ${it.w}`; d.tabIndex=0;
+    d.setAttribute("aria-label", `${it.n}, ${it.x+1}열 ${it.y+1}행. 방향키로 이동`);
+    el.appendChild(d);
+  });
+  $("#invOut").innerHTML = on ? `<span style="color:var(--good)">접합 성공 · 사인검 공격력 5~7 → 5.4~7.56 (+8%)</span>` : "사인검 공격력 5~7 · 인접 효과 꺼짐";
+  if(on && !renderInv._done){ renderInv._done=true; Sound.unlock(); }
+}
+function canPlace(it,x,y){
+  if(x<0||y<0||x+it.w>INV.cols||y+it.h>INV.rows) return false;
+  return !INV.items.some(o=>o!==it && x<o.x+o.w && x+it.w>o.x && y<o.y+o.h && y+it.h>o.y);
+}
+(function(){
+  const el=$("#inv"); let drag=null;
+  el.addEventListener("pointerdown",e=>{ const d=e.target.closest(".itm"); if(!d) return; drag=INV.items.find(i=>i.id===d.dataset.id); d.setPointerCapture(e.pointerId); });
+  el.addEventListener("pointerup",e=>{
+    if(!drag) return; const r=el.getBoundingClientRect(), cw=r.width/INV.cols, ch=r.height/INV.rows;
+    const x=Math.floor((e.clientX-r.left)/cw), y=Math.floor((e.clientY-r.top)/ch);
+    if(canPlace(drag,x,y)){ drag.x=x; drag.y=y; Sound.move(); } drag=null; renderInv();
+  });
+  el.addEventListener("keydown",e=>{
+    const d=e.target.closest(".itm"); if(!d) return; const it=INV.items.find(i=>i.id===d.dataset.id);
+    const m={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]}[e.key]; if(!m) return;
+    e.preventDefault(); e.stopPropagation(); if(canPlace(it,it.x+m[0],it.y+m[1])){ it.x+=m[0]; it.y+=m[1]; Sound.move(); }
+    renderInv(); $(`#inv [data-id="${it.id}"]`).focus();
+  });
+})();
+
+/* ── Joseon: version compare ── */
+const VER={
+  1:`<ul class="clean"><li><b>속성 삼각구조</b> <span class="muted">요력 → 기력 → 신력 → 요력</span></li><li><b>유리 +20% / 불리 −15%</b> <span class="muted">공격력 20 무기 → 유리 24, 불리 17</span></li></ul><p class="quote" style="margin-top:14px">+20%/−15%는 의도적 비대칭이다. 상성 하나로 전투 결과가 결정되지 않게 했다.<cite>— 아이템 기획서 v1.0</cite></p>`,
+  2:`<ul class="clean"><li><b>문제</b> <span class="muted">가위바위보식 상성 때문에 빌드 자유도가 줄어든다는 회의 피드백</span></li><li><b>해결</b> <span class="muted">상성을 없애고, 속성은 피해량이 아니라 켜지는 스킬의 종류만 정한다</span></li><li><b>장비 역할</b> <span class="muted">무기 = 공격력, 방어구 = 방어력, 장신구 = 속성 수치</span></li></ul><p class="quote" style="margin-top:14px">기력은 세게 밀어붙이고, 신력은 안정적으로 관리하고, 요력은 걸고 크게 딴다.<cite>— 전투 시스템 속성 체계 v2.0</cite></p>`
+};
+function paintVer(v){ $$("#verSeg button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v==v)); $("#verBody").innerHTML=VER[v]; }
+$("#verSeg").addEventListener("click",e=>{ const b=e.target.closest("button"); if(b){ paintVer(b.dataset.v); Sound.move(); } });
+
+/* ── Joseon: combat calculator (v2.0 formulas) ── */
+function calc(){
+  const a=+$("#cAtk").value, n=+$("#cAttr").value, d=+$("#cDef").value;
+  $("#oAtk").textContent=a; $("#oAttr").textContent=n; $("#oDef").textContent=d;
+  const basic=Math.max(1,a-d), skill=Math.max(1,a+n*2-d);
+  $$("#monPick .chip").forEach(c=>c.setAttribute("aria-pressed", +c.dataset.def===d));
+  $("#calcOut").innerHTML=`
+    <div><b>${basic}</b><span>평타 피해</span><code>max(1, ${a} − ${d})</code></div>
+    <div><b>${skill}</b><span>공격 스킬 피해</span><code>max(1, ${a} + ${n}×2 − ${d})</code></div>
+    <div><b>${n*100}<small style="font-size:.9rem">ms</small></b><span>패링 판정 구간</span><code>n × 100ms</code></div>
+    <div><b>${Math.ceil(n/2)}<small style="font-size:.9rem">/s</small></b><span>가호 초당 회복</span><code>⌈n ÷ 2⌉</code></div>
+    <div><b>${n*300}<small style="font-size:.9rem">ms</small></b><span>봉인 지속</span><code>n × 300ms</code></div>
+    <div><b>${n*10}%</b><span>흡혈 비율 (대가 체력 −${n})</span><code>준 피해 × n×10%</code></div>`;
+}
+["cAtk","cAttr","cDef"].forEach(id=>$("#"+id).addEventListener("input",calc));
+$("#monPick").addEventListener("click",e=>{ const c=e.target.closest(".chip"); if(!c) return; $("#cDef").value=c.dataset.def; calc(); Sound.move(); });
+
+/* ── Asgard: quest probability simulator ── */
+$("#simBtn").onclick=()=>{
+  // 문서 규칙: 1회차 10% → 2회차 5% → 3회차 1%. 실패 시 이후 확률 20% 감소(×0.8).
+  // 가정: 한 판에 조건 충족 체크 3번, 발동된 퀘스트 성공률 50%.
+  const RUNS=1000, base=[.10,.05,.01]; let totalQ=0, zero=0, max=0;
+  for(let r=0;r<RUNS;r++){ let mult=1,q=0;
+    for(let i=0;i<3;i++){ if(Math.random()<base[i]*mult){ q++; if(Math.random()>=.5) mult*=.8; } }
+    totalQ+=q; if(q===0) zero++; max=Math.max(max,q); }
+  $("#simOut").innerHTML=`
+    <div><b>${(totalQ/RUNS).toFixed(2)}</b><span>판당 평균 퀘스트</span></div>
+    <div><b>${((RUNS-zero)/RUNS*100).toFixed(1)}%</b><span>1회 이상 발동한 판</span></div>
+    <div><b>${max}</b><span>한 판 최대 발동</span></div>
+    <div><b>${zero}</b><span>퀘스트 없이 끝난 판</span></div>`;
+  $("#simOut").insertAdjacentHTML("beforeend",`<p class="muted" style="grid-column:1/-1;font-size:.74rem">가정: 조건 충족 체크 3회, 퀘스트 성공률 50%. 문서가 정하지 않은 값이라 임의로 둔 것입니다.</p>`);
+  Sound.select();
+};
+
+/* ── Castle: endings ── */
+$("#endings").innerHTML = ENDINGS.map(([t,d])=>`<div class="ending"><b>${t}</b><p>${d}</p></div>`).join("");
+
+/* ── Play: lazy iframe + scaling ── */
+function fitGame(){
+  const f=$("#gameFrame"), s=$("#gameScaler"); if(!f) return;
+  const w=f.clientWidth, k=Math.min(1,w/940);
+  s.style.transform=`scale(${k})`; f.style.height=(820*k)+"px";
+}
+addEventListener("resize",()=>{ if(current==="play") fitGame(); });
+$("#bootGame").onclick=()=>{
+  $("#gameScaler").innerHTML=`<iframe src="${CONFIG.gamePath}" title="Castle Survival: Chronicle" allow="autoplay; fullscreen"></iframe>`;
+  $("#gameCover").hidden=true; fitGame(); Sound.select();
+};
+
+/* ── About ── */
+$("#skills").innerHTML = SKILLS.map(([n,w,e])=>`<div class="skill"><div class="skill-top"><span>${n}</span><span>${e}</span></div><div class="skill-bar"><i style="--w:${w}%"></i></div></div>`).join("");
+$("#timeline").innerHTML = TIMELINE.map(([w,t,d])=>`<div class="tl"><div class="when">${w}</div><h4>${t}</h4><p>${d}</p></div>`).join("");
+
+/* ── Archive ── */
+const GENRES=["전체",...new Set(REVIEWS.map(r=>r.g))]; let genre="전체";
+$("#genreFilter").innerHTML = GENRES.map(g=>`<button class="chip" data-g="${g}" aria-pressed="${g==="전체"}">${g}${g==="전체"?` <span class="mono">${REVIEWS.length}</span>`:""}</button>`).join("");
+function renderReviews(){
+  const q=$("#q").value.trim().toLowerCase();
+  const list=REVIEWS.filter(r=>(genre==="전체"||r.g===genre) && (!q || (r.n+r.g+r.meta+r.k).toLowerCase().includes(q)));
+  $("#reviews").innerHTML=list.map(r=>`<article class="review"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><span class="tag">${esc(r.g)}</span><span class="g">${esc(r.meta)}</span></div><h3>${esc(r.n)}</h3><p>${esc(r.k)}</p><a ${extLink(r.u)}>노션에서 원문 보기 ↗</a></article>`).join("");
+  $("#reviewEmpty").hidden = list.length>0;
+}
+$("#genreFilter").addEventListener("click",e=>{ const c=e.target.closest(".chip"); if(!c) return; genre=c.dataset.g; $$("#genreFilter .chip").forEach(x=>x.setAttribute("aria-pressed",x===c)); Sound.move(); renderReviews(); });
+$("#q").addEventListener("input",renderReviews);
+$("#stReviews").textContent = REVIEWS.length;
+
+/* ── Notion hub ── */
+$("#notionLinks").innerHTML = NOTION.map(n=>`<a class="link-card" ${extLink(n.u)}><h3><span class="n-ico">N</span>${esc(n.t)}</h3><p>${esc(n.d)}</p><div class="row"><span class="tag ${n.tag==="대표"?"solo":""}">${esc(n.tag)}</span><span class="mono muted">열기 ↗</span></div></a>`).join("");
+
+/* ── Docs lists ── */
+const docItem=d=>`<a class="doc-item" ${extLink(d.u)}><span class="doc-ico">${d.ty}</span><span style="min-width:0"><b>${esc(d.t)}</b><small>${esc(d.s)}</small></span><span class="go">↗</span></a>`;
+$("#joseonDocs").innerHTML = JOSEON_DOCS.map(docItem).join("");
+$("#asgardDocs").innerHTML = docItem({t:"아스가르드 폴 오리진스 신규 모드 기획",s:"PDF · Planner LIM CHANG MIN",ty:"PDF",u:"https://drive.google.com/file/d/1T6bIyweJPCG2jJVr_vfzMTBE-L-cVXLW/view"});
+
+/* ── Contact ── */
+$("#email").textContent = CONFIG.email;
+$("#mailLink").href = "mailto:"+CONFIG.email;
+$("#copyEmail").onclick = async ()=>{
+  try{ await navigator.clipboard.writeText(CONFIG.email); toast("이메일 주소를 복사했습니다"); }
+  catch(e){ const r=document.createRange(); r.selectNodeContents($("#email")); const s=getSelection(); s.removeAllRanges(); s.addRange(r); toast("주소를 선택했습니다. Ctrl+C로 복사하세요"); }
+  Sound.select();
+};
+$("#contactLinks").innerHTML = [
+  {t:"포트폴리오 폴더 (Google Drive)",s:"기획서와 분석서 원본 모음",ty:"DRIVE",u:CONFIG.portfolioFolder},
+  {t:"My Game Design Insights",s:"노션 게임 분석 아카이브",ty:"N",u:NOTION[0].u},
+  {t:"GitHub 저장소",s:"이 사이트와 Castle Survival 소스",ty:"GIT",u:CONFIG.github}
+].map(docItem).join("");
+
+/* ── ambient embers (title atmosphere) ── */
+(function(){
+  const cv=$("#ambient"); if(matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const x=cv.getContext("2d"); let W,H,P=[];
+  function size(){ W=cv.width=innerWidth; H=cv.height=innerHeight; P=Array.from({length:Math.min(60,Math.floor(W/22))},()=>({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.6+.4,v:Math.random()*.35+.1,d:Math.random()*Math.PI*2})); }
+  size(); addEventListener("resize",size);
+  (function tick(){
+    x.clearRect(0,0,W,H); const col=getComputedStyle(document.documentElement).getPropertyValue("--accent").trim();
+    x.fillStyle=col;
+    P.forEach(p=>{ p.y-=p.v; p.d+=.01; p.x+=Math.sin(p.d)*.25; if(p.y<-5){p.y=H+5;p.x=Math.random()*W;}
+      x.globalAlpha=.25+.35*Math.abs(Math.sin(p.d*2)); x.beginPath(); x.arc(p.x,p.y,p.r,0,6.283); x.fill(); });
+    x.globalAlpha=1; if(!document.hidden) requestAnimationFrame(tick); else setTimeout(()=>requestAnimationFrame(tick),500);
+  })();
+})();
+
+/* ── boot ── */
+paintSound(); paintXP(); paintSel(); renderProjects(); renderInv(); paintVer(2); calc(); renderReviews();
+go(location.hash.slice(1)||"home", false);
+addEventListener("resize",()=>{ clearTimeout(drawCovers._t); drawCovers._t=setTimeout(drawCovers,150); });
+</script>
+</body>
+</html>
