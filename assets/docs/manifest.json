@@ -306,31 +306,6 @@
   ]
  },
  {
-  "slug": "castle-units",
-  "title": "Castle Survival 유닛 시스템 v4",
-  "pages": [
-   "p01.webp",
-   "p02.webp",
-   "p03.webp",
-   "p04.webp",
-   "p05.webp",
-   "p06.webp",
-   "p07.webp",
-   "p08.webp"
-  ],
-  "pageCount": 11,
-  "sourcePages": [
-   1,
-   2,
-   3,
-   4,
-   6,
-   8,
-   9,
-   10
-  ]
- },
- {
   "slug": "analysis",
   "title": "테일즈런너 개선 기획서",
   "pages": [

@@ -44,11 +44,10 @@
   /* ═════════ RESUME MODE ═════════ */
   const CHAPTERS = [
     ["cover", "표지", null, null],
-    ["letter", "자기소개", "자기소개서", "게임 리뷰와 보드게임 제작에서 시작해 팀 프로젝트와 운영 기획까지, 기획자가 되기 위해 걸어온 길입니다."],
+    ["letter", "자기소개서", "자기소개서", "게임 리뷰와 보드게임 제작에서 시작해 팀 프로젝트와 운영 기획까지, 기획자가 되기 위해 걸어온 길입니다."],
     ["career", "경력 · 학력", "경력 · 학력", null],
     ["achv", "업무 성과", "업무 성과", "게임 운영 현장과 게임 밖 현장에서 숫자로 확인한 제안들입니다."],
     ["joseon", "Project Joseon", "대표 프로젝트 ① Project Joseon", "지금 참여 중인 조선 판타지 팀 프로젝트. 표를 만지고, 계산기를 돌리고, 기획서 원본을 넘겨 볼 수 있습니다."],
-    ["castle", "Castle Survival", "대표 프로젝트 ② Castle Survival", "기획서를 쓰고 AI로 코드를 만들어 완성한 플레이 가능한 게임입니다."],
     ["others", "그 밖의 작업", "그 밖의 작업", null],
     ["process", "제작 과정", "어떻게 만들었나", "분석부터 기획서, 데이터, AI 프로토타입, 검수까지. 실제 문서 화면으로 작업 과정을 보여드립니다."],
     ["library", "기획서 서고", "기획서 서고", "모든 기획서를 페이지 단위로 넘겨 볼 수 있습니다."],
@@ -100,7 +99,7 @@
   const DESIGNER_STYLE = { robe: "#1f7a5c", robeHi: "#2fae84", hat: "gat", accent: "#34e0a1", collar: "#f4efe2", belt: "#0f1a16", tie: "#e8c66a" };
   const VISITOR_STYLE = { robe: "#3b4a6b", robeHi: "#56688f", hat: "topknot", hair: "#1a1410", collar: "#e9e3d2", belt: "#1c1a17", pants: "#d9d2bf" };
 
-  const PLACES = { seodang: "서당", gongbang: "공방", seoru: "성루", seogo: "장서각", jumak: "주막", yeokcham: "역참" };
+  const PLACES = { seodang: "서당", gongbang: "공방", seoru: "관아", seogo: "장서각", jumak: "주막", yeokcham: "역참" };
   let visited = store.get("visited", []);
   let mode = "title", worldReady = false, updateMini = null;
 
@@ -109,7 +108,7 @@
     { id: "hunjang", name: "훈장", sub: "서당", x: 25, y: 8, style: { robe: "#e9e3d2", robeHi: "#fff8e8", hat: "gat", accent: "#b8452f", collar: "#fff", belt: "#6b4431", hair: "#8a8a8a" }, node: "seodang" },
     { id: "jangin", name: "장인", sub: "공방", x: 37, y: 9, style: { robe: "#5a3b28", robeHi: "#7a543b", hat: "cap", collar: "#d9cdb0", belt: "#2b1d14" }, node: "gongbang" },
     { id: "mudang", name: "무당", sub: "신당", x: 29, y: 12, style: { robe: "#f1ece0", robeHi: "#fff", hat: "shaman", collar: "#b8452f", belt: "#b8452f", tie: "#2d6f9e", hair: "#15100d" }, node: "mudang" },
-    { id: "eira", name: "에이라", sub: "성루", x: 37, y: 25, style: { robe: "#e8e0ee", robeHi: "#fff", hat: "bun", hair: "#c98a6a", collar: "#fff", belt: "#b89ad0" }, node: "seoru" },
+    { id: "satto", name: "사또", sub: "관아", x: 37, y: 25, style: { robe: "#6b2d3a", robeHi: "#8a3c4c", hat: "gat", accent: "#e8c66a", collar: "#f4efe2", belt: "#e8c66a" }, node: "seoru" },
     { id: "saseo", name: "사서", sub: "장서각", x: 12, y: 9, style: { robe: "#2d4f6e", robeHi: "#3f6a90", hat: "gat", accent: "#e8c66a", collar: "#e9e3d2", belt: "#1c2733" }, node: "seogo" },
     { id: "jumo", name: "주모", sub: "주막", x: 11, y: 25, style: { robe: "#9a4a3a", robeHi: "#b8604e", hat: "bun", hair: "#1a1410", collar: "#f4efe2", belt: "#f4efe2" }, node: "jumak" },
     { id: "pabal", name: "파발꾼", sub: "역참", x: 30, y: 28, style: { robe: "#3b3f3d", robeHi: "#555b58", hat: "helmet", collar: "#b8452f", belt: "#b8452f" }, node: "yeokcham" }
@@ -119,19 +118,19 @@
   const REVIEW_LINES = PF.REVIEWS.map(r => `「${r.n}」 말이우? "${r.k}"`);
   const D = {
     hello: [{ t: `어서 오세요! 저는 게임 기획자 ${PROFILE.name}입니다.\n이 마을은 제 기획서와 게임으로 지은 '기획마을'이에요.` },
-      { t: "건물마다 제 작업이 하나씩 들어 있습니다. 여섯 곳을 모두 둘러보신 뒤 광장으로 돌아오시면 마지막 이야기를 들려드릴게요.", c: [["어디부터 가면 좋을까요?", "node:route"], ["당신은 어떤 기획자인가요?", "node:who"], ["자기소개서로 한 번에 볼래요", "act:resume"], ["둘러볼게요", "end"]] }],
-    route: [{ t: "처음이시라면 북쪽 서당에서 제 소개를, 동쪽 공방에서 지금 하고 있는 조선 판타지 프로젝트를 보시길 권해요.\n성루에서는 제가 AI로 만든 게임을 직접 플레이할 수 있습니다.", c: [["서당으로 데려다 줘요", "walk:seodang"], ["공방으로 데려다 줘요", "walk:gongbang"], ["성루로 데려다 줘요", "walk:seoru"], ["혼자 돌아볼게요", "end"]] }],
+      { t: "건물마다 제 작업이 하나씩 들어 있습니다. 여섯 곳을 모두 둘러보신 뒤 광장으로 돌아오시면 마지막 이야기를 들려드릴게요.", c: [["자기소개서부터 볼게요", "open:letter"], ["어디부터 가면 좋을까요?", "node:route"], ["당신은 어떤 기획자인가요?", "node:who"], ["둘러볼게요", "end"]] }],
+    route: [{ t: "처음이시라면 북쪽 서당에서 제 자기소개서를 먼저 읽어 주세요.\n그다음 동쪽 공방에서 지금 하고 있는 조선 판타지 프로젝트를 보시면 됩니다.", c: [["서당으로 데려다 줘요", "walk:seodang"], ["공방으로 데려다 줘요", "walk:gongbang"], ["관아로 데려다 줘요", "walk:seoru"], ["혼자 돌아볼게요", "end"]] }],
     who: [{ t: `"${PROFILE.headline}"\n게임을 하면 재미의 구조부터 뜯어 보고, 그걸 표와 공식으로 옮기는 게 제 일이에요.` },
-      { t: "문서로 끝내지 않고, 필요하면 AI로 플레이 가능한 프로토타입까지 직접 만들어 확인합니다.", c: [["자기소개서를 보여줘요", "open:letter,career"], ["고마워요", "end"]] }],
+      { t: "문서로 끝내지 않고, 필요하면 AI로 화면 목업까지 만들어 팀과 같은 그림을 봅니다.", c: [["자기소개서를 보여줘요", "open:letter,career"], ["고마워요", "end"]] }],
     finale: [{ t: "마을을 전부 둘러보셨군요! 끝까지 봐주셔서 정말 감사합니다." }, { t: "마음에 드셨다면 편하게 연락 주세요. 함께 기억에 남는 게임을 만들고 싶습니다.", c: [["연락처 보기", "open:contact"], ["자기소개서 전체 보기", "act:resume"], ["마을을 더 둘러볼게요", "end"]] }],
     seodang: [{ t: "허허, 서당에 온 걸 환영하네. 이 마을을 지은 기획자의 이력이 여기 다 적혀 있지." },
-      { t: `이 사람의 목표가 무엇인지 아는가?\n"${PROFILE.goal}"`, c: [["자기소개서를 읽어볼래요", "open:letter"], ["경력과 학력은요?", "open:career"], ["성과는 어떤가요?", "open:achv"], ["다음에 올게요", "end"]] }],
+      { t: `이 사람의 목표가 무엇인지 아는가?\n"${PROFILE.goal}"`, c: [["자기소개서를 읽어볼래요", "open:letter"], ["원본 PDF로 볼래요", "act:pdf"], ["경력과 학력은요?", "open:career"], ["다음에 올게요", "end"]] }],
     gongbang: [{ t: "여긴 Project Joseon 공방이오. 조선 판타지 익스트랙션 액션이지.\n캐릭터 강함은 레벨이 아니라 인벤토리에 뭘 붙이느냐로만 정해진다네." },
       { t: "그 기획자가 아이템 49종, 전투 공식, 이펙트 데이터 구조까지 짰소. 한번 보겠소?", c: [["아이템과 인벤토리 퍼즐 보기", "open:joseon"], ["전투 공식 계산기", "open:joseon#combat"], ["AI로 만든 UI 목업", "open:joseon#ui"], ["나중에", "end"]] }],
     mudang: [{ t: "...연결이 끊기면... 나는 다시 멍해져...\n(회로 노드 두 개를 아이템으로 이어야 각성한다는 무당 캐릭터다.)" },
       { t: "기획자는 '연결을 지켜내는 행동' 자체로 내 광기를 느끼게 하고 싶었대.\n...그런데 벌이 없는 힘은 광기가 아니라고, 스스로 적어 두었더군.", c: [["무당 캐릭터 기획서 보기", "open:joseon#chars"], ["물러난다", "end"]] }],
-    seoru: [{ t: "폐하... 아니, 손님이시군요. 저는 에이라, Castle Survival의 조언자입니다." },
-      { t: "마왕이 1년 뒤 쳐들어옵니다. 매달의 선택이 인망과 자원, 병력을 바꾸지요.\n이 게임은 기획자가 GDD를 쓰고 AI로 코드를 전부 생성해 만들었습니다.", c: [["직접 플레이하기", "open:castle"], ["어떻게 만들었나요?", "open:process"], ["다음에", "end"]] }],
+    seoru: [{ t: "에헴, 관아에 온 걸 환영하오. 이 기획자가 현장에서 무슨 일을 했는지 여기 기록이 다 있소." },
+      { t: "달콤소프트에서는 SuperStar 시리즈 라이브 서비스 개선안을 기획하고 점수 산출 로직을 검증했지.\n게임 밖에서도 제안 하나로 매출을 약 1.2배 올린 적이 있다더군.", c: [["업무 성과 보기", "open:achv"], ["경력 · 학력 보기", "open:career"], ["물러가겠습니다", "end"]] }],
     seogo: [{ t: "쉿, 장서각입니다. 이곳엔 그분이 쓴 기획서 원본이 페이지째 보관되어 있어요." },
       { t: "오버워치2, 원신, 림버스 컴퍼니 같은 기존 게임에 새 콘텐츠를 얹은 기획서부터 조선 판타지 문서까지 있죠.", c: [["기획서 서고 열기", "open:library"], ["작업 과정을 보고 싶어요", "open:process"], ["그 밖의 작업", "open:others"], ["조용히 나간다", "end"]] }],
     jumak: [{ t: "어서 오시우! 우리 기획자 양반은 게임만 하면 꼭 여기 앉아서 분석을 적더라고." },
@@ -142,7 +141,7 @@
   };
   // building doors map to the NPC's node
   const DOOR_NODE = { seodang: "seodang", gongbang: "gongbang", seoru: "seoru", seogo: "seogo", jumak: "jumak", yeokcham: "yeokcham" };
-  const NPC_PLACE = { hunjang: "seodang", jangin: "gongbang", eira: "seoru", saseo: "seogo", jumo: "jumak", pabal: "yeokcham" };
+  const NPC_PLACE = { hunjang: "seodang", jangin: "gongbang", satto: "seoru", saseo: "seogo", jumo: "jumak", pabal: "yeokcham" };
 
   function initWorld() {
     if (worldReady) return; worldReady = true;
@@ -217,7 +216,7 @@
       if (kind === "node") { this.lines = D[arg]; this.i = 0; this.show(); }
       else if (kind === "open") { this.close(true); Scroll.open(arg, this.who); }
       else if (kind === "walk") { this.close(); World.walkTo(arg, () => { }); }
-      else if (kind === "act") { this.close(); if (arg === "resume") go("resume"); if (arg === "copy") { navigator.clipboard && navigator.clipboard.writeText(PROFILE.email).then(() => ui.toast("이메일을 복사했습니다")).catch(() => ui.toast(PROFILE.email)); } }
+      else if (kind === "act") { this.close(); if (arg === "resume") go("resume"); if (arg === "pdf") window.open(PF.LETTER_PDF, "_blank", "noopener"); if (arg === "copy") { navigator.clipboard && navigator.clipboard.writeText(PROFILE.email).then(() => ui.toast("이메일을 복사했습니다")).catch(() => ui.toast(PROFILE.email)); } }
     },
     moveSel(d) { const bs = $$("#dlgChoices button"); if (!bs.length) return; this.sel = (this.sel + d + bs.length) % bs.length; bs.forEach((b, j) => b.classList.toggle("sel", j === this.sel)); bs[this.sel].focus({ preventScroll: true }); Snd.fx("move"); },
     close(keepPaused) { clearInterval(this._iv); this.closed = true; $("#dlg").hidden = true; if (!keepPaused) World.pause(false); Snd.fx("close"); }
@@ -226,7 +225,7 @@
   $("#dlg").addEventListener("click", e => { if (!e.target.closest("button")) Dlg.advance(); });
 
   /* ── scroll panel (두루마리) ── */
-  const TITLES = { letter: "자기소개서", career: "경력 · 학력", achv: "업무 성과", joseon: "Project Joseon", castle: "Castle Survival", others: "그 밖의 작업", process: "어떻게 만들었나", library: "기획서 서고", reviews: "게임 분석 도감", contact: "연락처 · 링크" };
+  const TITLES = { letter: "자기소개서", career: "경력 · 학력", achv: "업무 성과", joseon: "Project Joseon", others: "그 밖의 작업", process: "어떻게 만들었나", library: "기획서 서고", reviews: "게임 분석 도감", contact: "연락처 · 링크" };
   const Scroll = {
     open(arg, who) {
       const [ids, tab] = arg.split("#"); const list = ids.split(",");
@@ -272,7 +271,7 @@
     $("#game").hidden = !(m === "game" || m === "title");
     $("#resume").hidden = m !== "resume";
     document.body.style.overflow = m === "resume" ? "" : "hidden";
-    if (m === "title") { initWorld(); World.pause(true); setTimeout(() => $("#startGame").focus(), 50); }
+    if (m === "title") { initWorld(); World.pause(true); setTimeout(() => $("#startResume").focus(), 50); }
     if (m === "game") { initWorld(); World.pause(false); $("#world").focus(); if (!store.get("greeted", false)) { store.set("greeted", true); setTimeout(() => Dlg.run("hello", NPC_DEFS[0]), 500); } }
     if (m === "resume") { buildResume(); if (worldReady) World.pause(true); window.scrollTo(0, 0); }
     try { history.replaceState(null, "", m === "title" ? location.pathname + location.search : "#" + m); } catch (e) { }
@@ -306,7 +305,7 @@
   addEventListener("keydown", e => {
     if (!$("#lb").hidden) { if (e.key === "Escape") { e.preventDefault(); LB.close(); } if (e.key === "ArrowLeft") LB.step(-1); if (e.key === "ArrowRight") LB.step(1); if (e.key === "Tab") trap(e, $("#lb")); return; }
     if (mode === "resume" && !$("#scroll").hidden && e.key === "Escape") { Scroll.close(); return; }
-    if (mode === "title") { if (e.key === "Enter" && document.activeElement.tagName !== "BUTTON") { $("#startGame").click(); } return; }
+    if (mode === "title") { if (e.key === "Enter" && document.activeElement.tagName !== "BUTTON") { $("#startResume").click(); } return; }
     if (mode !== "game") return;
     if (!$("#scroll").hidden) { if (e.key === "Escape") { e.preventDefault(); Scroll.close(); } else if (e.key === "Tab") trap(e, $("#scroll")); return; }
     if (!Dlg.closed) {

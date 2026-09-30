@@ -29,7 +29,6 @@
 
   const TIMELINE = [
     { w: "2026.08 –", t: "Project Joseon · 팀 기획", d: "조선 판타지 익스트랙션 액션. 아이템 49종, 전투·속성 체계, 캐릭터(무당·선비), 맵, UIUX 기획", g: 1 },
-    { w: "2026.06 – 07", t: "Castle Survival: Chronicle", d: "1인 개발 · 코드 전량 AI 생성 · 기획/디렉팅. 비주얼노벨 + 전략 전투", g: 1 },
     { w: "2025.10 – 2026.01", t: "달콤소프트 · 운영 기획", d: "SuperStar 시리즈 라이브 서비스 개선안 기획, 점수 산출 로직 검증, 신규 시스템 도입 전 콘텐츠 테스트", g: 1 },
     { w: "2025.07 – 2026.01", t: "S.I 프로젝트 · 팀 (Unity)", d: "맵 동선·배치 기획과 QA 담당", g: 1 },
     { w: "2024 – 2025", t: "개인 기획서 작업", d: "오버워치2 신규 영웅, 원신 신규 보스, 림버스 컴퍼니 전투 기획서(인격·E.G.O), 아스가르드 폴 신규 모드, 테일즈런너 개선 기획서", g: 1 },
@@ -49,20 +48,37 @@
     { big: "×8", t: "블로그 마케팅 · 6개월 전담", d: "방문자 수를 8배로 늘렸고, 1억 원 규모 B2B 계약 체결에 기여했습니다." }
   ];
 
+  /* 자기소개서 (2026.03) — 링크는 자기소개서 PDF에 걸린 원본 링크 그대로 */
+  const LETTER_PDF = "https://drive.google.com/file/d/1YOwp8sBHujCVGqjmKeSPkcS6Vp6gIxGU/view?usp=sharing";
   const LETTER = [
-    { k: "01 · 프로필 & 노력", h: "재미를 분해하는 습관", p: [
+    { k: "01 · 프로필 & 나의 노력", h: "재미를 분해하는 습관", p: [
       "여러 장르를 직접 플레이하며 핵심 재미, 시스템, BM, 조작감을 리뷰로 남깁니다. 게임 뉴스를 스크랩해 시장 트렌드와 유저 동향을 함께 봅니다.",
       "2024년에는 보드게임 카페를 직접 돌며 수요층과 인기 장르를 조사해 보드게임을 만들었고, 2025년부터는 Unity 팀 프로젝트에서 맵 동선·배치와 QA를 맡았습니다."
-    ], img: [["coverletter", 1], ["analysis", 0]] },
-    { k: "02 · 작업물", h: "기존 게임에 새 콘텐츠를 얹는 연습", p: [
-      "오버워치2 신규 힐러 영웅, 원신 신규 보스, 림버스 컴퍼니 신규 인격·E.G.O와 데이터 테이블, 그리고 게임 분석·개선안. 원작의 규칙을 먼저 분석하고, 그 안에서 새 콘텐츠가 설 자리를 찾는 방식으로 기획서를 썼습니다."
-    ], img: [["coverletter", 3], ["analysis", 2]] },
+    ], links: [
+      ["N", "게임 리뷰", "노션 · 플레이한 게임 분석", "https://www.notion.so/314c1342e11f809cb2b1e2abb4bcb34a?source=copy_link"],
+      ["N", "게임 뉴스 스크랩", "노션 · 기사 요약과 기획자 관점 평가", "https://www.notion.so/314c1342e11f80fb9f1bdc77e817ad26?source=copy_link"],
+      ["PDF", "팀 프로젝트 참여", "Unity · 맵 동선·배치 · QA", "https://drive.google.com/file/d/1zEZ9e29S3KzFOrEZQTkzvTfG4Pe1veZN/view?usp=sharing"],
+      ["PDF", "보드게임 제작", "창작 · 수요 조사", "https://drive.google.com/file/d/1V0NM4Gp8b2TkJB7V0dHh-dZOG2nfIail/view?usp=sharing"]
+    ] },
+    { k: "02 · 작업물 소개", h: "기존 게임에 새 콘텐츠를 얹는 연습", p: [
+      "원작의 규칙을 먼저 분석하고, 그 안에서 새 콘텐츠가 설 자리를 찾는 방식으로 기획서를 썼습니다. 림버스 컴퍼니는 기획서와 함께 데이터 테이블까지 만들었습니다."
+    ], links: [
+      ["PDF", "오버워치 신규 캐릭터", "신규 힐러 영웅 기획서 · 2024.03 기준", "https://drive.google.com/file/d/1hTsQkzpTS0nTeOEd9FquwBNMDyd0Hia1/view?usp=sharing"],
+      ["PDF", "원신 신규 보스", "보스 기획서 · 2024.04 기준", "https://drive.google.com/file/d/1Ye6kY5oeJlRN58VWjsg_8-1baIatwgTN/view?usp=drive_link"],
+      ["PDF", "림버스 컴퍼니 · 인격", "신규 캐릭터 전투 기획서", "https://drive.google.com/file/d/1RkD9e_qikzJ0Rv8Rm60oHN7cjbtL3_Zz/view?usp=sharing"],
+      ["표", "림버스 컴퍼니 · 인격 데이터 테이블", "Google Sheets", "https://docs.google.com/spreadsheets/d/1vKzbgrPZM8aoS0spboptimiaCJ6sKiG3/edit?usp=drive_link"],
+      ["PDF", "림버스 컴퍼니 · E.G.O", "신규 E.G.O 전투 기획서", "https://drive.google.com/file/d/13DQn0rs_28nbd0eNF41vxij9LyjHH0HI/view?usp=drive_link"],
+      ["표", "림버스 컴퍼니 · E.G.O 데이터 테이블", "Google Sheets", "https://docs.google.com/spreadsheets/d/1CXutq5f1San59zXzjRRyUnV1gTIXwyds/edit?usp=drive_link"],
+      ["폴더", "게임 분석 · 개선안", "테일즈런너 개선안 · 아스가르드 폴 신규 모드", "https://drive.google.com/drive/folders/1txIbPbRUl7rjOJAChjvF5g6DN9DyqBtb?usp=sharing"]
+    ] },
     { k: "03 · 업무 성과", h: "현장에서 숫자로 확인한 제안", p: [
-      "달콤소프트에서 SuperStar 시리즈 라이브 서비스 개선안을 기획하고 점수 산출 로직을 검증했습니다. 게임 밖에서도 현대백화점 동선 제안으로 매출 약 1.2배, 블로그 마케팅으로 방문자 8배를 만들었습니다."
-    ], img: [["coverletter", 6]] },
+      "달콤소프트에서 SuperStar 시리즈 라이브 서비스 개선안을 기획하고 점수 산출 로직을 검증했습니다. 게임 밖에서도 현대백화점 행거 배치 제안으로 매출 약 1.2배, 블로그 마케팅으로 방문자 8배를 만들었습니다."
+    ], links: [
+      ["PDF", "업무 성과 자료", "게임 분석 · BM", "https://drive.google.com/file/d/1pYRTqgzR--ud9-5VTFH4w3K_mllYZK59/view?usp=drive_link"]
+    ] },
     { k: "04 · 기획자가 된 이유", h: "기억에 남는 게임", p: [
       "창작자로서 콘텐츠를 만들고 유저의 반응에서 재미의 본질을 연구해 왔습니다. 입사 후에는 기획 감각을 실제 수익으로 연결하는 기획자가 되겠습니다."
-    ], img: [["coverletter", 8]] },
+    ], links: [] }
   ];
 
   const NOTION = [
@@ -107,8 +123,6 @@
     { slug: "enemy", t: "적 유닛 기획서 v1.0", s: "Project Joseon · 몬스터", grp: "Project Joseon" },
     { slug: "weapon", t: "무기 · 스킬 기획서", s: "Project Joseon · 무기", grp: "Project Joseon" },
     { slug: "uiux", t: "UIUX 기획서 v2", s: "Project Joseon · 화면 설계", grp: "Project Joseon" },
-    { slug: "castle-gdd", t: "Castle Survival GDD", s: "AI 1인 개발 · 기획/디렉팅", grp: "Castle Survival" },
-    { slug: "castle-units", t: "Castle Survival 유닛 시스템", s: "유닛 트리 · 수치", grp: "Castle Survival" },
     { slug: "asgard", t: "아스가르드 폴 오리진스 신규 모드", s: "2024.12 · 라그나로크 모드", grp: "개인 기획서" },
     { slug: "limbus", t: "림버스 컴퍼니 전투 기획서", s: "인격 · E.G.O", grp: "개인 기획서" },
     { slug: "ow2", t: "오버워치2 신규 힐러 영웅", s: "2024 · 영웅 기획", grp: "개인 기획서" },
@@ -126,11 +140,6 @@
   function docPage(slug, i, cap) { const d = doc(slug); if (!d) return ""; i = Math.min(i, d.pages.length - 1); return `<figure class="shot" data-lb="${slug}" data-i="${i}">${img(pageSrc(d, i), cap || d.title)}<figcaption>${esc(cap || d.title + " · 원본 " + srcNo(d, i) + "쪽")}</figcaption></figure>`; }
 
   const SHOTS = {
-    castle: [
-      ["assets/shots/cs-title.webp", "타이틀 화면"], ["assets/shots/cs-dialog.webp", "월간 결정 · 에이라와의 대화"],
-      ["assets/shots/cs-choice.webp", "선택 결과와 자원 변동"], ["assets/shots/cs-command.webp", "전투 중 지휘 결정 카드"],
-      ["assets/shots/cs-battle.webp", "방어전 · 구조물 배치와 웨이브"]
-    ],
     proto: (global.PROTO_SHOTS || [])
   };
 
@@ -145,7 +154,7 @@
       <div>
         <div class="eyebrow">PORTFOLIO · 2026</div>
         <h2>${esc(PROFILE.headline.replace("기획자", ""))}<em>기획자</em>, ${PROFILE.name}입니다.</h2>
-        <p>게임을 플레이하면 재미의 구조부터 뜯어 봅니다. 그 분석을 기획서와 데이터 테이블로 옮기고, 필요하면 AI로 직접 플레이 가능한 프로토타입까지 만듭니다.</p>
+        <p>게임을 플레이하면 재미의 구조부터 뜯어 봅니다. 그 분석을 기획서와 데이터 테이블로 옮기고, 필요하면 AI로 화면 목업까지 만들어 검증합니다.</p>
         <div class="metrics">
           <div class="metric"><b>${LIB.filter(l => doc(l.slug) && l.grp !== "자기소개").length}</b><span>수록 기획서</span></div>
           <div class="metric"><b>49</b><span>설계한 아이템</span></div>
@@ -157,11 +166,10 @@
   };
 
   S.letter = () => `<div class="letter">
-    ${LETTER.map(l => {
-      const hit = (l.img || []).find(([sl]) => doc(sl)); const d = hit && doc(hit[0]); const pi = d ? Math.min(hit[1], d.pages.length - 1) : 0;
-      const pic = d ? `<figure class="shot" data-lb="${d.slug}" data-i="${pi}" style="margin:0">${img(pageSrc(d, pi), d.title)}<figcaption>${esc(d.title)} · 원본 ${srcNo(d, pi)}쪽</figcaption></figure>` : "";
-      return `<article class="card letter-item"><div><div class="eyebrow">${esc(l.k)}</div><h3>${esc(l.h)}</h3>${l.p.map(x => `<p>${esc(x)}</p>`).join("")}</div>${pic}</article>`;
-    }).join("")}
+    <div class="card letter-head"><div><div class="eyebrow">자기소개서 · 2026.03</div><h3>덕력과 분석력을 가진 기획자 ${PROFILE.name}입니다</h3><p class="muted">01 프로필 & 노력 · 02 작업물 소개 · 03 업무 성과 · 04 기획자가 된 이유. 항목마다 자기소개서에 걸어 둔 원본 링크를 그대로 붙였습니다.</p></div>
+      <a class="btn em" ${ext(LETTER_PDF)}>자기소개서 원본 PDF ↗</a></div>
+    ${LETTER.map(l => `<article class="card letter-item ${l.links.length ? "" : "solo"}"><div><div class="eyebrow">${esc(l.k)}</div><h3>${esc(l.h)}</h3>${l.p.map(x => `<p>${esc(x)}</p>`).join("")}</div>
+      ${l.links.length ? `<ul class="doclinks">${l.links.map(([ty, t, sub, u]) => `<li><a ${ext(u)}><span class="ty">${esc(ty)}</span><span class="tx"><b>${esc(t)}</b><small>${esc(sub)}</small></span><span class="go">↗</span></a></li>`).join("")}</ul>` : ""}</article>`).join("")}
     <blockquote class="pull" style="margin:0">${esc(PROFILE.goal)}<cite>— 자기소개서 · 기획자가 된 이유</cite></blockquote>
   </div>`;
 
@@ -246,41 +254,6 @@
 
   function bookHTML(l) { const d = doc(l.slug); return `<button class="book" data-lb="${l.slug}" data-i="0" type="button">${img(`assets/docs/${l.slug}/${d.pages[0]}`, l.t + " 표지")}<span class="meta"><b>${esc(l.t)}</b><small>${esc(l.s)} · ${d.pages.length < total(d) ? `${total(d)}쪽 중 ${d.pages.length}쪽 발췌` : `${total(d)}쪽`}</small></span></button>`; }
 
-  S.castle = () => `<article class="card proj" data-proj="castle">
-    <div class="proj-top">
-      <div><span class="chip em">SOLO · AI 개발 · 플레이 가능</span>
-        <h3>Castle Survival: Chronicle</h3>
-        <p class="muted">마왕이 1년 뒤 쳐들어온다는 예언을 받은 작은 왕국. 매달 조언자 에이라와 징집·훈련·보급을 결정하고, 그 결과로 방어전을 치릅니다. 기획서(GDD)를 쓰고 AI에게 코드를 생성시키며 직접 디렉팅한 1인 프로젝트입니다.</p>
-        <p class="quote">1인 개발 / 코드 전량 AI 생성 / 기획·디렉팅: 임창민<cite>Castle Survival GDD v1.5</cite></p>
-      </div>
-      <div class="spec"><div><span>ROLE</span><span>기획 · 디렉팅 (코드 AI 생성)</span></div><div><span>GENRE</span><span>비주얼노벨 + 전략 전투</span></div><div><span>PERIOD</span><span>2026.06.13 – 07.10 계획</span></div><div><span>GDD 스택</span><span>Ren'Py + AI Studio · 코드 Claude/Cursor</span></div><div><span>PLAN</span><span>Steam · 12챕터 · 엔딩 10종</span></div><div><span>이 사이트</span><span>HTML 웹 빌드 · 1–2월</span></div></div>
-    </div>
-    <div class="tabs" role="tablist">
-      <button class="tab" role="tab" aria-selected="true" data-tab="play">플레이</button>
-      <button class="tab" role="tab" aria-selected="false" data-tab="design">설계 포인트</button>
-      <button class="tab" role="tab" aria-selected="false" data-tab="shots">스크린샷</button>
-    </div>
-    <div class="tabpanel" data-panel="play" role="tabpanel">
-      <div class="gameframe" data-gameframe><div class="scaler"></div>
-        <div class="cover-play" style="background-image:linear-gradient(rgba(10,8,5,.35),rgba(10,8,5,.85)),url('assets/shots/cs-dialog.webp')"><div><div class="eyebrow" style="color:#e8c66a">CHAPTER 1 · 1월</div><h4>마왕까지 남은 시간, 1년</h4><p style="color:#d8cbb0;margin-bottom:14px">효과음이 있습니다. 휴대폰에서는 새 탭으로 여는 편이 편합니다.</p>
-        <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><button class="btn em inline-play" data-boot type="button">▶ 여기서 플레이</button><a class="btn newtab-play" href="games/castle-survival/index.html" target="_blank" rel="noopener">새 탭에서 플레이 ↗</a></div></div></div>
-      </div>
-    </div>
-    <div class="tabpanel" data-panel="design" role="tabpanel" hidden>
-      <div class="grid2">
-        <div class="box"><h4>코어 루프</h4><div class="chips"><span class="chip em">월간 결정</span>→<span class="chip em">인망·자원·병력 변동</span>→<span class="chip em">방어전</span>→<span class="chip em">지휘 결정 카드</span>→<span class="chip em">다음 달</span></div>
-          <ul class="list" style="margin-top:14px"><li><b>같은 목표, 다른 대가.</b> 대규모 징집은 병력 +30 · 인망 −2, 자원자만 받으면 병력 +10 · 인망 +1.</li><li><b>막을 수 없는 방벽.</b> 방벽은 경로를 유도할 뿐 완전히 막지 못하고, 골렘은 방벽을 부순다.</li><li><b>전투 중 결정.</b> 시간(초당 +0.6)과 처치(+1.2)로 게이지가 차면 카드 3장 중 하나를 고른다. 필요량은 9에서 5씩 증가.</li><li><b>병과 트리.</b> 2월 스토리 선택으로 궁수·기사·마법사 중 하나를 해금. 3단계 전직은 데이터까지 설계, 연동은 다음 과제.</li></ul></div>
-        <div class="box"><h4>결말 설계 · 현재 웹 빌드 기준</h4><p class="note" style="margin-bottom:8px">GDD는 엔딩 10종(인망 6 · 히든 1 · 배드 3)을 계획합니다.</p><div class="table-wrap"><table><thead><tr><th>결말</th><th>조건</th></tr></thead><tbody>
-          <tr><td>완전한 평화</td><td>성 유지 · 인망 10</td></tr><tr><td>영웅왕</td><td>인망 8–9</td></tr><tr><td>불완전한 승리</td><td>인망 6–7</td></tr><tr><td>상처뿐인 승리</td><td>인망 4–5</td></tr><tr><td>고독한 군주</td><td>인망 2–3</td></tr><tr><td>몰락한 폭군</td><td>인망 1</td></tr><tr><td>반란</td><td>인망 0</td></tr><tr><td>패배</td><td>성 함락</td></tr></tbody></table></div></div>
-      </div>
-      <div class="table-wrap" style="margin-top:16px"><table><thead><tr><th>구조물</th><th>Lv1</th><th>Lv2</th><th>Lv3</th></tr></thead><tbody><tr><td>화살탑</td><td>ATK18 범위2.5</td><td>ATK30 범위3</td><td>ATK48 범위3.5</td></tr><tr><td>마법진</td><td>이속−60% 범위2</td><td>이속−80% ATK5</td><td>이속−90% ATK12</td></tr><tr><td>투석기</td><td>ATK40 충격파</td><td>ATK65</td><td>ATK90 광역</td></tr></tbody></table></div>
-      <div style="margin-top:16px">${strip("castle-gdd")}${strip("castle-units")}</div>
-    </div>
-    <div class="tabpanel" data-panel="shots" role="tabpanel" hidden>
-      <div class="shotrow">${SHOTS.castle.map((s, i) => shot(s[0], s[1], "castle", i)).join("")}</div>
-    </div>
-  </article>`;
-
   S.others = () => `<div class="grid2">
     <article class="card" style="padding:22px"><span class="chip em">SOLO · 2024.12</span><h3 style="font-size:1.4rem;margin:8px 0">아스가르드 폴 오리진스 · 라그나로크 모드</h3>
       <p class="muted" style="font-size:.9rem">반복 전투로 금세 지루해지는 로그라이크에, 확률로 터지는 돌발 퀘스트 3종(발키리의 가호 · 로키의 분신 · 발할라의 결투장)을 넣는 신규 모드 제안서.</p>
@@ -300,7 +273,7 @@
       { k: "의도와 규칙", h: "한 줄 기획 의도부터 쓴다", p: "모든 아이템과 캐릭터에 기획 의도를 먼저 붙이고, 규칙은 그 의도를 지키는 방향으로만 추가합니다.", tools: ["Google Slides", "PowerPoint"], vis: docPage("item-v1", 1, "아이템 기획서 v1.0 · 기획 의도") },
       { k: "수치와 데이터", h: "공식과 테이블로 옮긴다", p: "장검 4~6을 기준점으로 수치를 파생하고, Effects 시트로 모든 효과를 한 형식의 데이터 행으로 적습니다. 팀 개발자가 바로 구현할 수 있는 형태가 목표입니다.", tools: ["Google Sheets", "Excel"], vis: docPage("combat-v2", 4, "전투 시스템 v2.0 · 속성과 공식") },
       { k: "화면으로 검증", h: "AI로 UI 목업을 만든다", p: "문서만으로 전달이 어려운 인벤토리 배치 규칙을 AI로 HTML 목업까지 만들어, 화면으로 바로 검토할 수 있게 했습니다.", tools: ["AI 코드 생성", "HTML"], vis: P[0] ? shot(P[0][0], "AI로 만든 인벤토리 UI 목업", "proto", 0) : docPage("uiux", 0) },
-      { k: "플레이 가능한 결과물", h: "기획서를 게임으로 만든다", p: "Castle Survival은 GDD를 먼저 쓰고, AI에게 코드를 생성시키며 기획자로서 디렉팅했습니다. 문서의 수치가 실제 플레이에서 어떻게 느껴지는지 직접 확인할 수 있었습니다.", tools: ["GDD", "Claude · Cursor (GDD 기재)", "AI 픽셀아트", "플레이테스트"], vis: shot("assets/shots/cs-battle.webp", "Castle Survival · 방어전 화면", "castle", 4) },
+      { k: "팀 협업", h: "구현할 사람의 언어로 맞춘다", p: "팀 개발자의 스탯 공식에 맞춰 Effects 시트의 연산 순서를 6단계로 정렬하고, 적 유닛은 전조-판정-후딜 도해와 판정 반경까지 그려 개발자가 바로 구현할 수 있게 합니다.", tools: ["Discord", "Google Drive", "Notion"], vis: docPage("enemy", 3, "적 유닛 기획서 · 판정 도해") },
       { k: "검수와 회고", h: "스스로 약점을 적는다", p: "체크시트에 확정/미정 상태를 표시하고, 서사와 메커닉이 어긋나는 지점을 검수 메모로 남깁니다. 피드백을 받으면 버전을 올려 방향을 바꿉니다 (예: 전투 v1.0 상성 → v2.0 상성 제거).", tools: ["체크시트", "버전 관리"], vis: docPage("mudang", 1, "무당 캐릭터 체크시트 · 확정/미정 표시") }
     ];
     return `<div class="pipe">${steps.map(s => `<article class="card step"><div><span class="k">${esc(s.k)}</span><h3>${esc(s.h)}</h3><p>${esc(s.p)}</p><div class="chips tools">${s.tools.map(t => `<span class="chip">${esc(t)}</span>`).join("")}</div></div><div>${s.vis || ""}</div></article>`).join("")}</div>`;
@@ -367,12 +340,6 @@
       box.querySelector("[data-mon]").addEventListener("click", e => { const c = e.target.closest(".chip"); if (!c) return; box.querySelector('[data-c="def"]').value = c.dataset.def; calc(); });
       calc();
     });
-    // game iframe
-    root.querySelectorAll("[data-gameframe]").forEach(f => {
-      const b = f.querySelector("[data-boot]"); if (!b) return;
-      b.addEventListener("click", () => { f.querySelector(".scaler").innerHTML = `<iframe src="games/castle-survival/index.html" title="Castle Survival: Chronicle" allow="autoplay; fullscreen"></iframe>`; f.querySelector(".cover-play").hidden = true; fitGame(f.parentElement); ui.sfx && ui.sfx("ok"); });
-      fitGame(f.parentElement);
-    });
     // reviews
     root.querySelectorAll("[data-reviews]").forEach(list => {
       const wrap = list.parentElement; let g = "전체";
@@ -421,11 +388,10 @@
 
   /* lightbox image sets */
   function images(key) {
-    if (key === "castle") return SHOTS.castle.map(s => ({ src: s[0], cap: s[1] }));
     if (key === "proto") return (global.PROTO_SHOTS || []).map(s => ({ src: s[0], cap: s[1] }));
     const d = doc(key); if (!d) return [];
     return d.pages.map((p, i) => ({ src: pageSrc(d, i), cap: `${d.title} · 원본 ${srcNo(d, i)}쪽 / ${total(d)}${d.pages.length < total(d) ? ` (발췌 ${i + 1}/${d.pages.length})` : ""}` }));
   }
 
-  global.PF = { PROFILE, TIMELINE, REVIEWS, NOTION, LIB, S, bind, images, doc, esc };
+  global.PF = { LETTER_PDF, PROFILE, TIMELINE, REVIEWS, NOTION, LIB, S, bind, images, doc, esc };
 })(window);

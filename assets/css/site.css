@@ -357,3 +357,16 @@ h1,h2,h3,h4{word-break:keep-all}
 @media (max-width:700px){.inline-play{display:none}.newtab-play{display:inline-flex}}
 @media (pointer:coarse){.scroll-head .x .mono{display:none}}
 @media (min-width:981px){.rail{max-height:calc(100vh - 32px);overflow:auto;scrollbar-width:thin}}
+/* 자기소개서 링크 */
+.letter-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;padding:22px;background:linear-gradient(135deg,var(--em-soft),var(--paper))}
+.letter-head h3{font-size:1.35rem;margin:6px 0}
+.letter-head>div{flex:1 1 360px;min-width:0}
+.letter-item.solo{grid-template-columns:1fr}
+.doclinks{list-style:none;margin:0;padding:0;display:grid;gap:8px;align-content:start}
+.doclinks a{display:flex;align-items:center;gap:12px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--paper-2);text-decoration:none;transition:border-color .15s,transform .15s}
+.doclinks a:hover{border-color:var(--em);transform:translateX(2px)}
+.doclinks .ty{flex:none;min-width:40px;height:30px;padding:0 6px;border-radius:7px;display:grid;place-items:center;background:var(--em);color:var(--em-ink);font:400 .68rem var(--f-pixel)}
+.doclinks .tx{min-width:0;display:grid}
+.doclinks b{font-size:.88rem}
+.doclinks small{font-size:.74rem;color:var(--muted)}
+.doclinks .go{margin-left:auto;color:var(--em)}

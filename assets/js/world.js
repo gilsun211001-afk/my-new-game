@@ -55,7 +55,7 @@
   const BUILDINGS = [
     { id: "seodang",  name: "서당",   sub: "자기소개서", x: 18, y: 2,  w: 8, h: 5, roof: C.roof, trim: C.dancheongG },
     { id: "gongbang", name: "공방",   sub: "Project Joseon", x: 30, y: 3, w: 9, h: 5, roof: "#2a2320", trim: C.dancheongR },
-    { id: "seoru",    name: "성루",   sub: "Castle Survival", x: 31, y: 19, w: 8, h: 5, roof: "#2b1f2a", trim: C.dancheongB },
+    { id: "seoru",    name: "관아",   sub: "업무 성과 · 경력", x: 31, y: 19, w: 8, h: 5, roof: "#2b1f2a", trim: C.dancheongB },
     { id: "seogo",    name: "장서각", sub: "기획서 서고", x: 5, y: 3, w: 9, h: 5, roof: "#1b2733", trim: C.dancheongB },
     { id: "jumak",    name: "주막",   sub: "게임 분석 도감", x: 5, y: 19, w: 8, h: 5, roof: "#2d2418", trim: C.dancheongR },
     { id: "yeokcham", name: "역참",   sub: "연락 · 노션", x: 25, y: 23, w: 6, h: 4, roof: "#1f2b33", trim: C.dancheongG }
