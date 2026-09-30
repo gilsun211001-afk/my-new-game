@@ -90,6 +90,8 @@
   const FLOWERS = [];
   for (let i = 0; i < 90; i++) { const x = Math.floor(R() * MAP_W), y = Math.floor(R() * MAP_H); if (freeFor(x, y)) FLOWERS.push({ x, y, c: R() > .5 ? C.blossomHi : "#f2e29b", o: R() * 12 }); }
 
+  const WATER = []; for (let i = 0; i < tiles.length; i++) if (tiles[i] === 2) WATER.push(i);
+  const LANTERNS = PROPS.filter(p => p.t === "lantern");
   /* ── NPCs ── */
   const NPCS = [];
   function addNPC(o) { NPCS.push(Object.assign({ dir: 0, frame: 0, t: 0 }, o)); solid[idx(o.x, o.y)] = 1; }
@@ -212,13 +214,12 @@
       g.fillStyle = C.blossomHi; g.fillRect(x + 1, y - 7, 6, 3); g.fillRect(x + 9, y - 3, 5, 3);
       if (Math.floor(t / 400 + p.x) % 7 === 0) { g.fillStyle = C.blossomHi; g.fillRect(x + 4 + ((t / 60) % 10), y + 8 + ((t / 90) % 6), 1, 1); }
     } else if (p.t === "lantern") {
-      const flick = .75 + Math.sin(t / 180 + p.x) * .12;
-      g.fillStyle = C.lanternGlow; g.globalAlpha = flick; g.beginPath(); g.arc(x + 8, y + 2, 13, 0, 6.283); g.fill(); g.globalAlpha = 1;
+      if (p.lit) { const flick = .75 + Math.sin(t / 180 + p.x) * .12; g.fillStyle = C.lanternGlow; g.globalAlpha = flick; g.fillRect(x - 3, y - 9, 22, 22); g.globalAlpha = flick * .6; g.fillRect(x - 6, y - 5, 28, 14); g.globalAlpha = 1; }
       g.fillStyle = C.stoneSh; g.fillRect(x + 4, y + 11, 8, 4);
       g.fillStyle = C.stone; g.fillRect(x + 6, y + 5, 4, 7); g.fillRect(x + 3, y - 3, 10, 3);
       g.fillStyle = C.stoneHi; g.fillRect(x + 4, y - 5, 8, 2);
-      g.fillStyle = C.lantern; g.fillRect(x + 5, y, 6, 5);
-      g.fillStyle = "#b8ffe4"; g.fillRect(x + 7, y + 1, 2, 2);
+      g.fillStyle = p.lit ? C.lantern : "#2a3431"; g.fillRect(x + 5, y, 6, 5);
+      g.fillStyle = p.lit ? "#b8ffe4" : "#3b4744"; g.fillRect(x + 7, y + 1, 2, 2);
     } else if (p.t === "well") {
       g.fillStyle = C.shadow; g.fillRect(x, y + 28, 32, 4);
       g.fillStyle = C.stoneSh; g.fillRect(x + 2, y + 14, 28, 16);
@@ -375,7 +376,7 @@
     g.drawImage(S.staticLayer, 0, 0);
     // animated water shimmer
     g.fillStyle = C.waterHi;
-    for (let i = 0; i < tiles.length; i++) if (tiles[i] === 2 && (i * 7 + Math.floor(t / 300)) % 11 === 0) { const x = (i % MAP_W) * T, y = ((i / MAP_W) | 0) * T; g.globalAlpha = .6; g.fillRect(x + ((t / 90 + i) % 12), y + 6, 3, 1); g.globalAlpha = 1; }
+    for (const i of WATER) if ((i * 7 + Math.floor(t / 300)) % 11 === 0) { const x = (i % MAP_W) * T, y = ((i / MAP_W) | 0) * T; g.globalAlpha = .6; g.fillRect(x + ((t / 90 + i) % 12), y + 6, 3, 1); g.globalAlpha = 1; }
     // flowers sway
     FLOWERS.forEach(f => { g.fillStyle = f.c; const s = Math.sin(t / 500 + f.o) > 0 ? 1 : 0; g.fillRect(f.x * T + 5 + s, f.y * T + 9, 2, 2); g.fillRect(f.x * T + 11, f.y * T + 5 + s, 1, 1); });
     // depth-sorted sprites
@@ -403,20 +404,26 @@
       const a = .35 + .45 * Math.abs(Math.sin(f.a * 2)); g.fillStyle = `rgba(140,255,210,${a})`; g.fillRect(sx, sy, sc, sc);
       g.fillStyle = `rgba(52,224,161,${a * .25})`; g.fillRect(sx - sc, sy - sc, sc * 3, sc * 3);
     });
-    const vg = g.createRadialGradient(S.W / 2, S.H / 2, Math.min(S.W, S.H) * .35, S.W / 2, S.H / 2, Math.max(S.W, S.H) * .75);
-    vg.addColorStop(0, "rgba(4,10,8,0)"); vg.addColorStop(1, "rgba(4,10,8,.55)"); g.fillStyle = vg; g.fillRect(0, 0, S.W, S.H);
+    if (!S.vg || S.vgW !== S.W || S.vgH !== S.H) { S.vg = g.createRadialGradient(S.W / 2, S.H / 2, Math.min(S.W, S.H) * .35, S.W / 2, S.H / 2, Math.max(S.W, S.H) * .75); S.vg.addColorStop(0, "rgba(4,10,8,0)"); S.vg.addColorStop(1, "rgba(4,10,8,.55)"); S.vgW = S.W; S.vgH = S.H; }
+    g.fillStyle = S.vg; g.fillRect(0, 0, S.W, S.H);
+    if (S.dark > 0) { g.fillStyle = `rgba(6,12,20,${S.dark})`; g.fillRect(0, 0, S.W, S.H); }
   }
 
   function loop(ts) {
-    if (!S.running) return;
-    const dt = Math.min(.05, (ts - (S.lastTs || ts)) / 1000); S.lastTs = ts; S.t = ts;
+    if (!S.running) { S.rafOn = false; return; }
+    requestAnimationFrame(loop);
+    if (document.hidden) return;
+    if (S.paused && ts - (S.lastDraw || 0) < 90) return;          // ~11fps while a panel/dialogue is open
+    const dt = Math.min(.05, (ts - (S.lastTs || ts)) / 1000); S.lastTs = ts; S.t = ts; S.lastDraw = ts;
+    if (S.needResize) resize();
     if (!S.paused) update(dt); else { S.fireflies.forEach(f => { f.a += dt * f.s; }); NPCS.forEach(n => n.t += dt); }
     draw();
-    requestAnimationFrame(loop);
   }
 
   function resize() {
-    const r = S.canvas.getBoundingClientRect(), dpr = Math.min(2, window.devicePixelRatio || 1);
+    S.needResize = false;
+    const r = S.canvas.getBoundingClientRect(); if (r.width < 2 || r.height < 2) { S.needResize = true; return; }
+    const dpr = Math.min(1.5, window.devicePixelRatio || 1);
     S.W = S.canvas.width = Math.max(1, Math.floor(r.width * dpr)); S.H = S.canvas.height = Math.max(1, Math.floor(r.height * dpr));
     // integer scale so ~22 tiles fit horizontally on desktop, ~11 on phones
     const cssScale = r.width < 520 ? 2.6 : r.width < 900 ? 3 : 3.2;
@@ -434,10 +441,17 @@
       for (let i = 0; i < 46; i++) S.fireflies.push({ x: Math.random() * MAP_W * T, y: Math.random() * MAP_H * T, a: Math.random() * 6, s: .4 + Math.random() * .8 });
       renderStatic();
       if (document.fonts && document.fonts.load) document.fonts.load("10px Galmuri11").then(renderStatic).catch(() => {});
-      resize(); addEventListener("resize", resize);
+      resize(); addEventListener("resize", () => { S.needResize = true; });
+      if (window.ResizeObserver) new ResizeObserver(() => { S.needResize = true; }).observe(canvas);
       this.bindInput();
-      S.running = true; requestAnimationFrame(loop);
+      S.running = true; S.rafOn = true; requestAnimationFrame(loop);
     },
+    /* stop drawing entirely while another full-screen view is shown */
+    sleep(v) { S.running = !v; if (!v) { S.needResize = true; if (!S.rafOn) { S.rafOn = true; S.lastTs = 0; requestAnimationFrame(loop); } } },
+    resize() { S.needResize = true; },
+    person: (g, x, y, dir, frame, style) => drawPerson(g, x, y, dir, frame, style),
+    /* story: light n of the lanterns (0..6 halls visited) */
+    setLit(n, total = 6) { const k = Math.round(LANTERNS.length * Math.min(1, n / total)); LANTERNS.forEach((p, i) => p.lit = i < k); S.dark = .38 * (1 - Math.min(1, n / total)); },
     bindInput() {
       addEventListener("keydown", e => {
         if (S.paused || e.defaultPrevented) return;

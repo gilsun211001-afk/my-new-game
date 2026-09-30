@@ -43,34 +43,32 @@
 
   /* ═════════ RESUME MODE ═════════ */
   const CHAPTERS = [
-    ["cover", "표지", null, null],
-    ["letter", "자기소개서", "자기소개서", "게임 리뷰와 보드게임 제작에서 시작해 팀 프로젝트와 운영 기획까지, 기획자가 되기 위해 걸어온 길입니다."],
-    ["career", "경력 · 학력", "경력 · 학력", null],
-    ["achv", "업무 성과", "업무 성과", "게임 운영 현장과 게임 밖 현장에서 숫자로 확인한 제안들입니다."],
-    ["joseon", "Project Joseon", "대표 프로젝트 ① Project Joseon", "지금 참여 중인 조선 판타지 팀 프로젝트. 표를 만지고, 계산기를 돌리고, 기획서 원본을 넘겨 볼 수 있습니다."],
-    ["others", "그 밖의 작업", "그 밖의 작업", null],
-    ["process", "제작 과정", "어떻게 만들었나", "분석부터 기획서, 데이터, AI 프로토타입, 검수까지. 실제 문서 화면으로 작업 과정을 보여드립니다."],
-    ["library", "기획서 서고", "기획서 서고", "모든 기획서를 페이지 단위로 넘겨 볼 수 있습니다."],
-    ["reviews", "게임 분석 도감", "게임 분석 도감", "플레이한 게임을 구조 · 재화 · BM 관점으로 정리한 기록입니다."],
-    ["contact", "연락처", "연락처 · 링크", null]
+    ["letter", "자기소개서", "자기소개서", "게임 리뷰와 보드게임 제작에서 시작해 팀 프로젝트와 운영 기획까지. 항목마다 자기소개서에 걸어 둔 원본을 그대로 연결했습니다."],
+    ["career", "경력", "경력 · 학력", null],
+    ["achv", "성과", "업무 성과", "게임 운영 현장과 게임 밖 현장에서 숫자로 확인한 제안들입니다."],
+    ["joseon", "Project Joseon", "대표 프로젝트 · Project Joseon", "지금 참여 중인 조선 판타지 팀 프로젝트. 기획서마다 어떤 내용을 담았는지 요약과 함께 보여드립니다."],
+    ["others", "개인 기획서", "개인 기획서", "기존 게임을 분석하고 새 콘텐츠를 얹어 본 기획서들입니다."],
+    ["exp", "경험", "경험 자료", "팀 프로젝트, 보드게임 제작, 업무 성과 자료입니다."],
+    ["process", "작업 방식", "어떻게 만드는가", "분석부터 기획서, 데이터, AI 목업, 검수까지. 실제 문서 화면으로 작업 과정을 보여드립니다."],
+    ["reviews", "게임 분석", "게임 분석 도감", "플레이한 게임을 구조 · 재화 · BM 관점으로 정리한 기록입니다."],
+    ["contact", "연락", "연락처 · 링크", null]
   ];
   let resumeBuilt = false;
   function buildResume() {
     if (resumeBuilt) return; resumeBuilt = true;
-    $("#pfName").textContent = PROFILE.name;
-    $("#pfHead").textContent = PROFILE.headline;
-    $("#pfFacts").innerHTML = PROFILE.facts.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join("");
-    $("#toc").innerHTML = CHAPTERS.map(([id, label], i) => `<a href="#c-${id}" data-toc="${id}"><span class="n">${String(i).padStart(2, "0")}</span>${esc(label)}</a>`).join("");
-    $("#chapters").innerHTML = CHAPTERS.map(([id, , title, lede], i) => `<section class="chapter" id="c-${id}">${title ? `<div class="ch-head"><span class="ch-no">${String(i).padStart(2, "0")}</span><h2>${esc(title)}</h2>${lede ? `<p>${esc(lede)}</p>` : ""}</div>` : ""}${S[id]()}</section>`).join("");
+    $("#pfFacts").innerHTML = PROFILE.facts.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("");
+    $("#siteNav").innerHTML = CHAPTERS.filter(c => ["letter", "career", "joseon", "others", "process", "reviews", "contact"].includes(c[0])).map(([id, label]) => `<a href="#c-${id}" data-toc="${id}">${esc(label)}</a>`).join("");
+    $("#heroPdf").href = PF.LETTER_PDF;
+    $("#chapters").innerHTML = CHAPTERS.map(([id, , title, lede], i) => `<section class="band ${i % 2 ? "alt" : ""}" id="c-${id}"><div class="wrap">${title ? `<div class="ch-head"><span class="ch-no">${String(i + 1).padStart(2, "0")}</span><h2>${esc(title)}</h2>${lede ? `<p>${esc(lede)}</p>` : ""}</div>` : ""}${S[id]()}</div></section>`).join("");
     PF.bind($("#chapters"), ui);
-    // scrollspy
-    const links = $$("#toc a");
-    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) links.forEach(a => a.classList.toggle("on", a.dataset.toc === e.target.id.slice(2))); }), { rootMargin: "-40% 0px -55% 0px" });
-    $$("#chapters .chapter").forEach(c => io.observe(c));
-    $("#toc").addEventListener("click", e => { const a = e.target.closest("a"); if (!a) return; e.preventDefault(); document.getElementById("c-" + a.dataset.toc).scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" }); });
+    const links = $$("#siteNav a");
+    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) links.forEach(a => a.classList.toggle("on", a.dataset.toc === e.target.id.slice(2))); }), { rootMargin: "-35% 0px -60% 0px" });
+    $$("#chapters .band").forEach(c => io.observe(c));
+    const goTo = id => { const el = document.getElementById("c-" + id); el && el.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" }); };
+    $("#siteNav").addEventListener("click", e => { const a = e.target.closest("a"); if (!a) return; e.preventDefault(); goTo(a.dataset.toc); $("#resume").classList.remove("nav-open"); });
+    $$("[data-goto]").forEach(b => b.addEventListener("click", e => { e.preventDefault(); goTo(b.dataset.goto); }));
+    $("#navToggle").onclick = () => $("#resume").classList.toggle("nav-open");
     drawAvatar();
-    $("#mnav").innerHTML = `<option value="">목차로 이동…</option>` + CHAPTERS.map(([id, label]) => `<option value="${id}">${esc(label)}</option>`).join("");
-    $("#mnav").onchange = e => { const v = e.target.value; if (v) document.getElementById("c-" + v).scrollIntoView(); e.target.value = ""; };
     $("#totop").onclick = () => window.scrollTo({ top: 0, behavior: "smooth" });
   }
   function drawAvatar() {
@@ -117,22 +115,22 @@
   /* dialogue script: text | choices [label, action] ; action: "node:x" | "open:a,b" | "end" | fn */
   const REVIEW_LINES = PF.REVIEWS.map(r => `「${r.n}」 말이우? "${r.k}"`);
   const D = {
-    hello: [{ t: `어서 오세요! 저는 게임 기획자 ${PROFILE.name}입니다.\n이 마을은 제 기획서와 게임으로 지은 '기획마을'이에요.` },
-      { t: "건물마다 제 작업이 하나씩 들어 있습니다. 여섯 곳을 모두 둘러보신 뒤 광장으로 돌아오시면 마지막 이야기를 들려드릴게요.", c: [["자기소개서부터 볼게요", "open:letter"], ["어디부터 가면 좋을까요?", "node:route"], ["당신은 어떤 기획자인가요?", "node:who"], ["둘러볼게요", "end"]] }],
+    hello: [{ t: `오셨군요! 저는 이 마을의 기록을 걸어 둔 기획자 ${PROFILE.name}입니다.` },
+      { t: "건물마다 제 기획서를 전시해 두었어요. 전시관을 하나 둘러보실 때마다 마을의 등불이 하나씩 다시 켜집니다.\n여섯 곳을 모두 밝혀 주시면, 광장에서 마지막 이야기를 들려드릴게요.", c: [["서당(자기소개서관)부터 갈게요", "walk:seodang"], ["어디부터 가면 좋을까요?", "node:route"], ["당신은 어떤 기획자인가요?", "node:who"], ["혼자 둘러볼게요", "end"]] }],
     route: [{ t: "처음이시라면 북쪽 서당에서 제 자기소개서를 먼저 읽어 주세요.\n그다음 동쪽 공방에서 지금 하고 있는 조선 판타지 프로젝트를 보시면 됩니다.", c: [["서당으로 데려다 줘요", "walk:seodang"], ["공방으로 데려다 줘요", "walk:gongbang"], ["관아로 데려다 줘요", "walk:seoru"], ["혼자 돌아볼게요", "end"]] }],
     who: [{ t: `"${PROFILE.headline}"\n게임을 하면 재미의 구조부터 뜯어 보고, 그걸 표와 공식으로 옮기는 게 제 일이에요.` },
       { t: "문서로 끝내지 않고, 필요하면 AI로 화면 목업까지 만들어 팀과 같은 그림을 봅니다.", c: [["자기소개서를 보여줘요", "open:letter,career"], ["고마워요", "end"]] }],
-    finale: [{ t: "마을을 전부 둘러보셨군요! 끝까지 봐주셔서 정말 감사합니다." }, { t: "마음에 드셨다면 편하게 연락 주세요. 함께 기억에 남는 게임을 만들고 싶습니다.", c: [["연락처 보기", "open:contact"], ["자기소개서 전체 보기", "act:resume"], ["마을을 더 둘러볼게요", "end"]] }],
-    seodang: [{ t: "허허, 서당에 온 걸 환영하네. 이 마을을 지은 기획자의 이력이 여기 다 적혀 있지." },
-      { t: `이 사람의 목표가 무엇인지 아는가?\n"${PROFILE.goal}"`, c: [["자기소개서를 읽어볼래요", "open:letter"], ["원본 PDF로 볼래요", "act:pdf"], ["경력과 학력은요?", "open:career"], ["다음에 올게요", "end"]] }],
+    finale: [{ t: "보세요, 마을의 등불이 전부 켜졌습니다.\n누군가 제 기록을 끝까지 봐 준 덕분이에요. 정말 감사합니다." }, { t: "마음에 드셨다면 편하게 연락 주세요. 함께 기억에 남는 게임을 만들고 싶습니다.", c: [["연락처 보기", "open:contact"], ["자기소개서 전체 보기", "act:resume"], ["마을을 더 둘러볼게요", "end"]] }],
+    seodang: [{ t: "허허, 서당에 온 걸 환영하네. 안쪽 전시관에 그 기획자의 자기소개서가 한 폭씩 걸려 있지." },
+      { t: `이 사람의 목표가 무엇인지 아는가?\n"${PROFILE.goal}"`, c: [["전시관에 들어간다", "hall:seodang"], ["자기소개서 원본 PDF", "act:pdf"], ["다음에 올게요", "end"]] }],
     gongbang: [{ t: "여긴 Project Joseon 공방이오. 조선 판타지 익스트랙션 액션이지.\n캐릭터 강함은 레벨이 아니라 인벤토리에 뭘 붙이느냐로만 정해진다네." },
-      { t: "그 기획자가 아이템 49종, 전투 공식, 이펙트 데이터 구조까지 짰소. 한번 보겠소?", c: [["아이템과 인벤토리 퍼즐 보기", "open:joseon"], ["전투 공식 계산기", "open:joseon#combat"], ["AI로 만든 UI 목업", "open:joseon#ui"], ["나중에", "end"]] }],
+      { t: "그 기획자가 코어루프부터 아이템, 전투 공식, 캐릭터, 맵, UI까지 공방 안에 다 걸어 뒀소. 들어가 보겠소?", c: [["전시관에 들어간다", "hall:gongbang"], ["전투 공식 계산기만 볼래요", "open:joseon#combat"], ["나중에", "end"]] }],
     mudang: [{ t: "...연결이 끊기면... 나는 다시 멍해져...\n(회로 노드 두 개를 아이템으로 이어야 각성한다는 무당 캐릭터다.)" },
       { t: "기획자는 '연결을 지켜내는 행동' 자체로 내 광기를 느끼게 하고 싶었대.\n...그런데 벌이 없는 힘은 광기가 아니라고, 스스로 적어 두었더군.", c: [["무당 캐릭터 기획서 보기", "open:joseon#chars"], ["물러난다", "end"]] }],
     seoru: [{ t: "에헴, 관아에 온 걸 환영하오. 이 기획자가 현장에서 무슨 일을 했는지 여기 기록이 다 있소." },
-      { t: "달콤소프트에서는 SuperStar 시리즈 라이브 서비스 개선안을 기획하고 점수 산출 로직을 검증했지.\n게임 밖에서도 제안 하나로 매출을 약 1.2배 올린 적이 있다더군.", c: [["업무 성과 보기", "open:achv"], ["경력 · 학력 보기", "open:career"], ["물러가겠습니다", "end"]] }],
+      { t: "달콤소프트에서는 SuperStar 시리즈 라이브 서비스 개선안을 기획하고 점수 산출 로직을 검증했지.\n팀 프로젝트와 보드게임 제작 기록도 안쪽에 걸려 있소.", c: [["전시관에 들어간다", "hall:seoru"], ["경력 · 학력 보기", "open:career"], ["물러가겠습니다", "end"]] }],
     seogo: [{ t: "쉿, 장서각입니다. 이곳엔 그분이 쓴 기획서 원본이 페이지째 보관되어 있어요." },
-      { t: "오버워치2, 원신, 림버스 컴퍼니 같은 기존 게임에 새 콘텐츠를 얹은 기획서부터 조선 판타지 문서까지 있죠.", c: [["기획서 서고 열기", "open:library"], ["작업 과정을 보고 싶어요", "open:process"], ["그 밖의 작업", "open:others"], ["조용히 나간다", "end"]] }],
+      { t: "오버워치2, 원신, 림버스 컴퍼니, 테일즈런너, 아스가르드 폴… 기존 게임에 새 콘텐츠를 얹은 기획서들이죠.", c: [["전시관에 들어간다", "hall:seogo"], ["작업 방식을 보고 싶어요", "open:process"], ["조용히 나간다", "end"]] }],
     jumak: [{ t: "어서 오시우! 우리 기획자 양반은 게임만 하면 꼭 여기 앉아서 분석을 적더라고." },
       { t: () => REVIEW_LINES[Math.floor(Math.random() * REVIEW_LINES.length)], c: [["분석 도감 전부 보기", "open:reviews"], ["다른 얘기도 해줘요", "node:jumak2"], ["잘 먹고 갑니다", "end"]] }],
     jumak2: [{ t: () => REVIEW_LINES[Math.floor(Math.random() * REVIEW_LINES.length)], c: [["분석 도감 전부 보기", "open:reviews"], ["하나 더!", "node:jumak2"], ["잘 먹고 갑니다", "end"]] }],
@@ -150,8 +148,8 @@
       playerStyle: VISITOR_STYLE, npcs,
       onInteract: it => {
         if (it.kind === "sign") return Dlg.run("sign", { name: "안내판", style: null });
-        if (it.kind === "npc") { const def = NPC_DEFS.find(n => n.id === it.id); markVisit(NPC_PLACE[it.id]); return Dlg.run(def.id === "designer" && visited.length >= 6 ? "finale" : def.node, def); }
-        if (it.kind === "building") { const npc = NPC_DEFS.find(n => NPC_PLACE[n.id] === it.id); markVisit(it.id); return Dlg.run(DOOR_NODE[it.id], npc); }
+        if (it.kind === "npc") { const def = NPC_DEFS.find(n => n.id === it.id); if (!HALL_IDS.includes(NPC_PLACE[it.id])) markVisit(NPC_PLACE[it.id]); return Dlg.run(def.id === "designer" && visited.length >= 6 ? "finale" : def.node, def); }
+        if (it.kind === "building") { if (HALL_IDS.includes(it.id)) return enterHall(it.id); const npc = NPC_DEFS.find(n => NPC_PLACE[n.id] === it.id); markVisit(it.id); return Dlg.run(DOOR_NODE[it.id], npc); }
       },
       onNear: it => {
         const p = $("#prompt");
@@ -162,16 +160,28 @@
     });
     updateMini = World.minimap($("#mini"));
     setInterval(() => { if (mode === "game") updateMini(visited); }, 250);
-    paintQuest(); paintTravel();
+    paintQuest(); paintTravel(); World.setLit(visited.length);
+    Gallery.init({ esc, style: VISITOR_STYLE, step: () => Snd.fx("step"), move: () => Snd.fx("move"), lightbox: (k, i) => LB.open(k, i), openPanel: a => Scroll.open(a, null),
+      exit: hall => { mode = "game"; World.sleep(false); World.pause(false); $("#game").hidden = false; Snd.fx("close"); $("#world").focus({ preventScroll: true }); } });
+  }
+
+  /* ── halls (전시관) ── */
+  const HALL_IDS = ["seodang", "gongbang", "seogo", "seoru"];
+  let HALLS = null;
+  function enterHall(id) {
+    HALLS = HALLS || PF.halls();
+    const h = HALLS[id]; if (!h || !h.items.length) return;
+    markVisit(id); mode = "gallery"; World.pause(true); World.sleep(true); Snd.fx("open");
+    Gallery.enter(h);
   }
 
   function markVisit(place) {
     if (!place || visited.includes(place)) return;
     visited.push(place); store.set("visited", visited); paintQuest(); paintTravel();
-    Snd.fx("quest"); ui.toast(`탐방 기록 · ${PLACES[place]} (${visited.length}/6)`);
+    World.setLit(visited.length); Snd.fx("quest"); ui.toast(`등불 하나가 켜졌습니다 · ${PLACES[place]} (${visited.length}/6)`);
     if (visited.length === 6) setTimeout(() => ui.toast("모든 곳을 둘러봤습니다! 광장의 기획자에게 가 보세요"), 2600);
   }
-  function paintQuest() { $("#qText").innerHTML = `마을 탐방 <b>${visited.length}</b>/6`; $("#qBar").style.width = (visited.length / 6 * 100) + "%"; }
+  function paintQuest() { $("#qText").innerHTML = `밝힌 등불 <b>${visited.length}</b>/6`; $("#qBar").style.width = (visited.length / 6 * 100) + "%"; }
   function paintTravel() {
     $("#travel").innerHTML = Object.entries(PLACES).map(([id, n]) => `<button class="hbtn" data-walk="${id}" type="button">${visited.includes(id) ? '<span class="v">✓</span>' : "·"} ${n} <span style="color:#6a8a7e">${World.BUILDINGS.find(b => b.id === id).sub}</span></button>`).join("");
   }
@@ -216,6 +226,7 @@
       if (kind === "node") { this.lines = D[arg]; this.i = 0; this.show(); }
       else if (kind === "open") { this.close(true); Scroll.open(arg, this.who); }
       else if (kind === "walk") { this.close(); World.walkTo(arg, () => { }); }
+      else if (kind === "hall") { this.close(true); enterHall(arg); }
       else if (kind === "act") { this.close(); if (arg === "resume") go("resume"); if (arg === "pdf") window.open(PF.LETTER_PDF, "_blank", "noopener"); if (arg === "copy") { navigator.clipboard && navigator.clipboard.writeText(PROFILE.email).then(() => ui.toast("이메일을 복사했습니다")).catch(() => ui.toast(PROFILE.email)); } }
     },
     moveSel(d) { const bs = $$("#dlgChoices button"); if (!bs.length) return; this.sel = (this.sel + d + bs.length) % bs.length; bs.forEach((b, j) => b.classList.toggle("sel", j === this.sel)); bs[this.sel].focus({ preventScroll: true }); Snd.fx("move"); },
@@ -234,10 +245,10 @@
       body.innerHTML = list.map((id, i) => `${i ? `<h2 style="font-size:1.6rem;margin:38px 0 18px">${esc(TITLES[id])}</h2>` : ""}${S[id]()}`).join("");
       PF.bind(body, ui); body.scrollTop = 0;
       if (tab) { const t = body.querySelector(`.tab[data-tab="${tab}"]`); t && t.click(); }
-      $("#scroll").hidden = false; World.pause(true); Snd.fx("open");
+      $("#scroll").hidden = false; if (mode !== "gallery") World.pause(true); Snd.fx("open");
       setTimeout(() => $("#scrollClose").focus(), 30);
     },
-    close() { $("#scroll").hidden = true; $("#scrollBody").innerHTML = ""; World.pause(false); Snd.fx("close"); $("#world").focus({ preventScroll: true }); }
+    close() { $("#scroll").hidden = true; $("#scrollBody").innerHTML = ""; Snd.fx("close"); if (mode === "gallery") { $("#galView").focus({ preventScroll: true }); return; } if (mode === "game") World.pause(false); $("#world").focus({ preventScroll: true }); }
   };
   $("#scrollClose").onclick = () => Scroll.close();
   $("#scroll").addEventListener("click", e => { if (e.target.id === "scroll") Scroll.close(); });
@@ -264,16 +275,32 @@
   $("#lbThumbs").addEventListener("click", e => { const b = e.target.closest("button"); if (b) { LB.i = +b.dataset.j; LB.paint(); } });
   (function () { let x0 = null; const st = $("#lbStage"); st.addEventListener("touchstart", e => x0 = e.touches[0].clientX, { passive: true }); st.addEventListener("touchend", e => { if (x0 === null) return; const dx = e.changedTouches[0].clientX - x0; if (Math.abs(dx) > 40) LB.step(dx < 0 ? 1 : -1); x0 = null; }); st.addEventListener("click", e => { if (e.target === st) LB.close(); }); })();
 
+  /* ═════════ STORY (prologue) ═════════ */
+  const Story = {
+    lines: [
+      "오래전, 이 마을의 등불은 '재미'를 연료로 타올랐다.",
+      "사람들이 재미를 잊자 등불은 하나둘 꺼졌고, 마을은 긴 밤에 잠겼다.",
+      "떠돌이 기획자 임창민은 자신이 쓴 기획서를 마을의 전시관마다 걸어 두었다.\n누군가 그 기록을 봐 준다면, 등불이 다시 켜질 거라 믿으며.",
+      "그리고 오늘 밤, 한 손님이 마을 어귀의 다리를 건넌다."
+    ], i: 0, then: null,
+    play(then) { this.then = then; this.i = 0; World.pause(true); $("#story").hidden = false; this.show(); },
+    show() { const el = $("#storyLine"); el.classList.remove("in"); void el.offsetWidth; el.textContent = this.lines[this.i]; el.classList.add("in"); $("#storyDots").innerHTML = this.lines.map((_, j) => `<i class="${j <= this.i ? "on" : ""}"></i>`).join(""); Snd.fx("tick"); },
+    next() { if (this.i < this.lines.length - 1) { this.i++; this.show(); } else this.end(); },
+    end() { $("#story").hidden = true; World.pause(false); const f = this.then; this.then = null; f && setTimeout(f, 300); }
+  };
+  $("#story").addEventListener("click", e => { if (e.target.closest("#storySkip")) Story.end(); else Story.next(); });
+
   /* ═════════ MODES ═════════ */
   function go(m) {
     mode = m;
     $("#title").hidden = m !== "title";
     $("#game").hidden = !(m === "game" || m === "title");
+    if (m !== "gallery" && window.Gallery && Gallery.open) { Gallery.open = false; $("#gallery").hidden = true; }
     $("#resume").hidden = m !== "resume";
     document.body.style.overflow = m === "resume" ? "" : "hidden";
-    if (m === "title") { initWorld(); World.pause(true); setTimeout(() => $("#startResume").focus(), 50); }
-    if (m === "game") { initWorld(); World.pause(false); $("#world").focus(); if (!store.get("greeted", false)) { store.set("greeted", true); setTimeout(() => Dlg.run("hello", NPC_DEFS[0]), 500); } }
-    if (m === "resume") { buildResume(); if (worldReady) World.pause(true); window.scrollTo(0, 0); }
+    if (m === "title") { initWorld(); World.sleep(false); World.pause(true); setTimeout(() => $("#startResume").focus(), 50); }
+    if (m === "game") { initWorld(); World.sleep(false); World.pause(false); $("#world").focus(); if (!store.get("greeted", false)) { store.set("greeted", true); Story.play(() => Dlg.run("hello", NPC_DEFS[0])); } }
+    if (m === "resume") { buildResume(); if (worldReady) { World.pause(true); World.sleep(true); } window.scrollTo(0, 0); }
     try { history.replaceState(null, "", m === "title" ? location.pathname + location.search : "#" + m); } catch (e) { }
   }
 
@@ -304,7 +331,8 @@
   // global keys
   addEventListener("keydown", e => {
     if (!$("#lb").hidden) { if (e.key === "Escape") { e.preventDefault(); LB.close(); } if (e.key === "ArrowLeft") LB.step(-1); if (e.key === "ArrowRight") LB.step(1); if (e.key === "Tab") trap(e, $("#lb")); return; }
-    if (mode === "resume" && !$("#scroll").hidden && e.key === "Escape") { Scroll.close(); return; }
+    if (!$("#scroll").hidden && mode !== "game") { if (e.key === "Escape") { e.preventDefault(); Scroll.close(); } else if (e.key === "Tab") trap(e, $("#scroll")); return; }
+    if (!$("#story").hidden) { if ([" ", "Enter", "Escape"].includes(e.key)) { e.preventDefault(); e.key === "Escape" ? Story.end() : Story.next(); } return; }
     if (mode === "title") { if (e.key === "Enter" && document.activeElement.tagName !== "BUTTON") { $("#startResume").click(); } return; }
     if (mode !== "game") return;
     if (!$("#scroll").hidden) { if (e.key === "Escape") { e.preventDefault(); Scroll.close(); } else if (e.key === "Tab") trap(e, $("#scroll")); return; }

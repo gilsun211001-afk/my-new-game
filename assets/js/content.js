@@ -6,6 +6,7 @@
   "use strict";
   const DOCS = global.DOCS || [];                       // assets/js/docs.js (manifest)
   const doc = slug => DOCS.find(d => d.slug === slug && d.pages && d.pages.length);
+  const info = slug => DOCS.find(d => d.slug === slug) || {};              // 요약·포인트 (이미지 없어도 있음)
   const pageSrc = (d, i) => `assets/docs/${d.slug}/${d.pages[i]}`;
   const srcNo = (d, i) => (d.sourcePages && d.sourcePages[i]) || i + 1;          // 원본 쪽 번호
   const total = d => d.pageCount || d.pages.length;
@@ -65,10 +66,8 @@
     ], links: [
       ["PDF", "오버워치 신규 캐릭터", "신규 힐러 영웅 기획서 · 2024.03 기준", "https://drive.google.com/file/d/1hTsQkzpTS0nTeOEd9FquwBNMDyd0Hia1/view?usp=sharing"],
       ["PDF", "원신 신규 보스", "보스 기획서 · 2024.04 기준", "https://drive.google.com/file/d/1Ye6kY5oeJlRN58VWjsg_8-1baIatwgTN/view?usp=drive_link"],
-      ["PDF", "림버스 컴퍼니 · 인격", "신규 캐릭터 전투 기획서", "https://drive.google.com/file/d/1RkD9e_qikzJ0Rv8Rm60oHN7cjbtL3_Zz/view?usp=sharing"],
-      ["표", "림버스 컴퍼니 · 인격 데이터 테이블", "Google Sheets", "https://docs.google.com/spreadsheets/d/1vKzbgrPZM8aoS0spboptimiaCJ6sKiG3/edit?usp=drive_link"],
-      ["PDF", "림버스 컴퍼니 · E.G.O", "신규 E.G.O 전투 기획서", "https://drive.google.com/file/d/13DQn0rs_28nbd0eNF41vxij9LyjHH0HI/view?usp=drive_link"],
-      ["표", "림버스 컴퍼니 · E.G.O 데이터 테이블", "Google Sheets", "https://docs.google.com/spreadsheets/d/1CXutq5f1San59zXzjRRyUnV1gTIXwyds/edit?usp=drive_link"],
+      ["PDF", "림버스 컴퍼니 · 신규 인격", "전투 기획서", "https://drive.google.com/file/d/1RkD9e_qikzJ0Rv8Rm60oHN7cjbtL3_Zz/view?usp=sharing"],
+      ["표", "림버스 컴퍼니 · 데이터 테이블", "인격 수치 테이블 · Google Sheets", "https://docs.google.com/spreadsheets/d/1vKzbgrPZM8aoS0spboptimiaCJ6sKiG3/edit?usp=drive_link"],
       ["폴더", "게임 분석 · 개선안", "테일즈런너 개선안 · 아스가르드 폴 신규 모드", "https://drive.google.com/drive/folders/1txIbPbRUl7rjOJAChjvF5g6DN9DyqBtb?usp=sharing"]
     ] },
     { k: "03 · 업무 성과", h: "현장에서 숫자로 확인한 제안", p: [
@@ -112,23 +111,30 @@
 
   /* library groups (슬러그 → 표시 정보). 이미지가 없는 슬러그는 자동으로 숨깁니다 */
   const LIB = [
-    { slug: "coverletter", t: "자기소개서", s: "2026.03 · 덕력과 분석력을 가진 기획자", grp: "자기소개" },
-    { slug: "resume", t: "이력서", s: "학력 · 경력 · 스킬", grp: "자기소개" },
-    { slug: "item-v1", t: "아이템 기획서 v1.0", s: "Project Joseon · 49종 · 인접 효과", grp: "Project Joseon" },
-    { slug: "combat-v2", t: "전투 시스템 · 속성 체계 v2.0", s: "Project Joseon · 상성 제거 · 공식", grp: "Project Joseon" },
-    { slug: "mudang", t: "무당 캐릭터 기획 체크시트", s: "Project Joseon · 각성 메커닉", grp: "Project Joseon" },
-    { slug: "seonbi", t: "선비 캐릭터 기획서 v1.1", s: "Project Joseon · 캐릭터", grp: "Project Joseon" },
-    { slug: "coreloop", t: "코어루프 기획서 v0.3", s: "Project Joseon · 루프 구조", grp: "Project Joseon" },
-    { slug: "map", t: "맵 기획서 v1.1", s: "Project Joseon · 스테이지 · 워프", grp: "Project Joseon" },
-    { slug: "enemy", t: "적 유닛 기획서 v1.0", s: "Project Joseon · 몬스터", grp: "Project Joseon" },
-    { slug: "weapon", t: "무기 · 스킬 기획서", s: "Project Joseon · 무기", grp: "Project Joseon" },
-    { slug: "uiux", t: "UIUX 기획서 v2", s: "Project Joseon · 화면 설계", grp: "Project Joseon" },
+    { slug: "coreloop", t: "코어루프 기획서", s: "게임의 한 판이 도는 구조", grp: "Project Joseon" },
+    { slug: "item-v1", t: "아이템 기획서", s: "49종 · 인벤토리 인접 효과", grp: "Project Joseon" },
+    { slug: "combat-v2", t: "전투 시스템 · 속성 체계", s: "상성 제거 · 전투 공식", grp: "Project Joseon" },
+    { slug: "effects", t: "Effects 시트 기획 의도", s: "이펙트 데이터 스키마", grp: "Project Joseon" },
+    { slug: "mudang", t: "무당 캐릭터 기획", s: "각성 메커닉 · 체크시트", grp: "Project Joseon" },
+    { slug: "seonbi", t: "선비 캐릭터 기획서", s: "캐릭터 · 모션 · 판정", grp: "Project Joseon" },
+    { slug: "map", t: "맵 기획서", s: "스테이지 · 워프 · 동선", grp: "Project Joseon" },
+    { slug: "map-setting", t: "맵 설정 · 스토리와 튜토리얼 동선", s: "세계관 · 튜토리얼", grp: "Project Joseon" },
+    { slug: "enemy", t: "적 유닛 기획서", s: "몬스터 · 보스 패턴", grp: "Project Joseon" },
+    { slug: "weapon", t: "무기 · 스킬 기획서", s: "무기별 판정과 스킬", grp: "Project Joseon" },
+    { slug: "uiux", t: "UIUX 기획서", s: "화면 구성 · 조작", grp: "Project Joseon" },
+    { slug: "ow2", t: "오버워치2 신규 힐러 영웅", s: "2024.03 기준 · 영웅 기획", grp: "개인 기획서" },
+    { slug: "genshin", t: "원신 신규 보스", s: "2024.04 기준 · 보스 기획", grp: "개인 기획서" },
+    { slug: "limbus", t: "림버스 컴퍼니 신규 인격", s: "전투 기획서 · 데이터 테이블", grp: "개인 기획서", url2: ["데이터 테이블", "https://docs.google.com/spreadsheets/d/1vKzbgrPZM8aoS0spboptimiaCJ6sKiG3/edit?usp=drive_link"] },
+    { slug: "analysis", t: "테일즈런너 개선 기획서", s: "2025 · 게임 분석 · 개선안", grp: "개인 기획서" },
     { slug: "asgard", t: "아스가르드 폴 오리진스 신규 모드", s: "2024.12 · 라그나로크 모드", grp: "개인 기획서" },
-    { slug: "limbus", t: "림버스 컴퍼니 전투 기획서", s: "인격 · E.G.O", grp: "개인 기획서" },
-    { slug: "ow2", t: "오버워치2 신규 힐러 영웅", s: "2024 · 영웅 기획", grp: "개인 기획서" },
-    { slug: "genshin", t: "원신 신규 보스", s: "2024 · 보스 기획", grp: "개인 기획서" },
-    { slug: "analysis", t: "테일즈런너 개선 기획서", s: "2025 · 게임 분석 · 개선안", grp: "개인 기획서" }
+    { slug: "teamproj", t: "팀 프로젝트 참여", s: "Unity · 맵 동선·배치 · QA", grp: "경험 · 성과" },
+    { slug: "boardgame", t: "보드게임 제작", s: "2024 · 창작 · 수요 조사", grp: "경험 · 성과" },
+    { slug: "work", t: "업무 성과", s: "게임 분석 · BM", grp: "경험 · 성과" }
   ];
+
+  /* 원본 링크 (자기소개서에 걸린 링크) */
+  const LINKS = { ow2: "https://drive.google.com/file/d/1hTsQkzpTS0nTeOEd9FquwBNMDyd0Hia1/view?usp=sharing", genshin: "https://drive.google.com/file/d/1Ye6kY5oeJlRN58VWjsg_8-1baIatwgTN/view?usp=drive_link", limbus: "https://drive.google.com/file/d/1RkD9e_qikzJ0Rv8Rm60oHN7cjbtL3_Zz/view?usp=sharing", teamproj: "https://drive.google.com/file/d/1zEZ9e29S3KzFOrEZQTkzvTfG4Pe1veZN/view?usp=sharing", boardgame: "https://drive.google.com/file/d/1V0NM4Gp8b2TkJB7V0dHh-dZOG2nfIail/view?usp=sharing", work: "https://drive.google.com/file/d/1pYRTqgzR--ud9-5VTFH4w3K_mllYZK59/view?usp=drive_link", analysis: "https://drive.google.com/drive/folders/1txIbPbRUl7rjOJAChjvF5g6DN9DyqBtb?usp=sharing", asgard: "https://drive.google.com/drive/folders/1txIbPbRUl7rjOJAChjvF5g6DN9DyqBtb?usp=sharing" };
+  const has = l => doc(l.slug) || info(l.slug).summary;
 
   /* ── small render helpers ── */
   const img = (src, alt, cls = "") => `<img src="${esc(src)}" alt="${esc(alt)}" loading="lazy" decoding="async" class="${cls}">`;
@@ -248,23 +254,23 @@
     </div>
     <div class="tabpanel" data-panel="docs" role="tabpanel" hidden>
       <p class="muted" style="margin-bottom:12px">팀 프로젝트 중 본인 드라이브에 정리한 기획 문서입니다. 표지를 누르면 페이지를 넘겨 볼 수 있습니다.</p>
-      <div class="shelf">${LIB.filter(l => l.grp === "Project Joseon" && doc(l.slug)).map(bookHTML).join("")}</div>
+      <div class="shelf wide">${LIB.filter(l => l.grp === "Project Joseon" && has(l)).map(bookHTML).join("")}</div>
     </div>
   </article>`;
 
-  function bookHTML(l) { const d = doc(l.slug); return `<button class="book" data-lb="${l.slug}" data-i="0" type="button">${img(`assets/docs/${l.slug}/${d.pages[0]}`, l.t + " 표지")}<span class="meta"><b>${esc(l.t)}</b><small>${esc(l.s)} · ${d.pages.length < total(d) ? `${total(d)}쪽 중 ${d.pages.length}쪽 발췌` : `${total(d)}쪽`}</small></span></button>`; }
+  function bookHTML(l) {
+    const d = doc(l.slug), m = info(l.slug), link = LINKS[l.slug];
+    const pages = d ? (d.pages.length < total(d) ? `${total(d)}쪽 중 ${d.pages.length}쪽` : `${total(d)}쪽`) : "";
+    return `<article class="book">
+      ${d ? `<button class="cover" data-lb="${l.slug}" data-i="0" type="button" aria-label="${esc(l.t)} 넘겨 보기">${img(`assets/docs/${l.slug}/${d.pages[0]}`, l.t + " 표지")}<span class="peek">▶ 넘겨 보기</span></button>` : `<div class="cover ph" aria-hidden="true"><span>${esc(l.t)}</span><small>원본 PDF로 열람</small></div>`}
+      <div class="meta"><small class="eyebrow">${esc(l.grp)}${m.updated ? ` · ${esc(String(m.updated).slice(0, 7).replace("-", "."))}` : ""}</small><b>${esc(l.t)}</b><small>${esc(l.s)}${pages ? " · " + pages : ""}</small>
+        ${m.summary ? `<p class="sum">${esc(m.summary)}</p>` : ""}
+        ${m.points && m.points.length ? `<ul class="pts">${m.points.slice(0, 3).map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : ""}
+        <div class="acts">${d ? `<button class="btn em sm" data-lb="${l.slug}" data-i="0" type="button">페이지 보기</button>` : ""}${link ? `<a class="btn sm" ${ext(link)}>원본 ↗</a>` : ""}${l.url2 ? `<a class="btn sm" ${ext(l.url2[1])}>${esc(l.url2[0])} ↗</a>` : ""}</div></div></article>`;
+  }
 
-  S.others = () => `<div class="grid2">
-    <article class="card" style="padding:22px"><span class="chip em">SOLO · 2024.12</span><h3 style="font-size:1.4rem;margin:8px 0">아스가르드 폴 오리진스 · 라그나로크 모드</h3>
-      <p class="muted" style="font-size:.9rem">반복 전투로 금세 지루해지는 로그라이크에, 확률로 터지는 돌발 퀘스트 3종(발키리의 가호 · 로키의 분신 · 발할라의 결투장)을 넣는 신규 모드 제안서.</p>
-      <ul class="list" style="margin-top:12px"><li>발동 확률 10% → 5% → 1%, 실패 시 확률 20% 감소</li><li>누적 보상 1회 경험치 → 3회 스킬 레벨업 → 5회 특수 스킬</li></ul>
-      <div style="margin-top:14px">${strip("asgard", 6)}</div></article>
-    <article class="card" style="padding:22px"><span class="chip em">TEAM · 2025.07 – 2026.01</span><h3 style="font-size:1.4rem;margin:8px 0">S.I 프로젝트 (Unity)</h3>
-      <p class="muted" style="font-size:.9rem">Unity 팀 프로젝트에서 맵 동선과 오브젝트 배치 기획, QA를 맡았습니다.</p>
-      <h4 style="font-family:var(--f-body);font-size:.95rem;margin:18px 0 8px">이전 개인 기획서</h4>
-      <div class="shelf" style="grid-template-columns:repeat(auto-fill,minmax(150px,1fr))">${LIB.filter(l => l.grp === "개인 기획서" && l.slug !== "asgard" && doc(l.slug)).map(bookHTML).join("")}</div>
-      <p class="note" style="margin-top:10px">오버워치2 신규 영웅, 원신 신규 보스, 림버스 컴퍼니 전투 기획서(인격 · E.G.O)는 <a ${ext(FOLDER)} style="color:var(--em)">포트폴리오 폴더</a>에서 볼 수 있습니다.</p></article>
-  </div>`;
+  S.others = () => `<div class="shelf wide">${LIB.filter(l => l.grp === "개인 기획서" && has(l)).map(bookHTML).join("")}</div>`;
+  S.exp = () => `<div class="shelf wide">${LIB.filter(l => l.grp === "경험 · 성과" && has(l)).map(bookHTML).join("")}</div>`;
 
   S.process = () => {
     const P = global.PROTO_SHOTS || [];
@@ -281,7 +287,7 @@
 
   S.library = () => {
     const groups = [...new Set(LIB.map(l => l.grp))];
-    return groups.map(g => { const items = LIB.filter(l => l.grp === g && doc(l.slug)); if (!items.length) return ""; return `<h3 style="font-family:var(--f-pixel);font-weight:400;font-size:.9rem;color:var(--em);margin:18px 0 10px">${esc(g)}</h3><div class="shelf">${items.map(bookHTML).join("")}</div>`; }).join("");
+    return groups.map(g => { const items = LIB.filter(l => l.grp === g && has(l)); if (!items.length) return ""; return `<h3 style="font-family:var(--f-pixel);font-weight:400;font-size:.9rem;color:var(--em);margin:18px 0 10px">${esc(g)}</h3><div class="shelf wide">${items.map(bookHTML).join("")}</div>`; }).join("");
   };
 
   S.reviews = () => {
@@ -393,5 +399,36 @@
     return d.pages.map((p, i) => ({ src: pageSrc(d, i), cap: `${d.title} · 원본 ${srcNo(d, i)}쪽 / ${total(d)}${d.pages.length < total(d) ? ` (발췌 ${i + 1}/${d.pages.length})` : ""}` }));
   }
 
-  global.PF = { LETTER_PDF, PROFILE, TIMELINE, REVIEWS, NOTION, LIB, S, bind, images, doc, esc };
+  /* ═══════════ 전시관 구성 ═══════════ */
+  function docItem(slug, tag) {
+    const l = LIB.find(x => x.slug === slug) || { t: slug, s: "" }, d = doc(slug), m = info(slug);
+    if (!d && !m.summary) return null;
+    return { kind: "doc", tag: tag || l.grp, title: l.t, meta: l.s + (d ? ` · ${d.pages.length < total(d) ? total(d) + "쪽 중 " + d.pages.length + "쪽" : total(d) + "쪽"}` : ""), img: d ? pageSrc(d, 0) : null, summary: m.summary, points: m.points, lb: d ? slug : null, url: LINKS[slug] };
+  }
+  function halls() {
+    const L = LETTER;
+    return {
+      seodang: { name: "서당 · 자기소개서관", sub: "자기소개서", intro: "기획자가 걸어온 길을 자기소개서 순서대로 걸어 두었습니다. 작품 앞에 서면 해설이 열립니다.", items: [
+        { kind: "text", tag: "표지", title: PROFILE.headline, lede: PROFILE.name + " · 게임 기획자", summary: "자기소개서 표지 문장입니다. 게임을 하면 재미의 구조부터 분해하고, 그 분석을 기획서와 데이터로 옮기는 기획자입니다.", url: LETTER_PDF, meta: "자기소개서 원본 PDF" },
+        ...L.map((x, i) => ({ kind: "text", tag: "자기소개서", title: x.h, lede: x.k, meta: x.k, summary: x.p.join(" "), html: x.links.length ? `<ul class="gc-links">${x.links.map(([ty, t, sub, u]) => `<li><a ${ext(u)}><span>${esc(ty)}</span>${esc(t)}</a></li>`).join("")}</ul>` : "" })),
+        { kind: "text", tag: "목표", title: "기억에 남는 게임", lede: "기획자가 된 이유", summary: PROFILE.goal },
+        { kind: "widget", tag: "연표", title: "경력 · 학력", lede: "2022 – 2026", summary: "달콤소프트 운영 기획, Unity 팀 프로젝트, 보드게임 제작, 그리고 지금의 Project Joseon까지.", open: "career", openLabel: "연표 펼치기" }
+      ] },
+      gongbang: { name: "공방 · Project Joseon관", sub: "조선 판타지 팀 프로젝트", intro: "조선을 배경으로 한 익스트랙션 액션. 캐릭터의 강함은 레벨이 아니라 인벤토리 「의식판」에 무엇을 붙이느냐로 정해집니다.", items: [
+        { kind: "text", tag: "프로젝트", title: "Project Joseon", lede: "2026.08 합류 · 팀 기획", summary: "조정 · 반란군 · 귀 세 진영이 싸우는 조선 판타지 익스트랙션 액션입니다. 아이템 · 데이터 · 전투 체계, 캐릭터, 맵, UIUX 문서를 맡고 있습니다.", open: "joseon", openLabel: "프로젝트 자세히" },
+        ...["coreloop", "item-v1", "combat-v2", "effects", "mudang", "seonbi", "map", "map-setting", "enemy", "weapon", "uiux"].map(x => docItem(x, "기획서")).filter(Boolean),
+        (global.PROTO_SHOTS || [])[0] ? { kind: "doc", tag: "AI 목업", title: "AI로 만든 인벤토리 UI 목업", meta: "inventory_uiux.html · 2026.08", img: global.PROTO_SHOTS[0][0], summary: "UIUX 기획서의 의식판(인벤토리) 화면을 AI로 HTML 목업까지 만들어, 배치와 인접 규칙을 화면에서 바로 검토할 수 있게 했습니다.", lb: "proto" } : null,
+        { kind: "widget", tag: "체험", title: "전투 공식 계산기", lede: "v2.0 공식 그대로", summary: "무기 공격력, 속성 수치, 상대 방어력을 바꾸면 평타 · 스킬 · 패링 · 봉인 수치가 바로 계산됩니다.", open: "joseon#combat", openLabel: "계산기 열기" },
+        { kind: "widget", tag: "체험", title: "인벤토리 인접 효과 퍼즐", lede: "부적을 칼끝에", summary: "퇴마 아이템을 사인검 칼끝에 붙이면 공격력 +8%가 켜지는 인접 규칙을 직접 만져 볼 수 있습니다.", open: "joseon#item", openLabel: "퍼즐 열기" }
+      ].filter(Boolean) },
+      seogo: { name: "장서각 · 개인 기획서관", sub: "기존 게임에 새 콘텐츠를 얹은 기획서", intro: "원작의 규칙을 먼저 분석하고, 그 안에서 새 콘텐츠가 설 자리를 찾은 기획서들입니다.", items:
+        ["ow2", "genshin", "limbus", "analysis", "asgard"].map(x => docItem(x, "개인 기획서")).filter(Boolean) },
+      seoru: { name: "관아 · 경험과 성과관", sub: "현장에서 확인한 기획", intro: "팀 프로젝트, 보드게임 제작, 그리고 현장 업무에서 숫자로 확인한 제안들입니다.", items: [
+        ...["teamproj", "boardgame", "work"].map(x => docItem(x, "경험")).filter(Boolean),
+        ...ACHV.map(a => ({ kind: "text", tag: "성과", title: a.big, lede: a.t, meta: a.t, summary: a.d }))
+      ] }
+    };
+  }
+
+  global.PF = { halls, LETTER_PDF, PROFILE, TIMELINE, REVIEWS, NOTION, LIB, S, bind, images, doc, esc };
 })(window);
