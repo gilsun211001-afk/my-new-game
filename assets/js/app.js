@@ -116,25 +116,25 @@
   let mode = "title", worldReady = false, updateMini = null;
 
   const NPC_DEFS = [
-    { id: "designer", name: "임창민", sub: "기획자", x: 24, y: 20, style: DESIGNER_STYLE, node: "hello" },
-    { id: "hunjang", name: "훈장", sub: "서당", x: 11, y: 15, style: { robe: "#e9e3d2", robeHi: "#fff8e8", hat: "gat", accent: "#b8452f", collar: "#fff", belt: "#6b4431", hair: "#8a8a8a" }, node: "seodang" },
-    { id: "jangin", name: "장인", sub: "공방", x: 34, y: 15, style: { robe: "#5a3b28", robeHi: "#7a543b", hat: "cap", collar: "#d9cdb0", belt: "#2b1d14" }, node: "gongbang" },
-    { id: "mudang", name: "무당", sub: "신당", x: 37, y: 17, style: { robe: "#f1ece0", robeHi: "#fff", hat: "shaman", collar: "#b8452f", belt: "#b8452f", tie: "#2d6f9e", hair: "#15100d" }, node: "mudang" },
-    { id: "satto", name: "사또", sub: "관아", x: 35, y: 22, style: { robe: "#6b2d3a", robeHi: "#8a3c4c", hat: "gat", accent: "#e8c66a", collar: "#f4efe2", belt: "#e8c66a" }, node: "seoru" },
-    { id: "saseo", name: "사서", sub: "기획서관", x: 25, y: 10, style: { robe: "#2d4f6e", robeHi: "#3f6a90", hat: "gat", accent: "#e8c66a", collar: "#e9e3d2", belt: "#1c2733" }, node: "seogo" },
-    { id: "jumo", name: "주모", sub: "주막", x: 9, y: 22, style: { robe: "#9a4a3a", robeHi: "#b8604e", hat: "bun", hair: "#1a1410", collar: "#f4efe2", belt: "#f4efe2" }, node: "jumak" },
-    { id: "pabal", name: "파발꾼", sub: "역참", x: 31, y: 27, style: { robe: "#3b3f3d", robeHi: "#555b58", hat: "helmet", collar: "#b8452f", belt: "#b8452f" }, node: "yeokcham" }
+    { id: "designer", name: "임창민", sub: "기획자", x: 22, y: 20, style: DESIGNER_STYLE, node: "hello" },
+    { id: "hunjang", name: "훈장", sub: "서당", x: 15, y: 11, style: { robe: "#e9e3d2", robeHi: "#fff8e8", hat: "gat", accent: "#b8452f", collar: "#fff", belt: "#6b4431", hair: "#8a8a8a" }, node: "seodang" },
+    { id: "jangin", name: "장인", sub: "공방", x: 33, y: 11, style: { robe: "#5a3b28", robeHi: "#7a543b", hat: "cap", collar: "#d9cdb0", belt: "#2b1d14" }, node: "gongbang" },
+    { id: "mudang", name: "무당", sub: "신당", x: 36, y: 12, style: { robe: "#f1ece0", robeHi: "#fff", hat: "shaman", collar: "#b8452f", belt: "#b8452f", tie: "#2d6f9e", hair: "#15100d" }, node: "mudang" },
+    { id: "satto", name: "사또", sub: "관아", x: 35, y: 21, style: { robe: "#6b2d3a", robeHi: "#8a3c4c", hat: "gat", accent: "#e8c66a", collar: "#f4efe2", belt: "#e8c66a" }, node: "seoru" },
+    { id: "saseo", name: "사서", sub: "기획서관", x: 25, y: 17, style: { robe: "#2d4f6e", robeHi: "#3f6a90", hat: "gat", accent: "#e8c66a", collar: "#e9e3d2", belt: "#1c2733" }, node: "seogo" },
+    { id: "jumo", name: "주모", sub: "주막", x: 8, y: 21, style: { robe: "#9a4a3a", robeHi: "#b8604e", hat: "bun", hair: "#1a1410", collar: "#f4efe2", belt: "#f4efe2" }, node: "jumak" },
+    { id: "pabal", name: "파발꾼", sub: "역참", x: 32, y: 27, style: { robe: "#3b3f3d", robeHi: "#555b58", hat: "helmet", collar: "#b8452f", belt: "#b8452f" }, node: "yeokcham" }
   ];
 
   /* dialogue script: text | choices [label, action] ; action: "node:x" | "open:a,b" | "end" | fn */
   const REVIEW_LINES = PF.REVIEWS.map(r => `「${r.n}」 말이우? "${r.k}"`);
   const D = {
     hello: [{ t: `오셨군요! 저는 이 마을의 기록을 걸어 둔 기획자 ${PROFILE.name}입니다.` },
-      { t: "기획서관 · 서당 · 공방 · 관아에는 전시관을, 주막과 역참에는 이야기를 두었어요. 한 곳을 둘러보실 때마다 마을의 등불이 하나씩 다시 켜집니다.\n여섯 곳을 모두 밝혀 주시면, 광장에서 마지막 이야기를 들려드릴게요.\n참, 마을 곳곳에 흩어진 '기획 조각' 여덟 개도 찾아보세요. 제 이야기가 한 줄씩 적혀 있습니다.", c: [["서당(자기소개서관)부터 갈게요", "walk:seodang"], ["어디부터 가면 좋을까요?", "node:route"], ["당신은 어떤 기획자인가요?", "node:who"], ["혼자 둘러볼게요", "end"]] }],
-    route: [{ t: "처음이시라면 북쪽 서당에서 제 자기소개서를 먼저 읽어 주세요.\n그다음 동쪽 공방에서 지금 하고 있는 조선 판타지 프로젝트를 보시면 됩니다.", c: [["서당으로 데려다 줘요", "walk:seodang"], ["공방으로 데려다 줘요", "walk:gongbang"], ["관아로 데려다 줘요", "walk:seoru"], ["혼자 돌아볼게요", "end"]] }],
+      { t: "기획서관 · 서당 · 공방 · 관아에는 전시관을, 주막과 역참에는 이야기를 두었어요. 한 곳을 둘러보실 때마다 마을의 등불이 하나씩 다시 켜집니다.\n여섯 곳을 모두 밝혀 주시면, 광장에서 마지막 이야기를 들려드릴게요.\n참, 마을 곳곳에 흩어진 '기획 조각' 여덟 개도 찾아보세요. 제 이야기가 한 줄씩 적혀 있습니다.", c: [["가운데 기획서관부터 볼게요", "walk:seogo"], ["어디부터 가면 좋을까요?", "node:route"], ["당신은 어떤 기획자인가요?", "node:who"], ["혼자 둘러볼게요", "end"]] }],
+    route: [{ t: "바로 뒤, 마을 한가운데가 제 대표 기획서를 모아 둔 기획서관입니다.\n왼쪽 위 서당에는 자기소개서, 오른쪽 위 공방에는 지금 하고 있는 조선 판타지 프로젝트가 있어요.", c: [["기획서관으로 데려다 줘요", "walk:seogo"], ["서당으로 데려다 줘요", "walk:seodang"], ["공방으로 데려다 줘요", "walk:gongbang"], ["혼자 돌아볼게요", "end"]] }],
     who: [{ t: `"${PROFILE.headline}"\n게임을 하면 재미의 구조부터 뜯어 보고, 그걸 표와 공식으로 옮기는 게 제 일이에요.` },
       { t: "문서로 끝내지 않고, 필요하면 AI로 화면 목업까지 만들어 팀과 같은 그림을 봅니다.", c: [["자기소개서를 보여줘요", "open:letter,career"], ["고마워요", "end"]] }],
-    finale: [{ t: "보세요, 마을의 등불이 전부 켜졌습니다.\n누군가 제 기록을 끝까지 봐 준 덕분이에요. 정말 감사합니다." }, { t: () => gotScrolls.length >= 8 ? "기획 조각까지 여덟 개를 모두 모으셨군요! 이 마을의 모든 이야기를 아는 분은 당신이 처음입니다." : `기획 조각은 ${gotScrolls.length}/8개 모으셨네요. 남은 조각은 마을 가장자리 숲 근처에 있어요.` }, { t: "마음에 드셨다면 편하게 연락 주세요. 함께 기억에 남는 게임을 만들고 싶습니다.", c: [["연락처 보기", "open:contact"], ["자기소개서 전체 보기", "act:resume"], ["마을을 더 둘러볼게요", "end"]] }],
+    finale: [{ t: "보세요, 마을의 등불이 전부 켜졌습니다.\n누군가 제 기록을 끝까지 봐 준 덕분이에요. 정말 감사합니다." }, { t: () => gotScrolls.length >= 8 ? "기획 조각까지 여덟 개를 모두 모으셨군요! 이 마을의 모든 이야기를 아는 분은 당신이 처음입니다." : `기획 조각은 ${gotScrolls.length}/8개 모으셨네요. 남은 조각은 길에서 조금 벗어난 마을 가장자리에 있어요.` }, { t: "마음에 드셨다면 편하게 연락 주세요. 함께 기억에 남는 게임을 만들고 싶습니다.", c: [["연락처 보기", "open:contact"], ["자기소개서 전체 보기", "act:resume"], ["마을을 더 둘러볼게요", "end"]] }],
     seodang: [{ t: "허허, 서당에 온 걸 환영하네. 안쪽 전시관에 그 기획자의 자기소개서가 한 폭씩 걸려 있지." },
       { t: `이 사람의 목표가 무엇인지 아는가?\n"${PROFILE.goal}"`, c: [["전시관에 들어간다", "hall:seodang"], ["자기소개서 원본 PDF", "act:pdf"], ["다음에 올게요", "end"]] }],
     gongbang: [{ t: "여긴 Project Joseon 공방이오. 조선 판타지 탑뷰 액션이지.\n캐릭터 강함은 레벨이 아니라 인벤토리에 뭘 붙이느냐로만 정해진다네." },

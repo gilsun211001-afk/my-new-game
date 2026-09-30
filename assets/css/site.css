@@ -543,3 +543,5 @@ h1,h2,h3,h4{word-break:keep-all}
 .gal-card .gc-r .btn{margin-top:8px}
 @media (max-width:760px){.gal-card{display:block;max-height:calc(50% - 110px)}.gal-card .gc-r{margin-top:8px}}
 @media (pointer:coarse){.hbtn{min-height:44px;min-width:44px}}
+.quest #qText{white-space:nowrap}
+@media (max-width:420px){.quest{padding:6px 9px}.quest #qText{font-size:.74rem}.quest .bar{width:120px}}

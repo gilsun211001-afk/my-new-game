@@ -35,39 +35,32 @@
 
   function fillRect(x, y, w, h, v, arr = tiles) { for (let j = y; j < y + h; j++) for (let i = x; i < x + w; i++) if (inb(i, j)) arr[idx(i, j)] = v; }
 
-  /* ── layout: 광장(가운데) 둘레 반원에 전시관 배치 — 광장 중심에서 문까지 거리 9~10칸으로 통일 ── */
-  const PLAZA = { x: 17, y: 17, w: 11, h: 5 }, CENTER = { x: 22, y: 19 };
+  /* ── layout: 기획서관을 마을 정중앙에, 앞마당(광장)을 둘러 나머지 전시관을 원형 배치 ──
+     광장 중심(22,19)에서 각 문까지 직선거리 11~12칸 */
+  const PLAZA = { x: 16, y: 17, w: 13, h: 5 }, CENTER = { x: 22, y: 19 };
   fillRect(PLAZA.x, PLAZA.y, PLAZA.w, PLAZA.h, 4);
-  // stream along the south edge + bridge at the village entrance
-  for (let x = 0; x < MAP_W; x++) { const y = 28 + Math.round(Math.sin(x * .35) * 1); fillRect(x, y, 1, 2, 2); }
-  fillRect(20, 26, 4, 6, 3);
-  // map border solid
+  for (let x = 1; x < MAP_W - 1; x++) { const y = 29 + Math.round(Math.sin(x * .35) * 1); fillRect(x, y, 1, 2, 2); }
+  fillRect(20, 27, 4, 4, 3);
   for (let x = 0; x < MAP_W; x++) { solid[idx(x, 0)] = 1; solid[idx(x, MAP_H - 1)] = 1; }
   for (let y = 0; y < MAP_H; y++) { solid[idx(0, y)] = 1; solid[idx(MAP_W - 1, y)] = 1; }
   for (let i = 0; i < tiles.length; i++) if (tiles[i] === 2) solid[i] = 1;
 
-  /* buildings: x,y = top-left tile, w,h in tiles; door = tile in front */
   const BUILDINGS = [
-    { id: "seogo",    name: "기획서관", sub: "개인 기획서 전시", icon: "scroll", x: 17, y: 3,  w: 10, h: 6, roof: "#1b2733", trim: C.dancheongB, main: true },
-    { id: "seodang",  name: "서당",     sub: "자기소개서 · 경력", icon: "brush", x: 9,  y: 10, w: 8, h: 5, roof: C.roof, trim: C.dancheongG },
-    { id: "gongbang", name: "공방",     sub: "조선 프로젝트 기획서", icon: "hammer", x: 27, y: 10, w: 9, h: 5, roof: "#2a2320", trim: C.dancheongR },
-    { id: "jumak",    name: "주막",     sub: "게임 분석 도감", icon: "cup", x: 8,  y: 17, w: 8, h: 5, roof: "#2d2418", trim: C.dancheongR },
-    { id: "seoru",    name: "관아",     sub: "경험 · 성과 기록", icon: "seal", x: 28, y: 17, w: 8, h: 5, roof: "#2b1f2a", trim: C.dancheongB },
-    { id: "yeokcham", name: "역참",     sub: "연락처 · 노션", icon: "horse", x: 26, y: 23, w: 6, h: 4, roof: "#1f2b33", trim: C.dancheongG }
+    { id: "seogo",    name: "기획서관", sub: "개인 기획서 전시", x: 17, y: 11, w: 10, h: 6, roof: "#1b2733", trim: "#e8c66a", main: true },
+    { id: "seodang",  name: "서당",     sub: "자기소개서 · 경력", x: 9,  y: 6,  w: 8, h: 5, roof: C.roof, trim: C.dancheongG },
+    { id: "gongbang", name: "공방",     sub: "조선 프로젝트 기획서", x: 27, y: 6,  w: 9, h: 5, roof: "#2a2320", trim: C.dancheongR },
+    { id: "jumak",    name: "주막",     sub: "게임 분석 도감", x: 6,  y: 16, w: 8, h: 5, roof: "#2d2418", trim: C.dancheongR },
+    { id: "seoru",    name: "관아",     sub: "경험 · 성과 기록", x: 29, y: 16, w: 8, h: 5, roof: "#2b1f2a", trim: C.dancheongB },
+    { id: "yeokcham", name: "역참",     sub: "연락처 · 노션", x: 27, y: 23, w: 6, h: 4, roof: "#1f2b33", trim: C.dancheongG }
   ];
-  BUILDINGS.forEach(b => {
-    fillRect(b.x, b.y, b.w, b.h, 1, solid);
-    b.door = { x: b.x + Math.floor(b.w / 2), y: b.y + b.h };
-  });
-  // roads from the plaza to every door (draw after buildings so doorsteps are paved)
+  BUILDINGS.forEach(b => { fillRect(b.x, b.y, b.w, b.h, 1, solid); b.door = { x: b.x + Math.floor(b.w / 2), y: b.y + b.h }; });
   const road = (x, y, w, h) => { for (let j = y; j < y + h; j++) for (let i = x; i < x + w; i++) if (inb(i, j) && !solid[idx(i, j)] && tiles[idx(i, j)] !== 2) tiles[idx(i, j)] = tiles[idx(i, j)] === 4 ? 4 : 1; };
-  road(21, 9, 3, 8);                 // 기획서관 (north, main axis)
-  road(12, 15, 6, 2);                // 서당
-  road(27, 15, 6, 2);                // 공방
-  road(11, 22, 7, 2);                // 주막
-  road(27, 22, 7, 2);                // 관아
-  road(24, 22, 2, 6); road(24, 27, 6, 1);   // 역참
-  road(21, 22, 3, 4);                // 입구 → 광장
+  road(12, 11, 2, 7); road(12, 17, 5, 2);      // 서당
+  road(30, 11, 2, 7); road(28, 17, 4, 2);      // 공방
+  road(9, 21, 8, 2);                           // 주막
+  road(28, 21, 6, 2);                          // 관아
+  road(25, 22, 2, 6); road(25, 27, 6, 1);      // 역참
+  road(21, 22, 3, 5);                          // 입구 다리 → 광장
   BUILDINGS.forEach(b => { tiles[idx(b.door.x, b.door.y)] = 1; tiles[idx(b.door.x - 1, b.door.y)] = 1; });
 
   /* props (trees, lanterns, well, sign) */
@@ -82,29 +75,34 @@
     if (freeFor(x, y) && freeFor(x, y + 1) && !nearDoor(x, y)) { PROPS.push({ t: R() > .82 ? "blossom" : "pine", x, y }); solid[idx(x, y)] = 1; }
   }
   // stone lanterns: two per road, lit one by one as halls are visited
-  [[20, 12], [24, 12], [15, 14], [19, 14], [26, 14], [30, 14], [14, 24], [18, 24], [27, 21], [31, 24], [23, 25], [20, 25]]
-    .forEach(([x, y]) => { if (inb(x, y) && !solid[idx(x, y)] && tiles[idx(x, y)] !== 1) { PROPS.push({ t: "lantern", x, y }); solid[idx(x, y)] = 1; } });
-  PROPS.push({ t: "well", x: 19, y: 18 }); fillRect(19, 18, 2, 2, 1, solid);
-  PROPS.push({ t: "sign", x: 20, y: 24 }); solid[idx(20, 24)] = 1;
-  [[16, 8], [28, 8], [7, 15], [37, 15], [16, 20], [27, 25]].forEach(([x, y]) => { if (freeFor(x, y) && !nearDoor(x, y)) { PROPS.push({ t: "blossom", x, y }); solid[idx(x, y)] = 1; } });
+  // stone lanterns: two beside each hall's road — lit as that hall is visited
+  [["seogo", 16, 15], ["seogo", 28, 15], ["seodang", 11, 13], ["seodang", 14, 13], ["gongbang", 29, 13], ["gongbang", 32, 13],
+   ["jumak", 8, 23], ["jumak", 15, 23], ["seoru", 36, 23], ["seoru", 34, 23], ["yeokcham", 24, 26], ["yeokcham", 33, 26]]
+    .forEach(([hall, x, y]) => { if (inb(x, y) && !solid[idx(x, y)] && tiles[idx(x, y)] !== 2) { tiles[idx(x, y)] = 0; PROPS.push({ t: "lantern", x, y, hall }); solid[idx(x, y)] = 1; } });
+  PROPS.push({ t: "well", x: 17, y: 19 }); fillRect(17, 19, 2, 2, 1, solid);
+  PROPS.push({ t: "sign", x: 20, y: 25 }); solid[idx(20, 25)] = 1;
+  [[16, 9], [27, 12], [5, 14], [38, 14], [15, 26], [34, 26]].forEach(([x, y]) => { if (freeFor(x, y) && !nearDoor(x, y)) { PROPS.push({ t: "blossom", x, y }); solid[idx(x, y)] = 1; } });
   const FLOWERS = [];
   for (let i = 0; i < 90; i++) { const x = Math.floor(R() * MAP_W), y = Math.floor(R() * MAP_H); if (freeFor(x, y)) FLOWERS.push({ x, y, c: R() > .5 ? C.blossomHi : "#f2e29b", o: R() * 12 }); }
 
   /* collectibles: 기획 조각 (scroll pieces) scattered off the roads */
-  const SCROLLS = [[6, 7], [38, 7], [4, 25], [39, 25], [14, 3], [31, 4], [11, 27], [35, 28]]
-    .map(([x, y], i) => { let tx = x, ty = y; for (let k = 0; k < 12 && (!inb(tx, ty) || solid[idx(tx, ty)]); k++) { tx += (k % 2 ? 1 : -1) * (k + 1) % 3; ty += k % 3 === 0 ? 1 : 0; } return { i, x: tx, y: ty, got: false }; })
-    .filter(sc => inb(sc.x, sc.y) && !solid[idx(sc.x, sc.y)]);
+  // reachable tiles from the entrance (BFS) — every scroll must be collectable
+  const REACH = new Uint8Array(MAP_W * MAP_H); (function () { const q = [idx(22, 25)]; REACH[q[0]] = 1; while (q.length) { const c = q.shift(), cx = c % MAP_W, cy = (c / MAP_W) | 0; [[1, 0], [-1, 0], [0, 1], [0, -1]].forEach(([dx, dy]) => { const nx = cx + dx, ny = cy + dy, n = idx(nx, ny); if (inb(nx, ny) && !REACH[n] && !solid[n]) { REACH[n] = 1; q.push(n); } }); } })();
+  const nearestReach = (x, y) => { let best = null, bd = 1e9; for (let j = 1; j < MAP_H - 1; j++) for (let i = 1; i < MAP_W - 1; i++) { const n = idx(i, j); if (!REACH[n] || tiles[n] !== 0) continue; const d = (i - x) ** 2 + (j - y) ** 2; if (d < bd) { bd = d; best = [i, j]; } } return best; };
+  const SCROLLS = [[5, 4], [39, 4], [3, 24], [40, 24], [22, 5], [19, 9], [11, 26], [36, 27]]
+    .map(([x, y], i) => { const [tx, ty] = nearestReach(x, y); return { i, x: tx, y: ty, got: false }; });
   /* wandering villagers & a cat — decoration that makes the village feel alive */
   const CRITTERS = [
-    { kind: "kid", x: 19 * T, y: 21 * T, style: { robe: "#c9a227", robeHi: "#e3be45", hat: "topknot", hair: "#1a1410" } },
-    { kind: "kid", x: 25 * T, y: 18 * T, style: { robe: "#b8452f", robeHi: "#d05e46", hat: "bun", hair: "#1a1410" } },
-    { kind: "cat", x: 22 * T, y: 23 * T },
-    { kind: "elder", x: 13 * T, y: 23 * T, style: { robe: "#e9e3d2", robeHi: "#fff8e8", hat: "gat", accent: "#6b4431", hair: "#9a9a9a" } }
-  ].map(c => Object.assign(c, { tx: c.x, ty: c.y, dir: 0, anim: 0, wait: Math.random() * 2 }));
+    { kind: "kid", x: 20 * T, y: 20 * T, style: { robe: "#c9a227", robeHi: "#e3be45", hat: "topknot", hair: "#1a1410" } },
+    { kind: "kid", x: 26 * T, y: 20 * T, style: { robe: "#b8452f", robeHi: "#d05e46", hat: "bun", hair: "#1a1410" } },
+    { kind: "cat", x: 23 * T, y: 24 * T },
+    { kind: "elder", x: 14 * T, y: 24 * T, style: { robe: "#e9e3d2", robeHi: "#fff8e8", hat: "gat", accent: "#6b4431", hair: "#9a9a9a" } }
+  ].map(c => Object.assign(c, { hx: c.x, hy: c.y, tx: c.x, ty: c.y, dir: 0, anim: 0, wait: Math.random() * 2 }));
   const PARTS = [];
 
   const WATER = []; for (let i = 0; i < tiles.length; i++) if (tiles[i] === 2) WATER.push(i);
   const LANTERNS = PROPS.filter(p => p.t === "lantern");
+
   /* ── NPCs ── */
   const NPCS = [];
   function addNPC(o) { NPCS.push(Object.assign({ dir: 0, frame: 0, t: 0 }, o)); solid[idx(o.x, o.y)] = 1; }
@@ -112,7 +110,7 @@
   /* ── state ── */
   const S = {
     canvas: null, ctx: null, scale: 3, W: 0, H: 0,
-    player: { x: 22 * T, y: 26 * T, dir: 1, frame: 0, anim: 0, moving: false },
+    player: { x: 22 * T, y: 25 * T, dir: 1, frame: 0, anim: 0, moving: false },
     keys: {}, cam: { x: 0, y: 0 }, t: 0, running: false, paused: true,
     target: null, path: null, nearby: null, onInteract: null, onNear: null,
     stick: { x: 0, y: 0 }, fireflies: [], staticLayer: null, lastTs: 0, stepSfx: null
@@ -392,7 +390,7 @@
     // camera
     const vw = S.W / S.scale, vh = S.H / S.scale;
     const cx = Math.max(0, Math.min(MAP_W * T - vw, pl.x + 8 - vw / 2));
-    const cy = Math.max(0, Math.min(MAP_H * T - vh, pl.y + 8 - vh / 2));
+    const cy = Math.max(0, Math.min(MAP_H * T - vh, pl.y + 8 - vh * .56));
     S.cam.x += (cx - S.cam.x) * Math.min(1, dt * 8); S.cam.y += (cy - S.cam.y) * Math.min(1, dt * 8);
     if (MAP_W * T < vw) S.cam.x = (MAP_W * T - vw) / 2;
     if (MAP_H * T < vh) S.cam.y = (MAP_H * T - vh) / 2;
@@ -400,7 +398,7 @@
     CRITTERS.forEach(c => {
       if (c.wait > 0) { c.wait -= dt; c.anim = 0; return; }
       const dx = c.tx - c.x, dy = c.ty - c.y, d = Math.hypot(dx, dy);
-      if (d < 1) { c.wait = 1 + Math.random() * 3; for (let k = 0; k < 8; k++) { const nx = c.x + (Math.random() - .5) * 6 * T, ny = c.y + (Math.random() - .5) * 4 * T; if (!blocked(nx, ny)) { c.tx = nx; c.ty = ny; break; } } return; }
+      if (d < 1) { c.wait = 1 + Math.random() * 3; for (let k = 0; k < 8; k++) { const nx = c.hx + (Math.random() - .5) * 6 * T, ny = c.hy + (Math.random() - .5) * 4 * T, tx = Math.floor((nx + 8) / T), ty = Math.floor((ny + 13) / T); if (blocked(nx, ny) || BUILDINGS.some(b => Math.abs(b.door.x - tx) <= 1 && Math.abs(b.door.y - ty) <= 1) || NPCS.some(n => Math.abs(n.x - tx) <= 1 && Math.abs(n.y - ty) <= 1)) continue; c.tx = nx; c.ty = ny; break; } return; }
       const sp = (c.kind === "cat" ? 34 : c.kind === "elder" ? 16 : 26) * dt, mx = dx / d * sp, my = dy / d * sp;
       if (blocked(c.x + mx, c.y + my)) { c.tx = c.x; c.ty = c.y; return; }
       c.x += mx; c.y += my; c.dir = Math.abs(dx) > Math.abs(dy) ? (dx < 0 ? 2 : 3) : (dy < 0 ? 1 : 0); c.anim += dt * 7;
@@ -449,14 +447,16 @@
     const dprL = S.W / Math.max(1, S.canvas.clientWidth), fs = Math.round(18 * dprL), fs2 = Math.round(14 * dprL);
     g.textAlign = "center"; g.textBaseline = "middle";
     BUILDINGS.forEach(b => {
-      if (!b.label) return; const sx = Math.round((b.label.x - S.cam.x) * sc), sy = Math.round((b.label.y - S.cam.y) * sc) + 1;
-      if (sx < -140 || sx > S.W + 140 || sy < -60 || sy > S.H + 60) return;
-      g.font = `700 ${fs}px Galmuri11, 'IBM Plex Sans KR', sans-serif`; g.fillStyle = "#0a0604"; g.fillText(b.name, sx + 1, sy + 1); g.fillStyle = b.main ? "#ffe9a8" : "#f3dea0"; g.fillText(b.name, sx, sy);
-      // what's inside — second line on a dark plate under the sign board
-      g.font = `400 ${fs2}px Galmuri11, 'IBM Plex Sans KR', sans-serif`;
-      const w = g.measureText(b.sub).width + fs2 * 1.2, y2 = sy + fs * 1.25;
-      g.fillStyle = "rgba(6,14,11,.82)"; g.fillRect(Math.round(sx - w / 2), Math.round(y2 - fs2 * .75), Math.round(w), Math.round(fs2 * 1.5));
-      g.fillStyle = S.visited && S.visited.includes(b.id) ? "#8ff0c8" : "#2ee6a6"; g.fillText((S.visited && S.visited.includes(b.id) ? "✓ " : "") + b.sub, sx, y2);
+      const sx = Math.round(((b.x + b.w / 2) * T - S.cam.x) * sc), top = Math.round(((b.y - 1.2) * T - S.cam.y) * sc);
+      if (sx < -160 || sx > S.W + 160 || top < -80 || top > S.H + 60) return;
+      const done = S.visited && S.visited.includes(b.id), title = (b.main ? "★ " : "") + b.name, sub = (done ? "✓ " : "") + b.sub;
+      g.font = `700 ${b.main ? Math.round(fs * 1.2) : fs}px Galmuri11, 'IBM Plex Sans KR', sans-serif`; const w1 = g.measureText(title).width;
+      g.font = `400 ${fs2}px Galmuri11, 'IBM Plex Sans KR', sans-serif`; const w2 = g.measureText(sub).width;
+      const w = Math.max(w1, w2) + fs * 1.4, h = fs * 1.35 + fs2 * 1.6, x0 = Math.round(sx - w / 2), y0 = Math.round(top - h);
+      g.fillStyle = b.main ? "rgba(40,28,8,.92)" : "rgba(6,14,11,.86)"; g.fillRect(x0, y0, Math.round(w), Math.round(h));
+      g.fillStyle = b.main ? "#e8c66a" : done ? "#2ee6a6" : "#3b5a4e"; g.fillRect(x0, y0 + Math.round(h) - 2, Math.round(w), 2);
+      g.font = `700 ${b.main ? Math.round(fs * 1.2) : fs}px Galmuri11, 'IBM Plex Sans KR', sans-serif`; g.fillStyle = b.main ? "#ffe39a" : "#f3dea0"; g.fillText(title, sx, y0 + fs * .85);
+      g.font = `400 ${fs2}px Galmuri11, 'IBM Plex Sans KR', sans-serif`; g.fillStyle = done ? "#8ff0c8" : "#9fe7c9"; g.fillText(sub, sx, y0 + fs * 1.35 + fs2 * .75);
     });
     S.fireflies.forEach(f => {
       const sx = (f.x - S.cam.x) * sc, sy = (f.y - S.cam.y) * sc; if (sx < -10 || sy < -10 || sx > S.W + 10 || sy > S.H + 10) return;
@@ -485,7 +485,7 @@
     const dpr = Math.min(1.5, window.devicePixelRatio || 1);
     S.W = S.canvas.width = Math.max(1, Math.floor(r.width * dpr)); S.H = S.canvas.height = Math.max(1, Math.floor(r.height * dpr));
     // integer scale so ~22 tiles fit horizontally on desktop, ~11 on phones
-    const cssScale = r.width < 520 ? 2.6 : r.width < 900 ? 3 : 3.2;
+    const cssScale = r.width < 520 ? 2.2 : r.width < 900 ? 2.8 : 3.2;
     S.scale = Math.max(2, Math.round(cssScale * dpr));
   }
 
@@ -511,9 +511,10 @@
     person: (g, x, y, dir, frame, style) => drawPerson(g, x, y, dir, frame, style),
     /* story: light n of the lanterns (0..6 halls visited) */
     setVisited(v) { S.visited = v.slice(); },
+    debugInfo: () => ({ scrolls: SCROLLS.map(sc => [sc.x, sc.y, !!REACH[idx(sc.x, sc.y)]]), lanterns: LANTERNS.map(p => [p.x, p.y, p.hall]), doors: BUILDINGS.map(b => [b.id, b.door.x, b.door.y, !!REACH[idx(b.door.x, b.door.y)], tiles[idx(b.door.x, b.door.y)]]), npcs: NPCS.map(n => [n.id, n.x, n.y, tiles[idx(n.x, n.y)]]) }),
     scrolls: () => SCROLLS.map(sc => ({ i: sc.i, got: sc.got })),
     setScrolls(got) { SCROLLS.forEach(sc => sc.got = got.includes(sc.i)); },
-    setLit(n, total = 6) { const k = Math.round(LANTERNS.length * Math.min(1, n / total)); LANTERNS.forEach((p, i) => { const was = p.lit; p.lit = i < k; if (p.lit && !was && S.running && S.litOnce) { burst(p.x * T + 8, p.y * T + 2, "#8ff0c8", 22); } }); S.litOnce = true; S.dark = .38 * (1 - Math.min(1, n / total)); },
+    setLit(n, total = 6) { const v = S.visited || []; LANTERNS.forEach(p => { const was = p.lit; p.lit = !!p.hall && v.includes(p.hall); if (p.lit && !was && S.litOnce) burst(p.x * T + 8, p.y * T + 2, "#8ff0c8", 22); }); S.litOnce = true; S.dark = .38 * (1 - Math.min(1, n / total)); },
     bindInput() {
       addEventListener("keydown", e => {
         if (S.paused || e.defaultPrevented) return;

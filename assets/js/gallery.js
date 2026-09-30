@@ -71,17 +71,17 @@
       this.raf = requestAnimationFrame(tt => this.loop(tt));
       const dt = Math.min(.05, this.last ? (t - this.last) / 1000 : 0); this.last = t;
       let v = 0; if (this.keys.arrowleft || this.keys.a) v -= 1; if (this.keys.arrowright || this.keys.d) v += 1;
-      if (!v && this.target !== null) { const d = this.target - this.x; if (Math.abs(d) < 6) { this.x = this.target; this.target = null; } else v = Math.sign(d) * Math.min(Math.max(1, Math.abs(d) / 400), Math.abs(d) / 60 + .35); }
+      if (!v && this.target !== null) { const d = this.target - this.x; if (Math.abs(d) < 6) { this.x = this.target; this.target = null; const ai = this.items.findIndex(it => it.x === this.x); if (ai >= 0) { this.seenSet.add(ai); this.seen = this.seenSet.size; } } else v = Math.sign(d) * Math.min(Math.max(1, Math.abs(d) / 400), Math.abs(d) / 60 + .35); }
       if (v) { this.x = Math.max(60, Math.min(this.len - 120, this.x + Math.max(-3, Math.min(3, v)) * 300 * dt)); v = Math.sign(v); this.dir = v < 0 ? 2 : 3; this.anim += dt * 9; this.frame = Math.floor(this.anim) % 2; if (Math.floor(this.anim) !== this._ls) { this._ls = Math.floor(this.anim); this.cb.step && this._ls % 2 === 0 && this.cb.step(); } }
       else this.frame = 0;
       if (this.x <= 62 && v < 0) { this.close(); return; }
       // nearest exhibit
-      if (this.active >= 0 && !v) { this.dwell += dt; if (this.dwell > 1 && !this.seenSet.has(this.active)) { this.seenSet.add(this.active); this.seen = this.seenSet.size; } } else this.dwell = 0;
+      if (this.active >= 0 && !v) { this.dwell += dt; if (this.dwell > .6 && !this.seenSet.has(this.active)) { this.seenSet.add(this.active); this.seen = this.seenSet.size; } } else this.dwell = 0;
       let best = -1, bd = 190; this.items.forEach((it, i) => { const d = Math.abs(it.x - this.x); if (d < bd) { bd = d; best = i; } });
       if (best !== this.active) this.setActive(best);
       const moving = v || Math.abs((this._camGoal || 0) - (this._cam || 0)) > .5;
       this.render();
-      if (!moving && !this.bannerOn) { this.idle += dt; if (this.idle > .6 && (this.active < 0 || this.dwell > 1.05)) { this.sleeping = true; cancelAnimationFrame(this.raf); return; } } else this.idle = 0;
+      if (!moving && !this.bannerOn) { this.idle += dt; if (this.idle > .6 && (this.active < 0 || this.dwell > .65)) { this.sleeping = true; cancelAnimationFrame(this.raf); return; } } else this.idle = 0;
     },
     wake() { if (this.open && this.sleeping) { this.sleeping = false; this.idle = 0; this.last = 0; cancelAnimationFrame(this.raf); this.raf = requestAnimationFrame(t => this.loop(t)); } },
     render() {

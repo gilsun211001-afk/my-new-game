@@ -413,8 +413,7 @@
     return {
       seodang: { name: "서당 · 자기소개서관", sub: "자기소개서", intro: "기획자가 걸어온 길을 자기소개서 순서대로 걸어 두었습니다. 작품 앞에 서면 해설이 열립니다.", items: [
         { kind: "text", tag: "표지", title: PROFILE.headline, lede: PROFILE.name + " · 게임 기획자", summary: "자기소개서 표지 문장입니다. 게임을 하면 재미의 구조부터 분해하고, 그 분석을 기획서와 데이터로 옮기는 기획자입니다.", url: LETTER_PDF, meta: "자기소개서 원본 PDF" },
-        ...L.map((x, i) => ({ kind: "text", tag: "자기소개서", title: x.h, lede: x.k, meta: x.k, summary: x.p.join(" "), html: x.links.length ? `<ul class="gc-links">${x.links.map(([ty, t, sub, u]) => `<li><a ${ext(u)}><span>${esc(ty)}</span>${esc(t)}</a></li>`).join("")}</ul>` : "" })),
-        { kind: "text", tag: "목표", title: "기억에 남는 게임", lede: "기획자가 된 이유", summary: PROFILE.goal },
+        ...L.map((x, i) => ({ kind: "text", tag: "자기소개서", title: x.h, lede: x.k, meta: x.k, summary: x.p.join(" ") + (i === L.length - 1 ? " " + PROFILE.goal : ""), html: x.links.length ? `<ul class="gc-links">${x.links.map(([ty, t, sub, u]) => `<li><a ${ext(u)}><span>${esc(ty)}</span>${esc(t)}</a></li>`).join("")}</ul>` : "" })),
         { kind: "widget", tag: "연표", title: "경력 · 학력", lede: "2022 – 2026", summary: "달콤소프트 운영 기획, Unity 팀 프로젝트, 보드게임 제작, 그리고 지금의 Project Joseon까지.", open: "career", openLabel: "연표 펼치기" }
       ] },
       gongbang: { name: "공방 · Project Joseon관", sub: "조선 판타지 팀 프로젝트", intro: "조선을 배경으로 한 탑뷰 액션. 초기 컨셉은 익스트랙션 PvPvE였고, 지금은 코어루프 v0.3의 하데스류 런 구조로 프로토타입을 검증하고 있습니다. 캐릭터의 강함은 레벨이 아니라 인벤토리 「의식판」에 무엇을 붙이느냐로 정해집니다.", items: [
