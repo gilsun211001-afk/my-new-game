@@ -1,0 +1,32 @@
+[
+ {
+  "slug": "ow2",
+  "pages": [
+   "p01.webp"
+  ],
+  "pageNotes": [
+   "소개 카드 (원본 표지는 PDF에서 열람)"
+  ],
+  "altCover": true
+ },
+ {
+  "slug": "genshin",
+  "pages": [
+   "p01.webp"
+  ],
+  "pageNotes": [
+   "소개 카드 (원본 표지는 PDF에서 열람)"
+  ],
+  "altCover": true
+ },
+ {
+  "slug": "limbus",
+  "pages": [
+   "p01.webp"
+  ],
+  "pageNotes": [
+   "소개 카드 (원본 표지는 PDF에서 열람)"
+  ],
+  "altCover": true
+ }
+]

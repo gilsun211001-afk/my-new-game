@@ -1,0 +1,64 @@
+[
+ {
+  "slug": "asgard",
+  "title": "아스가르드 폴 오리진스 신규 모드 기획",
+  "pages": [
+   "p01.webp",
+   "p02.webp",
+   "p03.webp",
+   "p04.webp",
+   "p05.webp",
+   "p06.webp",
+   "p07.webp",
+   "p08.webp",
+   "p09.webp",
+   "p10.webp",
+   "p11.webp",
+   "p12.webp"
+  ],
+  "pageCount": 12,
+  "sourcePages": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12
+  ]
+ },
+ {
+  "slug": "analysis",
+  "title": "테일즈런너 개선 기획서",
+  "pages": [
+   "p01.webp",
+   "p02.webp",
+   "p03.webp",
+   "p04.webp",
+   "p05.webp",
+   "p06.webp",
+   "p07.webp",
+   "p08.webp",
+   "p09.webp",
+   "p10.webp"
+  ],
+  "pageCount": 12,
+  "sourcePages": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   8,
+   9,
+   10,
+   11
+  ]
+ }
+]
