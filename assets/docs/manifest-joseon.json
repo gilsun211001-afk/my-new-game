@@ -422,11 +422,9 @@
  },
  {
   "slug": "uiux",
-  "title": "Project Joseon UIUX 기획서 v2",
+  "title": "Project Joseon UIUX 기획서",
   "pages": [
    "p01.webp",
-   "p02.webp",
-   "p03.webp",
    "p04.webp",
    "p05.webp",
    "p06.webp",
@@ -440,8 +438,6 @@
   "pageCount": 17,
   "sourcePages": [
    1,
-   2,
-   3,
    4,
    5,
    6,
@@ -463,8 +459,6 @@
   ],
   "pageNotes": [
    "표지",
-   "문서 목적과 요청 배경 5개 항목",
-   "의식판 화면 구성 개요",
    "캐릭터 패널과 인벤토리 제작 유의사항",
    "설정 화면 구조: ESC로 진입",
    "단축키 정리(I·ESC·우클릭·Ctrl+Z·F)",

@@ -413,7 +413,7 @@
     if (!S.running) { S.rafOn = false; return; }
     requestAnimationFrame(loop);
     if (document.hidden) return;
-    if (S.paused && ts - (S.lastDraw || 0) < 90) return;          // ~11fps while a panel/dialogue is open
+    if (S.paused && ts - (S.lastDraw || 0) < 200) return;         // ~5fps while a panel/dialogue is open
     const dt = Math.min(.05, (ts - (S.lastTs || ts)) / 1000); S.lastTs = ts; S.t = ts; S.lastDraw = ts;
     if (S.needResize) resize();
     if (!S.paused) update(dt); else { S.fireflies.forEach(f => { f.a += dt * f.s; }); NPCS.forEach(n => n.t += dt); }

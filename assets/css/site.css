@@ -495,3 +495,42 @@ h1,h2,h3,h4{word-break:keep-all}
 .book .cover.ph{aspect-ratio:16/9;display:grid;place-content:center;gap:6px;text-align:center;cursor:default;background:linear-gradient(135deg,#0f2a21,#07110e);color:#e4f1eb;padding:16px}
 .book .cover.ph span{font:700 1.15rem var(--f-display)}
 .book .cover.ph small{font:400 .7rem var(--f-pixel);color:#2ee6a6}
+
+/* gallery layout v2 — 해설 카드를 바닥 영역에 도킹해 액자·캐릭터를 가리지 않게 */
+.gal{--wallEnd:58%}
+.gal-view{background:linear-gradient(180deg,#2a2018 0,#3b2d20 6%,#e8dcc2 6.4%,#efe5cf 34%,#e2d4b6 57.6%,#5a3f2a 57.8%,#4a3322 59.5%,#2e2016 100%)}
+.gal-view::before{height:51.4%}
+.gal-floor{height:42%}
+.door{top:18%;height:40%}
+.wall-end{height:51.4%}
+.ex{top:10%}
+.frame{width:300px}
+.ex{width:320px;margin-left:-160px}
+.gal-hero{bottom:calc(42% - 10px)}
+.gal-card{top:auto;right:50%;bottom:calc(12px + env(safe-area-inset-bottom,0px));transform:translate(50%,8px);width:min(980px,calc(100% - 32px));max-height:calc(42% - 86px);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:22px;align-content:start}
+.gal-card.show{transform:translate(50%,0)}
+.gal-card>.gc-head,.gal-card>h4,.gal-card>.meta,.gal-card>.sum{grid-column:1}
+.gal-card>ul,.gal-card>.gc-note,.gal-card>p:not(.meta):not(.sum),.gal-card>.gc-links,.gal-card>.gc-act{grid-column:2}
+.gal-card>ul{grid-row:1 / span 4;margin-top:0}
+.gc-note{font-size:.8rem;color:#d8c9a8;margin-top:8px}
+.gal-banner{top:auto;bottom:calc(12px + env(safe-area-inset-bottom,0px));transform:translateX(-50%)}
+.gal-hint{bottom:auto;top:calc(56px + env(safe-area-inset-top,0px))}
+.note-badge{font-size:.74rem;color:var(--cinnabar);border:1px solid color-mix(in srgb,var(--cinnabar) 45%,transparent);border-radius:6px;padding:2px 8px;justify-self:start}
+.table-note{font-size:.8rem;color:var(--muted);background:var(--paper-2);border-radius:8px;padding:8px 10px}
+.table-note b{color:var(--fg);margin-right:4px}
+@media (max-width:760px){
+  .gal{--wallEnd:50%}
+  .gal-view{background:linear-gradient(180deg,#2a2018 0,#3b2d20 7%,#e8dcc2 7.4%,#efe5cf 30%,#e2d4b6 49.6%,#5a3f2a 49.8%,#4a3322 51.5%,#2e2016 100%)}
+  .gal-view::before{top:7.4%;height:42.2%}
+  .gal-floor{height:50%}
+  .ex{top:10%;width:230px;margin-left:-115px}.frame{width:220px;padding:9px}.plaque{margin-top:6px;min-width:0;max-width:220px}
+  .gal-hero{bottom:calc(50% - 10px);width:64px;height:64px}
+  .gal-card{display:block;max-height:calc(50% - 150px);bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+  .gal-card>ul{margin-top:10px}
+  .gal-banner{bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+  .gal-name small{display:none}
+  .gal-name{font-size:.86rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+  #galExit{white-space:nowrap}
+  .door{top:16%;height:34%}
+}
+@media (max-width:760px){.gal-card{left:12px;right:12px;width:auto;transform:translateY(8px)}.gal-card.show{transform:none}.gal-banner{width:calc(100% - 24px)}}

@@ -5,7 +5,7 @@
 - `assets/js/content.js` — **모든 문구·링크·리뷰 데이터** (수정은 여기서)
 - `assets/js/app.js` — 대화 스크립트(NPC 대사), 패널, 라이트박스
 - `assets/docs/<slug>/` — 기획서 페이지 이미지, `tools/build_docs.py`로 `assets/js/docs.js` 재생성
-- `games/castle-survival/` — 플레이 가능한 프로토타입
+- `assets/js/gallery.js` — 건물 안 전시관(작품 감상)
 
 ## 공개하기 (GitHub Pages)
 Settings → Pages → Branch `main` / `(root)` → `https://gilsun211001-afk.github.io/my-new-game/`

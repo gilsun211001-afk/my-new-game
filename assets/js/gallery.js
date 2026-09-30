@@ -40,7 +40,7 @@
     enter(hall) {
       this.hall = hall; this.open = true; this.items = hall.items.map((it, i) => Object.assign({}, it, { x: START + i * GAP }));
       this.len = START + (this.items.length - 1) * GAP + 420;
-      this.x = 120; this._cam = undefined; this.dir = 3; this.active = -1; this.target = this.items[0] ? this.items[0].x : null;
+      this.x = 120; this._cam = undefined; this.seenSet = new Set(); this.seen = 0; this.dir = 3; this.active = -1; this.target = this.items[0] ? this.items[0].x : null;
       $("#galName").innerHTML = `${hall.name}<small>${hall.sub}</small>`;
       $("#galWall").innerHTML = `<div class="door" aria-hidden="true"><span>출구</span></div>` + this.items.map((it, i) => this.frameHTML(it, i)).join("") + `<div class="wall-end" style="left:${this.len - 60}px"></div>`;
       $("#galWall").style.width = this.len + "px";
@@ -59,16 +59,20 @@
     },
     banner(hall) {
       const b = $("#galBanner"); b.innerHTML = `<div class="eyebrow">${this.cb.esc(hall.sub)}</div><h3>${this.cb.esc(hall.name)}</h3><p>${this.cb.esc(hall.intro)}</p>`;
-      b.hidden = false; b.classList.remove("out"); clearTimeout(this._bt); this._bt = setTimeout(() => b.classList.add("out"), 3200); setTimeout(() => { if (b.classList.contains("out")) b.hidden = true; }, 3900);
+      b.hidden = false; b.classList.remove("out"); clearTimeout(this._bt); this._bt = setTimeout(() => b.classList.add("out"), 2200); clearTimeout(this._bt2); this._bt2 = setTimeout(() => { if (b.classList.contains("out")) b.hidden = true; }, 2900);
     },
-    jump(d) { const n = Math.max(0, Math.min(this.items.length - 1, (this.active < 0 ? (d > 0 ? -1 : 0) : this.active) + d)); this.target = this.items[n].x; },
+    jump(d) {
+      let base = this.active;
+      if (this.target !== null) { const ti = this.items.findIndex(it => it.x === this.target); if (ti >= 0) base = ti; }
+      const n = Math.max(0, Math.min(this.items.length - 1, (base < 0 ? (d > 0 ? -1 : 0) : base) + d)); this.target = this.items[n].x;
+    },
     loop(t) {
       if (!this.open) return;
       this.raf = requestAnimationFrame(tt => this.loop(tt));
       const dt = Math.min(.05, this.last ? (t - this.last) / 1000 : 0); this.last = t;
       let v = 0; if (this.keys.arrowleft || this.keys.a) v -= 1; if (this.keys.arrowright || this.keys.d) v += 1;
-      if (!v && this.target !== null) { const d = this.target - this.x; if (Math.abs(d) < 6) { this.x = this.target; this.target = null; } else v = Math.sign(d) * Math.min(1, Math.abs(d) / 60 + .35); }
-      if (v) { this.x = Math.max(60, Math.min(this.len - 120, this.x + v * 300 * dt)); this.dir = v < 0 ? 2 : 3; this.anim += dt * 9; this.frame = Math.floor(this.anim) % 2; if (Math.floor(this.anim) !== this._ls) { this._ls = Math.floor(this.anim); this.cb.step && this._ls % 2 === 0 && this.cb.step(); } }
+      if (!v && this.target !== null) { const d = this.target - this.x; if (Math.abs(d) < 6) { this.x = this.target; this.target = null; } else v = Math.sign(d) * Math.min(Math.max(1, Math.abs(d) / 400), Math.abs(d) / 60 + .35); }
+      if (v) { this.x = Math.max(60, Math.min(this.len - 120, this.x + Math.max(-3, Math.min(3, v)) * 300 * dt)); v = Math.sign(v); this.dir = v < 0 ? 2 : 3; this.anim += dt * 9; this.frame = Math.floor(this.anim) % 2; if (Math.floor(this.anim) !== this._ls) { this._ls = Math.floor(this.anim); this.cb.step && this._ls % 2 === 0 && this.cb.step(); } }
       else this.frame = 0;
       if (this.x <= 62 && v < 0) { this.close(); return; }
       // nearest exhibit
@@ -78,7 +82,7 @@
     },
     render() {
       const vw = $("#galView").clientWidth;
-      const bias = vw > 760 && this.active >= 0 ? .36 : .5;
+      const bias = .5;
       this._cam = this._cam === undefined ? this.x - vw * bias : this._cam + ((this.x - vw * bias) - this._cam) * .12;
       const cam = Math.max(0, Math.min(this.len - vw, this._cam));
       $("#galWall").style.transform = `translate3d(${-Math.round(cam)}px,0,0)`;
@@ -86,7 +90,7 @@
       if (this._hf !== this.frame + ":" + this.dir) { this._hf = this.frame + ":" + this.dir; const g = hero.getContext("2d"); g.imageSmoothingEnabled = false; g.clearRect(0, 0, hero.width, hero.height); g.setTransform(5, 0, 0, 5, 0, 0); World.person(g, 0, 0, this.dir, this.frame, this.cb.style); g.setTransform(1, 0, 0, 1, 0, 0); }
     },
     setActive(i) {
-      this.active = i;
+      this.active = i; if (i >= 0) { this.seenSet.add(i); this.seen = this.seenSet.size; }
       document.querySelectorAll("#galWall .ex").forEach((el, j) => el.classList.toggle("on", j === i));
       const c = $("#galCard");
       if (i < 0) { c.classList.remove("show"); return; }

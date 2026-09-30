@@ -71,6 +71,7 @@
     drawAvatar();
     $("#totop").onclick = () => window.scrollTo({ top: 0, behavior: "smooth" });
   }
+  let avatarVisible = true, avatarLoop = false, avatarKick = () => {};
   function drawAvatar() {
     const cv = $("#avatar"), g = cv.getContext("2d"); g.imageSmoothingEnabled = false;
     const style = DESIGNER_STYLE; let t = 0;
@@ -88,9 +89,11 @@
       g.save(); g.translate(21, 10 + (Math.floor(t / 40) % 2 ? 0 : -0.5)); g.scale(1.3, 1.3);
       window.World && World._draw && World._draw(g, 0, 0, 0, 0, style); g.restore();
       flies.forEach(f => { f.a += .03; const a = .4 + .5 * Math.abs(Math.sin(f.a)); g.fillStyle = `rgba(140,255,210,${a})`; g.fillRect(Math.round(f.x + Math.cos(f.a) * 2), Math.round(f.y + Math.sin(f.a * 1.3) * 2), 1, 1); });
-      if (!document.hidden && mode === "resume") requestAnimationFrame(frame); else setTimeout(() => requestAnimationFrame(frame), 400);
+      if (!document.hidden && mode === "resume" && avatarVisible) setTimeout(() => requestAnimationFrame(frame), 90); else avatarLoop = false;
     }
-    frame();
+    avatarKick = () => { if (!avatarLoop && mode === "resume" && avatarVisible) { avatarLoop = true; frame(); } };
+    new IntersectionObserver(es => { avatarVisible = es[0].isIntersecting; avatarKick(); }).observe(cv);
+    avatarLoop = true; frame();
   }
 
   /* ═════════ GAME MODE ═════════ */
@@ -116,26 +119,26 @@
   const REVIEW_LINES = PF.REVIEWS.map(r => `「${r.n}」 말이우? "${r.k}"`);
   const D = {
     hello: [{ t: `오셨군요! 저는 이 마을의 기록을 걸어 둔 기획자 ${PROFILE.name}입니다.` },
-      { t: "건물마다 제 기획서를 전시해 두었어요. 전시관을 하나 둘러보실 때마다 마을의 등불이 하나씩 다시 켜집니다.\n여섯 곳을 모두 밝혀 주시면, 광장에서 마지막 이야기를 들려드릴게요.", c: [["서당(자기소개서관)부터 갈게요", "walk:seodang"], ["어디부터 가면 좋을까요?", "node:route"], ["당신은 어떤 기획자인가요?", "node:who"], ["혼자 둘러볼게요", "end"]] }],
+      { t: "서당 · 공방 · 장서각 · 관아에는 전시관을, 주막과 역참에는 이야기를 두었어요. 한 곳을 둘러보실 때마다 마을의 등불이 하나씩 다시 켜집니다.\n여섯 곳을 모두 밝혀 주시면, 광장에서 마지막 이야기를 들려드릴게요.", c: [["서당(자기소개서관)부터 갈게요", "walk:seodang"], ["어디부터 가면 좋을까요?", "node:route"], ["당신은 어떤 기획자인가요?", "node:who"], ["혼자 둘러볼게요", "end"]] }],
     route: [{ t: "처음이시라면 북쪽 서당에서 제 자기소개서를 먼저 읽어 주세요.\n그다음 동쪽 공방에서 지금 하고 있는 조선 판타지 프로젝트를 보시면 됩니다.", c: [["서당으로 데려다 줘요", "walk:seodang"], ["공방으로 데려다 줘요", "walk:gongbang"], ["관아로 데려다 줘요", "walk:seoru"], ["혼자 돌아볼게요", "end"]] }],
     who: [{ t: `"${PROFILE.headline}"\n게임을 하면 재미의 구조부터 뜯어 보고, 그걸 표와 공식으로 옮기는 게 제 일이에요.` },
       { t: "문서로 끝내지 않고, 필요하면 AI로 화면 목업까지 만들어 팀과 같은 그림을 봅니다.", c: [["자기소개서를 보여줘요", "open:letter,career"], ["고마워요", "end"]] }],
     finale: [{ t: "보세요, 마을의 등불이 전부 켜졌습니다.\n누군가 제 기록을 끝까지 봐 준 덕분이에요. 정말 감사합니다." }, { t: "마음에 드셨다면 편하게 연락 주세요. 함께 기억에 남는 게임을 만들고 싶습니다.", c: [["연락처 보기", "open:contact"], ["자기소개서 전체 보기", "act:resume"], ["마을을 더 둘러볼게요", "end"]] }],
     seodang: [{ t: "허허, 서당에 온 걸 환영하네. 안쪽 전시관에 그 기획자의 자기소개서가 한 폭씩 걸려 있지." },
       { t: `이 사람의 목표가 무엇인지 아는가?\n"${PROFILE.goal}"`, c: [["전시관에 들어간다", "hall:seodang"], ["자기소개서 원본 PDF", "act:pdf"], ["다음에 올게요", "end"]] }],
-    gongbang: [{ t: "여긴 Project Joseon 공방이오. 조선 판타지 익스트랙션 액션이지.\n캐릭터 강함은 레벨이 아니라 인벤토리에 뭘 붙이느냐로만 정해진다네." },
+    gongbang: [{ t: "여긴 Project Joseon 공방이오. 조선 판타지 탑뷰 액션이지.\n캐릭터 강함은 레벨이 아니라 인벤토리에 뭘 붙이느냐로만 정해진다네." },
       { t: "그 기획자가 코어루프부터 아이템, 전투 공식, 캐릭터, 맵, UI까지 공방 안에 다 걸어 뒀소. 들어가 보겠소?", c: [["전시관에 들어간다", "hall:gongbang"], ["전투 공식 계산기만 볼래요", "open:joseon#combat"], ["나중에", "end"]] }],
     mudang: [{ t: "...연결이 끊기면... 나는 다시 멍해져...\n(회로 노드 두 개를 아이템으로 이어야 각성한다는 무당 캐릭터다.)" },
       { t: "기획자는 '연결을 지켜내는 행동' 자체로 내 광기를 느끼게 하고 싶었대.\n...그런데 벌이 없는 힘은 광기가 아니라고, 스스로 적어 두었더군.", c: [["무당 캐릭터 기획서 보기", "open:joseon#chars"], ["물러난다", "end"]] }],
     seoru: [{ t: "에헴, 관아에 온 걸 환영하오. 이 기획자가 현장에서 무슨 일을 했는지 여기 기록이 다 있소." },
       { t: "달콤소프트에서는 SuperStar 시리즈 라이브 서비스 개선안을 기획하고 점수 산출 로직을 검증했지.\n팀 프로젝트와 보드게임 제작 기록도 안쪽에 걸려 있소.", c: [["전시관에 들어간다", "hall:seoru"], ["경력 · 학력 보기", "open:career"], ["물러가겠습니다", "end"]] }],
-    seogo: [{ t: "쉿, 장서각입니다. 이곳엔 그분이 쓴 기획서 원본이 페이지째 보관되어 있어요." },
-      { t: "오버워치2, 원신, 림버스 컴퍼니, 테일즈런너, 아스가르드 폴… 기존 게임에 새 콘텐츠를 얹은 기획서들이죠.", c: [["전시관에 들어간다", "hall:seogo"], ["작업 방식을 보고 싶어요", "open:process"], ["조용히 나간다", "end"]] }],
+    seogo: [{ t: "쉿, 장서각입니다. 그분이 기존 게임에 새 콘텐츠를 얹어 본 기획서들이 걸려 있어요.\n몇 권은 너무 두꺼워서, 해설과 원본 링크로만 모셔 두었지요." },
+      { t: "오버워치2, 원신, 림버스 컴퍼니, 테일즈런너, 아스가르드 폴… 작품 앞에 서면 어떤 내용인지 해설이 열립니다.", c: [["전시관에 들어간다", "hall:seogo"], ["작업 방식을 보고 싶어요", "open:process"], ["조용히 나간다", "end"]] }],
     jumak: [{ t: "어서 오시우! 우리 기획자 양반은 게임만 하면 꼭 여기 앉아서 분석을 적더라고." },
       { t: () => REVIEW_LINES[Math.floor(Math.random() * REVIEW_LINES.length)], c: [["분석 도감 전부 보기", "open:reviews"], ["다른 얘기도 해줘요", "node:jumak2"], ["잘 먹고 갑니다", "end"]] }],
     jumak2: [{ t: () => REVIEW_LINES[Math.floor(Math.random() * REVIEW_LINES.length)], c: [["분석 도감 전부 보기", "open:reviews"], ["하나 더!", "node:jumak2"], ["잘 먹고 갑니다", "end"]] }],
     yeokcham: [{ t: "파발이오! 기획자에게 전할 말이 있으면 내가 날라다 주지." }, { t: `이메일은 ${PROFILE.email}.\n노션 기록과 포트폴리오 폴더도 여기서 바로 열 수 있소.`, c: [["연락처 · 링크 보기", "open:contact"], ["이메일 복사", "act:copy"], ["괜찮소", "end"]] }],
-    sign: [{ t: "【기획마을 안내판】\n이동: 방향키 · WASD (Shift 달리기) · 화면 탭\n대화: Space · Enter · E · 가까이서 탭\n패널 닫기: Esc", c: [["알겠다", "end"]] }]
+    sign: [{ t: "【기획마을 안내판】\n이동: 방향키 · WASD (Shift 달리기) · 화면 탭\n대화: Space · Enter · E · 가까이서 탭\n패널 닫기: Esc", c: [["알겠다", "end"], ["처음부터 다시 (등불 · 프롤로그 초기화)", "act:reset"]] }]
   };
   // building doors map to the NPC's node
   const DOOR_NODE = { seodang: "seodang", gongbang: "gongbang", seoru: "seoru", seogo: "seogo", jumak: "jumak", yeokcham: "yeokcham" };
@@ -159,10 +162,10 @@
       onStep: () => Snd.fx("step")
     });
     updateMini = World.minimap($("#mini"));
-    setInterval(() => { if (mode === "game") updateMini(visited); }, 250);
+    setInterval(() => { if (mode === "game" && Dlg.closed && $("#scroll").hidden) updateMini(visited); }, 250);
     paintQuest(); paintTravel(); World.setLit(visited.length);
     Gallery.init({ esc, style: VISITOR_STYLE, step: () => Snd.fx("step"), move: () => Snd.fx("move"), lightbox: (k, i) => LB.open(k, i), openPanel: a => Scroll.open(a, null),
-      exit: hall => { mode = "game"; World.sleep(false); World.pause(false); $("#game").hidden = false; Snd.fx("close"); $("#world").focus({ preventScroll: true }); } });
+      exit: hall => { if (hall && hall.id && Gallery.seen > 0) markVisit(hall.id); else if (hall && hall.id && !visited.includes(hall.id)) setTimeout(() => ui.toast("작품을 하나 이상 감상하면 등불이 켜집니다"), 400); mode = "game"; World.sleep(false); World.pause(false); $("#game").hidden = false; Snd.fx("close"); $("#world").focus({ preventScroll: true }); } });
   }
 
   /* ── halls (전시관) ── */
@@ -170,8 +173,8 @@
   let HALLS = null;
   function enterHall(id) {
     HALLS = HALLS || PF.halls();
-    const h = HALLS[id]; if (!h || !h.items.length) return;
-    markVisit(id); mode = "gallery"; World.pause(true); World.sleep(true); Snd.fx("open");
+    const h = HALLS[id]; if (!h || !h.items.length) return; h.id = id;
+    mode = "gallery"; World.pause(true); World.sleep(true); Snd.fx("open");
     Gallery.enter(h);
   }
 
@@ -179,11 +182,11 @@
     if (!place || visited.includes(place)) return;
     visited.push(place); store.set("visited", visited); paintQuest(); paintTravel();
     World.setLit(visited.length); Snd.fx("quest"); ui.toast(`등불 하나가 켜졌습니다 · ${PLACES[place]} (${visited.length}/6)`);
-    if (visited.length === 6) setTimeout(() => ui.toast("모든 곳을 둘러봤습니다! 광장의 기획자에게 가 보세요"), 2600);
+    if (visited.length === 6) setTimeout(() => { ui.toast("모든 등불이 켜졌습니다! 광장의 기획자에게 안내합니다"); World.walkTo("designer", () => World.interact()); }, 2200);
   }
   function paintQuest() { $("#qText").innerHTML = `밝힌 등불 <b>${visited.length}</b>/6`; $("#qBar").style.width = (visited.length / 6 * 100) + "%"; }
   function paintTravel() {
-    $("#travel").innerHTML = Object.entries(PLACES).map(([id, n]) => `<button class="hbtn" data-walk="${id}" type="button">${visited.includes(id) ? '<span class="v">✓</span>' : "·"} ${n} <span style="color:#6a8a7e">${World.BUILDINGS.find(b => b.id === id).sub}</span></button>`).join("");
+    $("#travel").innerHTML = `<button class="hbtn" data-walk="designer" type="button">${visited.length >= 6 ? '<span class="v">★</span>' : "·"} 광장 <span style="color:#6a8a7e">기획자 임창민</span></button>` + Object.entries(PLACES).map(([id, n]) => `<button class="hbtn" data-walk="${id}" type="button">${visited.includes(id) ? '<span class="v">✓</span>' : "·"} ${n} <span style="color:#6a8a7e">${World.BUILDINGS.find(b => b.id === id).sub}</span></button>`).join("");
   }
 
   /* ── dialogue ── */
@@ -203,7 +206,7 @@
       this.typing = true; let k = 0; const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
       clearInterval(this._iv);
       if (reduce) { el.textContent = this.full; this.done(); return; }
-      this._iv = setInterval(() => { k += 2; el.textContent = this.full.slice(0, k); if (k % 4 === 0) Snd.fx("tick"); if (k >= this.full.length) { clearInterval(this._iv); this.done(); } }, 22);
+      this._iv = setInterval(() => { k += 2; el.textContent = this.full.slice(0, k); if (k % 8 === 0) Snd.fx("tick"); if (k >= this.full.length) { clearInterval(this._iv); this.done(); } }, 22);
     },
     done() {
       this.typing = false; $("#dlgLine").textContent = this.full;
@@ -227,7 +230,7 @@
       else if (kind === "open") { this.close(true); Scroll.open(arg, this.who); }
       else if (kind === "walk") { this.close(); World.walkTo(arg, () => { }); }
       else if (kind === "hall") { this.close(true); enterHall(arg); }
-      else if (kind === "act") { this.close(); if (arg === "resume") go("resume"); if (arg === "pdf") window.open(PF.LETTER_PDF, "_blank", "noopener"); if (arg === "copy") { navigator.clipboard && navigator.clipboard.writeText(PROFILE.email).then(() => ui.toast("이메일을 복사했습니다")).catch(() => ui.toast(PROFILE.email)); } }
+      else if (kind === "act") { this.close(); if (arg === "reset") { visited = []; store.set("visited", []); store.set("greeted", false); location.hash = ""; location.reload(); return; } if (arg === "resume") go("resume"); if (arg === "pdf") window.open(PF.LETTER_PDF, "_blank", "noopener"); if (arg === "copy") { navigator.clipboard && navigator.clipboard.writeText(PROFILE.email).then(() => ui.toast("이메일을 복사했습니다")).catch(() => ui.toast(PROFILE.email)); } }
     },
     moveSel(d) { const bs = $$("#dlgChoices button"); if (!bs.length) return; this.sel = (this.sel + d + bs.length) % bs.length; bs.forEach((b, j) => b.classList.toggle("sel", j === this.sel)); bs[this.sel].focus({ preventScroll: true }); Snd.fx("move"); },
     close(keepPaused) { clearInterval(this._iv); this.closed = true; $("#dlg").hidden = true; if (!keepPaused) World.pause(false); Snd.fx("close"); }
@@ -280,7 +283,7 @@
     lines: [
       "오래전, 이 마을의 등불은 '재미'를 연료로 타올랐다.",
       "사람들이 재미를 잊자 등불은 하나둘 꺼졌고, 마을은 긴 밤에 잠겼다.",
-      "떠돌이 기획자 임창민은 자신이 쓴 기획서를 마을의 전시관마다 걸어 두었다.\n누군가 그 기록을 봐 준다면, 등불이 다시 켜질 거라 믿으며.",
+      "떠돌이 기획자 임창민은 자신의 기록을 마을 곳곳에 걸어 두었다.\n누군가 그 기록을 봐 준다면, 등불이 다시 켜질 거라 믿으며.",
       "그리고 오늘 밤, 한 손님이 마을 어귀의 다리를 건넌다."
     ], i: 0, then: null,
     play(then) { this.then = then; this.i = 0; World.pause(true); $("#story").hidden = false; this.show(); },
@@ -300,7 +303,7 @@
     document.body.style.overflow = m === "resume" ? "" : "hidden";
     if (m === "title") { initWorld(); World.sleep(false); World.pause(true); setTimeout(() => $("#startResume").focus(), 50); }
     if (m === "game") { initWorld(); World.sleep(false); World.pause(false); $("#world").focus(); if (!store.get("greeted", false)) { store.set("greeted", true); Story.play(() => Dlg.run("hello", NPC_DEFS[0])); } }
-    if (m === "resume") { buildResume(); if (worldReady) { World.pause(true); World.sleep(true); } window.scrollTo(0, 0); }
+    if (m === "resume") { buildResume(); avatarKick(); if (worldReady) { World.pause(true); World.sleep(true); } window.scrollTo(0, 0); }
     try { history.replaceState(null, "", m === "title" ? location.pathname + location.search : "#" + m); } catch (e) { }
   }
 
@@ -314,7 +317,7 @@
   $("#helpBtn").onclick = () => Dlg.run("sign", { name: "안내판", style: null });
   $("#prompt").onclick = () => World.interact();
   $("#act").addEventListener("click", () => { if (!Dlg.closed) Dlg.advance(); else World.interact(); });
-  function paintSnd() { $$("[data-snd]").forEach(b => { b.textContent = Snd.on ? "♪ 소리 켬" : "♪ 소리 끔"; b.setAttribute("aria-pressed", Snd.on); }); }
+  function paintSnd() { $$("[data-snd]").forEach(b => { b.innerHTML = `♪<span class="hide-sm"> 소리 ${Snd.on ? "켬" : "끔"}</span>`; b.setAttribute("aria-pressed", Snd.on); }); }
   $$("[data-snd]").forEach(b => b.onclick = () => { Snd.on = !Snd.on; store.set("snd", Snd.on); paintSnd(); Snd.fx("ok"); }); paintSnd();
   $("#themeBtn").onclick = () => setTheme(curTheme() === "dark" ? "light" : "dark");
 

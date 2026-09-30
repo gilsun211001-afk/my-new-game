@@ -29,9 +29,9 @@
   };
 
   const TIMELINE = [
-    { w: "2026.08 –", t: "Project Joseon · 팀 기획", d: "조선 판타지 익스트랙션 액션. 아이템 49종, 전투·속성 체계, 캐릭터(무당·선비), 맵, UIUX 기획", g: 1 },
+    { w: "2026.08 –", t: "Project Joseon · 팀 기획", d: "조선 판타지 탑뷰 액션. 아이템 49종, 전투·속성 체계, 캐릭터(무당·선비), 맵, UIUX 기획", g: 1 },
     { w: "2025.10 – 2026.01", t: "달콤소프트 · 운영 기획", d: "SuperStar 시리즈 라이브 서비스 개선안 기획, 점수 산출 로직 검증, 신규 시스템 도입 전 콘텐츠 테스트", g: 1 },
-    { w: "2025.07 – 2026.01", t: "S.I 프로젝트 · 팀 (Unity)", d: "맵 동선·배치 기획과 QA 담당", g: 1 },
+    { w: "2025.07 – 2026.01", t: "스트레인지 아일랜드 · 팀 (Unity)", d: "맵·아이템 기획, QA", g: 1 },
     { w: "2024 – 2025", t: "개인 기획서 작업", d: "오버워치2 신규 영웅, 원신 신규 보스, 림버스 컴퍼니 전투 기획서(인격·E.G.O), 아스가르드 폴 신규 모드, 테일즈런너 개선 기획서", g: 1 },
     { w: "2024.06 – 07", t: "보드게임 제작", d: "보드게임 카페를 돌며 수요층과 인기 장르를 조사, 특허를 통한 정식 출시를 목표로 제작", g: 1 },
     { w: "2024.08", t: "대구대학교 산림자원학과 졸업", d: "" },
@@ -41,7 +41,8 @@
     { w: "2023.03 – 08", t: "㈜에버이엔씨 · 마케팅", d: "" },
     { w: "2022.05 – 2023.07", t: "오비맥주 · 신제품 홍보", d: "" },
     { w: "~ 2024", t: "현대백화점 · 이벤트 기획 스태프", d: "대기 줄 옆 행거 배치 제안" }
-  ];
+  ];  TIMELINE.sort((a, b) => b.w.replace(/[^0-9.]/g, " ").trim().split(/\s+/)[0].localeCompare(a.w.replace(/[^0-9.]/g, " ").trim().split(/\s+/)[0]));
+
 
   const ACHV = [
     { big: "LIVE", t: "달콤소프트 · SuperStar 시리즈", d: "라이브 서비스 개선안을 기획하고, 점수 산출 로직을 코드 테스트로 검증했습니다. 신규 시스템 'themeplay' 도입 전 콘텐츠 테스트를 맡았습니다." },
@@ -58,7 +59,7 @@
     ], links: [
       ["N", "게임 리뷰", "노션 · 플레이한 게임 분석", "https://www.notion.so/314c1342e11f809cb2b1e2abb4bcb34a?source=copy_link"],
       ["N", "게임 뉴스 스크랩", "노션 · 기사 요약과 기획자 관점 평가", "https://www.notion.so/314c1342e11f80fb9f1bdc77e817ad26?source=copy_link"],
-      ["PDF", "팀 프로젝트 참여", "Unity · 맵 동선·배치 · QA", "https://drive.google.com/file/d/1zEZ9e29S3KzFOrEZQTkzvTfG4Pe1veZN/view?usp=sharing"],
+      ["PDF", "팀 프로젝트 참여", "스트레인지 아일랜드 · Unity · 맵·아이템 기획", "https://drive.google.com/file/d/1zEZ9e29S3KzFOrEZQTkzvTfG4Pe1veZN/view?usp=sharing"],
       ["PDF", "보드게임 제작", "창작 · 수요 조사", "https://drive.google.com/file/d/1V0NM4Gp8b2TkJB7V0dHh-dZOG2nfIail/view?usp=sharing"]
     ] },
     { k: "02 · 작업물 소개", h: "기존 게임에 새 콘텐츠를 얹는 연습", p: [
@@ -112,24 +113,23 @@
   /* library groups (슬러그 → 표시 정보). 이미지가 없는 슬러그는 자동으로 숨깁니다 */
   const LIB = [
     { slug: "coreloop", t: "코어루프 기획서", s: "게임의 한 판이 도는 구조", grp: "Project Joseon" },
-    { slug: "item-v1", t: "아이템 기획서", s: "49종 · 인벤토리 인접 효과", grp: "Project Joseon" },
+    { slug: "item-v1", t: "아이템 기획서 v1.0", s: "49종 · 인벤토리 인접 효과", grp: "Project Joseon", note: "상성(+20%/−15%) 규칙은 이후 전투 v2.0에서 폐기" },
     { slug: "combat-v2", t: "전투 시스템 · 속성 체계", s: "상성 제거 · 전투 공식", grp: "Project Joseon" },
     { slug: "effects", t: "Effects 시트 기획 의도", s: "이펙트 데이터 스키마", grp: "Project Joseon" },
     { slug: "mudang", t: "무당 캐릭터 기획", s: "각성 메커닉 · 체크시트", grp: "Project Joseon" },
     { slug: "seonbi", t: "선비 캐릭터 기획서", s: "캐릭터 · 모션 · 판정", grp: "Project Joseon" },
     { slug: "map", t: "맵 기획서", s: "스테이지 · 워프 · 동선", grp: "Project Joseon" },
-    { slug: "map-setting", t: "맵 설정 · 스토리와 튜토리얼 동선", s: "세계관 · 튜토리얼", grp: "Project Joseon" },
     { slug: "enemy", t: "적 유닛 기획서", s: "몬스터 · 보스 패턴", grp: "Project Joseon" },
     { slug: "weapon", t: "무기 · 스킬 기획서", s: "무기별 판정과 스킬", grp: "Project Joseon" },
-    { slug: "uiux", t: "UIUX 기획서", s: "화면 구성 · 조작", grp: "Project Joseon" },
+    { slug: "uiux", t: "UIUX 기획서", s: "의식판 화면 구성 · 조작", grp: "Project Joseon" },
     { slug: "ow2", t: "오버워치2 신규 힐러 영웅", s: "2024.03 기준 · 영웅 기획", grp: "개인 기획서" },
     { slug: "genshin", t: "원신 신규 보스", s: "2024.04 기준 · 보스 기획", grp: "개인 기획서" },
-    { slug: "limbus", t: "림버스 컴퍼니 신규 인격", s: "전투 기획서 · 데이터 테이블", grp: "개인 기획서", url2: ["데이터 테이블", "https://docs.google.com/spreadsheets/d/1vKzbgrPZM8aoS0spboptimiaCJ6sKiG3/edit?usp=drive_link"] },
+    { slug: "limbus", t: "림버스 컴퍼니 신규 인격", s: "전투 기획서 · 데이터 테이블", grp: "개인 기획서", table: "limbus-table", url2: ["데이터 테이블", "https://docs.google.com/spreadsheets/d/1vKzbgrPZM8aoS0spboptimiaCJ6sKiG3/edit?usp=drive_link"] },
     { slug: "analysis", t: "테일즈런너 개선 기획서", s: "2025 · 게임 분석 · 개선안", grp: "개인 기획서" },
-    { slug: "asgard", t: "아스가르드 폴 오리진스 신규 모드", s: "2024.12 · 라그나로크 모드", grp: "개인 기획서" },
-    { slug: "teamproj", t: "팀 프로젝트 참여", s: "Unity · 맵 동선·배치 · QA", grp: "경험 · 성과" },
+    { slug: "asgard", t: "아스가르드 폴 오리진스 신규 모드", s: "2024.12 작성 · 라그나로크 모드", grp: "개인 기획서" },
+    { slug: "teamproj", t: "스트레인지 아일랜드 (팀 프로젝트)", s: "Unity · 맵·아이템 기획", grp: "경험 · 성과" },
     { slug: "boardgame", t: "보드게임 제작", s: "2024 · 창작 · 수요 조사", grp: "경험 · 성과" },
-    { slug: "work", t: "업무 성과", s: "게임 분석 · BM", grp: "경험 · 성과" }
+    { slug: "work", t: "SSWO 분석서 (슈퍼스타 웨이크원)", s: "게임 분석 · BM · 자기소개서 업무 성과 항목 첨부", grp: "경험 · 성과" }
   ];
 
   /* 원본 링크 (자기소개서에 걸린 링크) */
@@ -153,7 +153,7 @@
   const S = {};
 
   S.cover = () => {
-    const pics = ["coverletter", "item-v1", "combat-v2"].map(s => doc(s)).filter(Boolean).slice(0, 3);
+    const pics = ["item-v1", "combat-v2", "coreloop"].map(s => doc(s)).filter(Boolean).slice(0, 3);
     const alt = ["mudang", "map", "asgard"].map(s => doc(s)).filter(Boolean);
     while (pics.length < 3 && alt.length) pics.push(alt.shift());
     return `<div class="cover">
@@ -188,7 +188,7 @@
     <div class="proj-top">
       <div><span class="chip em">TEAM · 조선 판타지</span>
         <h3>Project Joseon</h3>
-        <p class="muted">조선을 배경으로 한 익스트랙션 액션. 캐릭터의 강함은 레벨이 아니라 그리드 인벤토리 「의식판」에 무엇을 어떻게 붙이느냐로만 정해집니다. 2026년 8월 기획자로 합류해 아이템·데이터·전투 체계와 캐릭터, 맵, UIUX 문서를 맡고 있습니다.</p>
+        <p class="muted">조선을 배경으로 한 탑뷰 액션(하데스류 런 구조 프로토타입). 캐릭터의 강함은 레벨이 아니라 그리드 인벤토리 「의식판」에 무엇을 어떻게 붙이느냐로만 정해집니다. 2026년 8월 기획자로 합류해 아이템·데이터·전투 체계와 캐릭터, 맵, UIUX 문서를 맡고 있습니다.</p>
       </div>
       <div class="spec"><div><span>ROLE</span><span>시스템 · 아이템 · 캐릭터 기획</span></div><div><span>JOINED</span><span>2026.08</span></div><div><span>진영</span><span>조정 · 반란군 · 귀</span></div><div><span>속성</span><span>요력 · 기력 · 신력</span></div><div><span>ENGINE</span><span>언리얼 (팀 문서 기준)</span></div><div><span>조작</span><span>WASD · 마우스 · 1/2/3 · Tab</span></div></div>
     </div>
@@ -264,7 +264,9 @@
     return `<article class="book">
       ${d ? `<button class="cover" data-lb="${l.slug}" data-i="0" type="button" aria-label="${esc(l.t)} 넘겨 보기">${img(`assets/docs/${l.slug}/${d.pages[0]}`, l.t + " 표지")}<span class="peek">▶ 넘겨 보기</span></button>` : `<div class="cover ph" aria-hidden="true"><span>${esc(l.t)}</span><small>원본 PDF로 열람</small></div>`}
       <div class="meta"><small class="eyebrow">${esc(l.grp)}${m.updated ? ` · ${esc(String(m.updated).slice(0, 7).replace("-", "."))}` : ""}</small><b>${esc(l.t)}</b><small>${esc(l.s)}${pages ? " · " + pages : ""}</small>
+        ${l.note ? `<p class="note-badge">${esc(l.note)}</p>` : ""}
         ${m.summary ? `<p class="sum">${esc(m.summary)}</p>` : ""}
+        ${l.table && info(l.table).summary ? `<p class="table-note"><b>데이터 테이블</b> ${esc(info(l.table).summary)}</p>` : ""}
         ${m.points && m.points.length ? `<ul class="pts">${m.points.slice(0, 3).map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : ""}
         <div class="acts">${d ? `<button class="btn em sm" data-lb="${l.slug}" data-i="0" type="button">페이지 보기</button>` : ""}${link ? `<a class="btn sm" ${ext(link)}>원본 ↗</a>` : ""}${l.url2 ? `<a class="btn sm" ${ext(l.url2[1])}>${esc(l.url2[0])} ↗</a>` : ""}</div></div></article>`;
   }
@@ -370,7 +372,6 @@
     const f = scope && scope.querySelector && scope.querySelector("[data-gameframe]"); if (!f) return;
     requestAnimationFrame(() => { const w = f.clientWidth || 940, k = Math.min(1, w / 940); f.querySelector(".scaler").style.transform = `scale(${k})`; f.style.height = (820 * k) + "px"; });
   }
-  addEventListener("resize", () => document.querySelectorAll("[data-gameframe]").forEach(f => fitGame(f.parentElement)));
 
   function invWidget(el, out, ui) {
     const INV = { cols: 6, rows: 4, items: [{ id: "sword", n: "사인검", x: 0, y: 1, w: 4, h: 1, c: "w" }, { id: "tal", n: "부적", x: 4, y: 3, w: 1, h: 1, c: "c" }] };
@@ -403,7 +404,8 @@
   function docItem(slug, tag) {
     const l = LIB.find(x => x.slug === slug) || { t: slug, s: "" }, d = doc(slug), m = info(slug);
     if (!d && !m.summary) return null;
-    return { kind: "doc", tag: tag || l.grp, title: l.t, meta: l.s + (d ? ` · ${d.pages.length < total(d) ? total(d) + "쪽 중 " + d.pages.length + "쪽" : total(d) + "쪽"}` : ""), img: d ? pageSrc(d, 0) : null, summary: m.summary, points: m.points, lb: d ? slug : null, url: LINKS[slug] };
+    const extra = (l.note ? `<p class="gc-note">${esc(l.note)}</p>` : "") + (l.table && info(l.table).summary ? `<p class="gc-note"><b>데이터 테이블</b> ${esc(info(l.table).summary)}</p>` : "") + (l.url2 ? `<p><a class="btn" ${ext(l.url2[1])}>${esc(l.url2[0])} 열기 ↗</a></p>` : "");
+    return { kind: "doc", tag: tag || l.grp, title: l.t, meta: l.s + (d ? ` · ${d.pages.length < total(d) ? total(d) + "쪽 중 " + d.pages.length + "쪽" : total(d) + "쪽"}` : " · 원본 PDF로 열람"), img: d ? pageSrc(d, 0) : null, summary: m.summary, points: m.points, html: extra, lb: d ? slug : null, url: LINKS[slug] };
   }
   function halls() {
     const L = LETTER;
@@ -414,9 +416,9 @@
         { kind: "text", tag: "목표", title: "기억에 남는 게임", lede: "기획자가 된 이유", summary: PROFILE.goal },
         { kind: "widget", tag: "연표", title: "경력 · 학력", lede: "2022 – 2026", summary: "달콤소프트 운영 기획, Unity 팀 프로젝트, 보드게임 제작, 그리고 지금의 Project Joseon까지.", open: "career", openLabel: "연표 펼치기" }
       ] },
-      gongbang: { name: "공방 · Project Joseon관", sub: "조선 판타지 팀 프로젝트", intro: "조선을 배경으로 한 익스트랙션 액션. 캐릭터의 강함은 레벨이 아니라 인벤토리 「의식판」에 무엇을 붙이느냐로 정해집니다.", items: [
-        { kind: "text", tag: "프로젝트", title: "Project Joseon", lede: "2026.08 합류 · 팀 기획", summary: "조정 · 반란군 · 귀 세 진영이 싸우는 조선 판타지 익스트랙션 액션입니다. 아이템 · 데이터 · 전투 체계, 캐릭터, 맵, UIUX 문서를 맡고 있습니다.", open: "joseon", openLabel: "프로젝트 자세히" },
-        ...["coreloop", "item-v1", "combat-v2", "effects", "mudang", "seonbi", "map", "map-setting", "enemy", "weapon", "uiux"].map(x => docItem(x, "기획서")).filter(Boolean),
+      gongbang: { name: "공방 · Project Joseon관", sub: "조선 판타지 팀 프로젝트", intro: "조선을 배경으로 한 탑뷰 액션(하데스류 런 구조 프로토타입). 캐릭터의 강함은 레벨이 아니라 인벤토리 「의식판」에 무엇을 붙이느냐로 정해집니다.", items: [
+        { kind: "text", tag: "프로젝트", title: "Project Joseon", lede: "2026.08 합류 · 팀 기획", summary: "조정 · 반란군 · 귀 세 진영이 등장하는 조선 판타지 탑뷰 액션입니다. 아이템 · 데이터 · 전투 체계, 캐릭터, 맵, UIUX 문서를 맡고 있습니다.", open: "joseon", openLabel: "프로젝트 자세히" },
+        ...["coreloop", "item-v1", "combat-v2", "effects", "mudang", "seonbi", "map", "enemy", "weapon", "uiux"].map(x => docItem(x, "기획서")).filter(Boolean),
         (global.PROTO_SHOTS || [])[0] ? { kind: "doc", tag: "AI 목업", title: "AI로 만든 인벤토리 UI 목업", meta: "inventory_uiux.html · 2026.08", img: global.PROTO_SHOTS[0][0], summary: "UIUX 기획서의 의식판(인벤토리) 화면을 AI로 HTML 목업까지 만들어, 배치와 인접 규칙을 화면에서 바로 검토할 수 있게 했습니다.", lb: "proto" } : null,
         { kind: "widget", tag: "체험", title: "전투 공식 계산기", lede: "v2.0 공식 그대로", summary: "무기 공격력, 속성 수치, 상대 방어력을 바꾸면 평타 · 스킬 · 패링 · 봉인 수치가 바로 계산됩니다.", open: "joseon#combat", openLabel: "계산기 열기" },
         { kind: "widget", tag: "체험", title: "인벤토리 인접 효과 퍼즐", lede: "부적을 칼끝에", summary: "퇴마 아이템을 사인검 칼끝에 붙이면 공격력 +8%가 켜지는 인접 규칙을 직접 만져 볼 수 있습니다.", open: "joseon#item", openLabel: "퍼즐 열기" }

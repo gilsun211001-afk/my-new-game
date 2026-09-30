@@ -22,9 +22,9 @@
     <div class="hud-card quest"><div id="qText">마을 탐방 <b>0</b>/6</div><div class="bar"><i id="qBar"></i></div></div>
     <button class="hbtn" id="travelBtn" type="button" aria-label="장소 목록">☰ <span class="hide-sm">장소</span></button>
     <div class="hud-sp"></div>
-    <button class="hbtn hide-sm" data-snd type="button">♪ 소리</button>
+    <button class="hbtn" data-snd type="button" aria-label="효과음 켜기/끄기">♪ 소리</button>
     <button class="hbtn" id="helpBtn" type="button" aria-label="조작법">?</button>
-    <button class="hbtn em" id="toResume" type="button">📜 <span class="hide-sm">자기소개서로 보기</span></button>
+    <button class="hbtn em" id="toResume" type="button" aria-label="자기소개서로 보기">📜 <span class="hide-sm">자기소개서로 보기</span></button>
   </div>
   <div class="travel" id="travel" hidden></div>
   <div class="minimap"><div class="lbl"><span>기획마을</span><span>● 방문</span></div><canvas id="mini" width="176" height="128"></canvas></div>
@@ -85,14 +85,14 @@
     </div>
   </section>
   <main id="chapters"></main>
-  <footer class="site-foot"><div class="wrap">© 2026 LIM CHANG MIN · 수치와 인용은 원본 기획 문서를 기준으로 옮겼습니다 · <button class="btn gm sm" id="toGame2" type="button">기획마을로 가기</button> <button class="btn sm" data-snd type="button">♪</button></div></footer>
+  <footer class="site-foot"><div class="wrap">© 2026 LIM CHANG MIN · 수치와 인용은 원본 기획 문서와 자기소개서를 기준으로 옮겼습니다 · <button class="btn gm sm" id="toGame2" type="button">기획마을로 가기</button> <button class="btn sm" data-snd type="button">♪</button></div></footer>
   <button class="btn totop" id="totop" type="button" aria-label="맨 위로">▲</button>
 </div>
 
 <!-- ═════════ GALLERY (전시관) ═════════ -->
 <div class="gal" id="gallery" hidden>
   <div class="gal-top">
-    <button class="hbtn" id="galExit" type="button">← 마을로</button>
+    <button class="hbtn" id="galExit" type="button" aria-label="마을로 나가기">← 마을</button>
     <div class="gal-name" id="galName"></div>
     <div class="gal-nav"><button class="hbtn" id="galPrev" type="button" aria-label="이전 작품">‹</button><button class="hbtn" id="galNext" type="button" aria-label="다음 작품">›</button></div>
   </div>
