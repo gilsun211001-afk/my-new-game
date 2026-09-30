@@ -55,8 +55,8 @@
   ];
   BUILDINGS.forEach(b => { fillRect(b.x, b.y, b.w, b.h, 1, solid); b.door = { x: b.x + Math.floor(b.w / 2), y: b.y + b.h }; });
   const road = (x, y, w, h) => { for (let j = y; j < y + h; j++) for (let i = x; i < x + w; i++) if (inb(i, j) && !solid[idx(i, j)] && tiles[idx(i, j)] !== 2) tiles[idx(i, j)] = tiles[idx(i, j)] === 4 ? 4 : 1; };
-  road(12, 11, 2, 7); road(12, 17, 5, 2);      // 서당
-  road(30, 11, 2, 7); road(28, 17, 4, 2);      // 공방
+  road(12, 11, 2, 6); road(12, 15, 5, 2); road(15, 15, 2, 3);   // 서당: 아래로 → 기획서관 왼편 → 광장
+  road(30, 11, 2, 6); road(27, 15, 5, 2); road(27, 15, 2, 3);   // 공방: 아래로 → 기획서관 오른편 → 광장
   road(9, 21, 8, 2);                           // 주막
   road(28, 21, 6, 2);                          // 관아
   road(25, 22, 2, 6); road(25, 27, 6, 1);      // 역참
@@ -76,7 +76,7 @@
   }
   // stone lanterns: two per road, lit one by one as halls are visited
   // stone lanterns: two beside each hall's road — lit as that hall is visited
-  [["seogo", 16, 15], ["seogo", 28, 15], ["seodang", 11, 13], ["seodang", 14, 13], ["gongbang", 29, 13], ["gongbang", 32, 13],
+  [["seogo", 16, 13], ["seogo", 27, 13], ["seodang", 11, 13], ["seodang", 14, 13], ["gongbang", 29, 13], ["gongbang", 32, 13],
    ["jumak", 8, 23], ["jumak", 15, 23], ["seoru", 36, 23], ["seoru", 34, 23], ["yeokcham", 24, 26], ["yeokcham", 33, 26]]
     .forEach(([hall, x, y]) => { if (inb(x, y) && !solid[idx(x, y)] && tiles[idx(x, y)] !== 2) { tiles[idx(x, y)] = 0; PROPS.push({ t: "lantern", x, y, hall }); solid[idx(x, y)] = 1; } });
   PROPS.push({ t: "well", x: 17, y: 19 }); fillRect(17, 19, 2, 2, 1, solid);
@@ -89,7 +89,7 @@
   // reachable tiles from the entrance (BFS) — every scroll must be collectable
   const REACH = new Uint8Array(MAP_W * MAP_H); (function () { const q = [idx(22, 25)]; REACH[q[0]] = 1; while (q.length) { const c = q.shift(), cx = c % MAP_W, cy = (c / MAP_W) | 0; [[1, 0], [-1, 0], [0, 1], [0, -1]].forEach(([dx, dy]) => { const nx = cx + dx, ny = cy + dy, n = idx(nx, ny); if (inb(nx, ny) && !REACH[n] && !solid[n]) { REACH[n] = 1; q.push(n); } }); } })();
   const nearestReach = (x, y) => { let best = null, bd = 1e9; for (let j = 1; j < MAP_H - 1; j++) for (let i = 1; i < MAP_W - 1; i++) { const n = idx(i, j); if (!REACH[n] || tiles[n] !== 0) continue; const d = (i - x) ** 2 + (j - y) ** 2; if (d < bd) { bd = d; best = [i, j]; } } return best; };
-  const SCROLLS = [[5, 4], [39, 4], [3, 24], [40, 24], [22, 5], [19, 9], [11, 26], [36, 27]]
+  const SCROLLS = [[5, 5], [39, 5], [22, 7]]
     .map(([x, y], i) => { const [tx, ty] = nearestReach(x, y); return { i, x: tx, y: ty, got: false }; });
   /* wandering villagers & a cat — decoration that makes the village feel alive */
   const CRITTERS = [
@@ -511,6 +511,7 @@
     person: (g, x, y, dir, frame, style) => drawPerson(g, x, y, dir, frame, style),
     /* story: light n of the lanterns (0..6 halls visited) */
     setVisited(v) { S.visited = v.slice(); },
+    debugMap: () => S.staticLayer.toDataURL(),
     debugInfo: () => ({ scrolls: SCROLLS.map(sc => [sc.x, sc.y, !!REACH[idx(sc.x, sc.y)]]), lanterns: LANTERNS.map(p => [p.x, p.y, p.hall]), doors: BUILDINGS.map(b => [b.id, b.door.x, b.door.y, !!REACH[idx(b.door.x, b.door.y)], tiles[idx(b.door.x, b.door.y)]]), npcs: NPCS.map(n => [n.id, n.x, n.y, tiles[idx(n.x, n.y)]]) }),
     scrolls: () => SCROLLS.map(sc => ({ i: sc.i, got: sc.got })),
     setScrolls(got) { SCROLLS.forEach(sc => sc.got = got.includes(sc.i)); },

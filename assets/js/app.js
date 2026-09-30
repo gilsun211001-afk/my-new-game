@@ -105,14 +105,10 @@
   let gotScrolls = store.get("scrolls", []);
   const SCROLL_FACTS = [
     "보드게임 「창고를 털어라!!」는 보드게임 카페를 직접 돌며 수요를 조사해 만들었다.",
-    "아이템 기획서의 무기 밸런스 기준점은 장검(공격력 4~6)이다.",
-    "무당 캐릭터는 회로 노드 두 개를 아이템으로 이어야 각성한다.",
     "전투 v2.0에서 상성을 없앴다. 속성은 이제 '켜지는 스킬의 종류'만 정한다.",
-    "게임 분석 도감에는 16개 게임의 구조 · 재화 · BM 분석이 담겨 있다.",
-    "달콤소프트에서 SuperStar 시리즈의 점수 산출 로직을 코드 테스트로 검증했다.",
-    "림버스 컴퍼니 인격 기획서에는 9종 테이블로 된 데이터 테이블이 함께 있다.",
-    "Effects 시트는 아이템이 늘어도 구조를 바꾸지 않고 행만 추가하도록 설계했다."
+    "달콤소프트에서 SuperStar 시리즈의 점수 산출 로직을 코드 테스트로 검증했다."
   ];
+
   let mode = "title", worldReady = false, updateMini = null;
 
   const NPC_DEFS = [
@@ -130,11 +126,11 @@
   const REVIEW_LINES = PF.REVIEWS.map(r => `「${r.n}」 말이우? "${r.k}"`);
   const D = {
     hello: [{ t: `오셨군요! 저는 이 마을의 기록을 걸어 둔 기획자 ${PROFILE.name}입니다.` },
-      { t: "기획서관 · 서당 · 공방 · 관아에는 전시관을, 주막과 역참에는 이야기를 두었어요. 한 곳을 둘러보실 때마다 마을의 등불이 하나씩 다시 켜집니다.\n여섯 곳을 모두 밝혀 주시면, 광장에서 마지막 이야기를 들려드릴게요.\n참, 마을 곳곳에 흩어진 '기획 조각' 여덟 개도 찾아보세요. 제 이야기가 한 줄씩 적혀 있습니다.", c: [["가운데 기획서관부터 볼게요", "walk:seogo"], ["어디부터 가면 좋을까요?", "node:route"], ["당신은 어떤 기획자인가요?", "node:who"], ["혼자 둘러볼게요", "end"]] }],
+      { t: "기획서관 · 서당 · 공방 · 관아에는 전시관을, 주막과 역참에는 이야기를 두었어요. 한 곳을 둘러보실 때마다 마을의 등불이 하나씩 다시 켜집니다.\n여섯 곳을 모두 밝혀 주시면, 광장에서 마지막 이야기를 들려드릴게요.\n참, 마을에 흩어진 '기획 조각' 세 개를 모두 찾으시면 제 연락처를 드릴게요.", c: [["가운데 기획서관부터 볼게요", "walk:seogo"], ["어디부터 가면 좋을까요?", "node:route"], ["당신은 어떤 기획자인가요?", "node:who"], ["혼자 둘러볼게요", "end"]] }],
     route: [{ t: "바로 뒤, 마을 한가운데가 제 대표 기획서를 모아 둔 기획서관입니다.\n왼쪽 위 서당에는 자기소개서, 오른쪽 위 공방에는 지금 하고 있는 조선 판타지 프로젝트가 있어요.", c: [["기획서관으로 데려다 줘요", "walk:seogo"], ["서당으로 데려다 줘요", "walk:seodang"], ["공방으로 데려다 줘요", "walk:gongbang"], ["혼자 돌아볼게요", "end"]] }],
     who: [{ t: `"${PROFILE.headline}"\n게임을 하면 재미의 구조부터 뜯어 보고, 그걸 표와 공식으로 옮기는 게 제 일이에요.` },
       { t: "문서로 끝내지 않고, 필요하면 AI로 화면 목업까지 만들어 팀과 같은 그림을 봅니다.", c: [["자기소개서를 보여줘요", "open:letter,career"], ["고마워요", "end"]] }],
-    finale: [{ t: "보세요, 마을의 등불이 전부 켜졌습니다.\n누군가 제 기록을 끝까지 봐 준 덕분이에요. 정말 감사합니다." }, { t: () => gotScrolls.length >= 8 ? "기획 조각까지 여덟 개를 모두 모으셨군요! 이 마을의 모든 이야기를 아는 분은 당신이 처음입니다." : `기획 조각은 ${gotScrolls.length}/8개 모으셨네요. 남은 조각은 길에서 조금 벗어난 마을 가장자리에 있어요.` }, { t: "마음에 드셨다면 편하게 연락 주세요. 함께 기억에 남는 게임을 만들고 싶습니다.", c: [["연락처 보기", "open:contact"], ["자기소개서 전체 보기", "act:resume"], ["마을을 더 둘러볼게요", "end"]] }],
+    finale: [{ t: "보세요, 마을의 등불이 전부 켜졌습니다.\n누군가 제 기록을 끝까지 봐 준 덕분이에요. 정말 감사합니다." }, { t: () => gotScrolls.length >= 3 ? "기획 조각까지 모두 모으셨군요! 이 마을의 모든 이야기를 아는 분은 당신이 처음입니다." : `기획 조각은 ${gotScrolls.length}/3개 모으셨네요. 남은 조각은 마을 북쪽 숲 가장자리에 있어요.` }, { t: "마음에 드셨다면 편하게 연락 주세요. 함께 기억에 남는 게임을 만들고 싶습니다.", c: [["연락처 보기", "open:contact"], ["자기소개서 전체 보기", "act:resume"], ["마을을 더 둘러볼게요", "end"]] }],
     seodang: [{ t: "허허, 서당에 온 걸 환영하네. 안쪽 전시관에 그 기획자의 자기소개서가 한 폭씩 걸려 있지." },
       { t: `이 사람의 목표가 무엇인지 아는가?\n"${PROFILE.goal}"`, c: [["전시관에 들어간다", "hall:seodang"], ["자기소개서 원본 PDF", "act:pdf"], ["다음에 올게요", "end"]] }],
     gongbang: [{ t: "여긴 Project Joseon 공방이오. 조선 판타지 탑뷰 액션이지.\n캐릭터 강함은 레벨이 아니라 인벤토리에 뭘 붙이느냐로만 정해진다네." },
@@ -171,13 +167,13 @@
         p.hidden = false; p.innerHTML = `<kbd>${matchMedia("(pointer: coarse)").matches ? "탭" : "Space"}</kbd>${esc(it.name)}${it.sub ? ` <span style="color:#93b3a6">· ${esc(it.sub)}</span>` : ""}`;
       },
       onStep: () => Snd.fx("step"),
-      onPickup: (i, n, total) => { gotScrolls = World.scrolls().filter(x => x.got).map(x => x.i); store.set("scrolls", gotScrolls); Snd.fx("quest"); paintQuest(); ui.toast(`기획 조각 ${n}/${total} · ${SCROLL_FACTS[i % SCROLL_FACTS.length]}`, 5200); if (n === total) setTimeout(() => ui.toast("기획 조각을 모두 모았습니다! 광장의 기획자가 기다립니다", 4200), 5400); }
+      onPickup: (i, n, total) => { gotScrolls = World.scrolls().filter(x => x.got).map(x => x.i); store.set("scrolls", gotScrolls); Snd.fx("quest"); paintQuest(); ui.toast(`기획 조각 ${n}/${total} · ${SCROLL_FACTS[i % SCROLL_FACTS.length]}`, 4200); if (n === total) setTimeout(() => showContact(), 1400); }
     });
     updateMini = World.minimap($("#mini"));
     setInterval(() => { if (mode === "game" && Dlg.closed && $("#scroll").hidden) updateMini(visited); }, 250);
     World.setScrolls(gotScrolls); World.setVisited(visited); paintQuest(); paintTravel(); World.setLit(visited.length);
     Gallery.init({ esc, style: VISITOR_STYLE, step: () => Snd.fx("step"), move: () => Snd.fx("move"), lightbox: (k, i) => LB.open(k, i), openPanel: a => Scroll.open(a, null),
-      exit: hall => { if (hall && hall.id && Gallery.seen > 0) markVisit(hall.id); else if (hall && hall.id && !visited.includes(hall.id)) setTimeout(() => ui.toast("작품을 하나 이상 감상하면 등불이 켜집니다"), 400); mode = "game"; World.sleep(false); World.pause(false); $("#game").hidden = false; Snd.fx("close"); $("#world").focus({ preventScroll: true }); } });
+      exit: hall => { mode = "game"; World.sleep(false); World.pause(false); $("#game").hidden = false; Snd.fx("close"); $("#world").focus({ preventScroll: true }); } });
   }
 
   /* ── halls (전시관) ── */
@@ -186,7 +182,7 @@
   function enterHall(id) {
     HALLS = HALLS || PF.halls();
     const h = HALLS[id]; if (!h || !h.items.length) return; h.id = id;
-    mode = "gallery"; World.pause(true); World.sleep(true); Snd.fx("open");
+    markVisit(id); mode = "gallery"; World.pause(true); World.sleep(true); Snd.fx("open");
     Gallery.enter(h);
   }
 
@@ -196,7 +192,7 @@
     World.setVisited(visited); World.setLit(visited.length); Snd.fx("quest"); ui.toast(`등불 하나가 켜졌습니다 · ${PLACES[place]} (${visited.length}/6)`);
     if (visited.length === 6) setTimeout(() => { ui.toast("모든 등불이 켜졌습니다! 광장의 기획자에게 안내합니다"); World.walkTo("designer", () => World.interact()); }, 2200);
   }
-  function paintQuest() { $("#qText").innerHTML = `등불 <b>${visited.length}</b>/6 · 기획 조각 <b>${gotScrolls.length}</b>/8`; $("#qBar").style.width = (visited.length / 6 * 100) + "%"; }
+  function paintQuest() { $("#qText").innerHTML = `등불 <b>${visited.length}</b>/6 · 기획 조각 <b>${gotScrolls.length}</b>/3`; $("#qBar").style.width = (visited.length / 6 * 100) + "%"; }
   function paintTravel() {
     $("#travel").innerHTML = `<button class="hbtn" data-walk="designer" type="button">${visited.length >= 6 ? '<span class="v">★</span>' : "·"} 광장 <span style="color:#6a8a7e">기획자 임창민</span></button>` + Object.entries(PLACES).map(([id, n]) => `<button class="hbtn" data-walk="${id}" type="button">${visited.includes(id) ? '<span class="v">✓</span>' : "·"} ${n} <span style="color:#6a8a7e">${World.BUILDINGS.find(b => b.id === id).sub}</span></button>`).join("");
   }
@@ -242,7 +238,7 @@
       else if (kind === "open") { this.close(true); Scroll.open(arg, this.who); }
       else if (kind === "walk") { this.close(); World.walkTo(arg, () => { }); }
       else if (kind === "hall") { this.close(true); enterHall(arg); }
-      else if (kind === "act") { this.close(); if (arg === "reset") { visited = []; store.set("visited", []); store.set("scrolls", []); store.set("greeted", false); location.hash = ""; location.reload(); return; } if (arg === "resume") go("resume"); if (arg === "pdf") window.open(PF.LETTER_PDF, "_blank", "noopener"); if (arg === "copy") { navigator.clipboard && navigator.clipboard.writeText(PROFILE.email).then(() => ui.toast("이메일을 복사했습니다")).catch(() => ui.toast(PROFILE.email)); } }
+      else if (kind === "act") { this.close(); if (arg === "reset") { visited = []; gotScrolls = []; store.set("visited", []); store.set("scrolls", []); store.set("greeted", false); location.hash = ""; location.reload(); return; } if (arg === "resume") go("resume"); if (arg === "pdf") window.open(PF.LETTER_PDF, "_blank", "noopener"); if (arg === "copy") { navigator.clipboard && navigator.clipboard.writeText(PROFILE.email).then(() => ui.toast("이메일을 복사했습니다")).catch(() => ui.toast(PROFILE.email)); } }
     },
     moveSel(d) { const bs = $$("#dlgChoices button"); if (!bs.length) return; this.sel = (this.sel + d + bs.length) % bs.length; bs.forEach((b, j) => b.classList.toggle("sel", j === this.sel)); bs[this.sel].focus({ preventScroll: true }); Snd.fx("move"); },
     close(keepPaused) { clearInterval(this._iv); this.closed = true; $("#dlg").hidden = true; if (!keepPaused) World.pause(false); Snd.fx("close"); }
@@ -290,6 +286,21 @@
   $("#lbThumbs").addEventListener("click", e => { const b = e.target.closest("button"); if (b) { LB.i = +b.dataset.j; LB.paint(); } });
   (function () { let x0 = null; const st = $("#lbStage"); st.addEventListener("touchstart", e => x0 = e.touches[0].clientX, { passive: true }); st.addEventListener("touchend", e => { if (x0 === null) return; const dx = e.changedTouches[0].clientX - x0; if (Math.abs(dx) > 40) LB.step(dx < 0 ? 1 : -1); x0 = null; }); st.addEventListener("click", e => { if (e.target === st) LB.close(); }); })();
 
+  /* ═════════ 연락처 보상 · 조작 안내 ═════════ */
+  function showContact() {
+    World.pause(true); Snd.fx("quest");
+    $("#reward").hidden = false; $("#rewardMail").textContent = PROFILE.email; $("#rewardMailA").href = "mailto:" + PROFILE.email;
+    setTimeout(() => $("#rewardCopy").focus(), 30);
+  }
+  function closeReward() { $("#reward").hidden = true; if (mode === "game" && Dlg.closed && $("#scroll").hidden) World.pause(false); }
+  $("#rewardClose").onclick = closeReward;
+  $("#rewardCopy").onclick = () => { navigator.clipboard && navigator.clipboard.writeText(PROFILE.email).then(() => ui.toast("이메일 주소를 복사했습니다")).catch(() => ui.toast(PROFILE.email)); };
+  $("#rewardMore").onclick = () => { closeReward(); Scroll.open("contact", null); };
+  function showGuide(then) {
+    World.pause(true); $("#guide").hidden = false; setTimeout(() => $("#guideGo").focus(), 30);
+    $("#guideGo").onclick = () => { $("#guide").hidden = true; World.pause(false); Snd.fx("ok"); then && then(); };
+  }
+
   /* ═════════ STORY (prologue) ═════════ */
   const Story = {
     lines: [
@@ -314,7 +325,7 @@
     $("#resume").hidden = m !== "resume";
     document.body.style.overflow = m === "resume" ? "" : "hidden";
     if (m === "title") { initWorld(); World.sleep(false); World.pause(true); setTimeout(() => $("#startResume").focus(), 50); }
-    if (m === "game") { initWorld(); World.sleep(false); World.pause(false); $("#world").focus(); if (!store.get("greeted", false)) { store.set("greeted", true); Story.play(() => Dlg.run("hello", NPC_DEFS[0])); } }
+    if (m === "game") { initWorld(); World.sleep(false); World.pause(false); $("#world").focus(); if (!store.get("greeted", false)) { store.set("greeted", true); Story.play(() => showGuide(() => Dlg.run("hello", NPC_DEFS[0]))); } }
     if (m === "resume") { buildResume(); avatarKick(); if (worldReady) { World.pause(true); World.sleep(true); } window.scrollTo(0, 0); }
     try { history.replaceState(null, "", m === "title" ? location.pathname + location.search : "#" + m); } catch (e) { }
   }
@@ -326,7 +337,7 @@
   $("#toGame2").onclick = () => go("game");
   $("#travelBtn").onclick = () => { const t = $("#travel"); t.hidden = !t.hidden; Snd.fx("move"); };
   $("#travel").addEventListener("click", e => { const b = e.target.closest("[data-walk]"); if (!b) return; $("#travel").hidden = true; World.walkTo(b.dataset.walk, () => World.interact()); });
-  $("#helpBtn").onclick = () => Dlg.run("sign", { name: "안내판", style: null });
+  $("#helpBtn").onclick = () => showGuide();
   $("#prompt").onclick = () => World.interact();
   $("#act").addEventListener("click", () => { if (!Dlg.closed) Dlg.advance(); else World.interact(); });
   function paintSnd() { $$("[data-snd]").forEach(b => { b.innerHTML = `♪<span class="hide-sm"> 소리 ${Snd.on ? "켬" : "끔"}</span>`; b.setAttribute("aria-pressed", Snd.on); }); }
@@ -347,6 +358,8 @@
   addEventListener("keydown", e => {
     if (!$("#lb").hidden) { if (e.key === "Escape") { e.preventDefault(); LB.close(); } if (e.key === "ArrowLeft") LB.step(-1); if (e.key === "ArrowRight") LB.step(1); if (e.key === "Tab") trap(e, $("#lb")); return; }
     if (!$("#scroll").hidden && mode !== "game") { if (e.key === "Escape") { e.preventDefault(); Scroll.close(); } else if (e.key === "Tab") trap(e, $("#scroll")); return; }
+    if (!$("#reward").hidden) { if (e.key === "Escape") { e.preventDefault(); closeReward(); } return; }
+    if (!$("#guide").hidden) { if (["Escape", "Enter", " "].includes(e.key)) { e.preventDefault(); $("#guideGo").click(); } return; }
     if (!$("#story").hidden) { if ([" ", "Enter", "Escape"].includes(e.key)) { e.preventDefault(); e.key === "Escape" ? Story.end() : Story.next(); } return; }
     if (mode === "title") { if (e.key === "Enter" && document.activeElement.tagName !== "BUTTON") { $("#startResume").click(); } return; }
     if (mode !== "game") return;
