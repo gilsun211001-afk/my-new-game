@@ -104,6 +104,12 @@
   const uniq = (a, ok) => (Array.isArray(a) ? a : []).filter((x, i, arr) => ok(x) && arr.indexOf(x) === i);
   let visited = uniq(store.get("visited", []), x => x in PLACES);
   let gotScrolls = uniq(store.get("scrolls", []), x => [0, 1, 2].includes(x));
+  // 조각 0 = 입구 바로 앞, 조각 1·2 = 다섯 건물 중 무작위 두 곳 안에
+  const SCROLL_POOL = ["seodang", "gongbang", "jumak", "seoru", "yeokcham"];
+  const rollHalls = () => { const a = SCROLL_POOL.slice().sort(() => Math.random() - .5).slice(0, 2); store.set("scrollHalls", a); return a; };
+  let scrollHalls = store.get("scrollHalls", null);
+  if (!Array.isArray(scrollHalls) || scrollHalls.length !== 2 || !scrollHalls.every(x => SCROLL_POOL.includes(x)) || scrollHalls[0] === scrollHalls[1]) scrollHalls = rollHalls();
+  let pendingReward = null;
   // 등불 기록 — 건물에 들어가 등불을 켤 때마다 기획자에 대한 기록 한 장
   const LORE = {
     seogo: { t: "개인 기획서 5종", d: "오버워치 2 · 원신 · 림버스 컴퍼니 등 기존 게임의 규칙을 분석하고 새 콘텐츠를 얹은 기획서들.", act: ["기획서 서가 보기", "open:library"] },
@@ -115,8 +121,8 @@
   };
   // 기획 조각 보상 — 모은 순서대로 노션 → 리뷰 DB → 연락처
   const SCROLL_REWARDS = [
-    { t: PF.NOTION[0].t, d: "플레이한 게임의 장단점과 분석 자료를 모아 둔 메인 노션입니다.", u: PF.NOTION[0].u, btn: "노션 열기" },
-    { t: "게임 리뷰 · 기사 스크랩", d: "게임 리뷰와 업계 기사 스크랩, 제작 정보를 모아 둔 노션입니다.", u: "https://app.notion.com/p/314c1342e11f80aa9a65c7666a35977a?source=copy_link", btn: "노션 열기" },
+    { t: "게임 리뷰", d: "직접 플레이한 게임마다 장단점과 개선안을 정리한 리뷰 노션입니다.", u: "https://app.notion.com/p/314c1342e11f809cb2b1e2abb4bcb34a?source=copy_link", btn: "게임 리뷰 열기" },
+    { t: "기사 스크랩", d: "게임 업계 기사를 스크랩하고 기획자 관점의 생각을 덧붙인 노션입니다.", u: "https://app.notion.com/p/314c1342e11f80fb9f1bdc77e817ad26?source=copy_link", btn: "기사 스크랩 열기" },
     { t: "연락처", d: "마지막 조각 · 기획자의 이메일과 전화번호", contact: true }
   ];
 
@@ -141,7 +147,7 @@
     route: [{ t: "바로 뒤, 마을 한가운데가 제 대표 기획서를 모아 둔 기획서관입니다.\n왼쪽 위 서당에는 자기소개서, 오른쪽 위 공방에는 지금 하고 있는 조선 판타지 프로젝트가 있어요.", c: [["기획서관으로 데려다 줘요", "walk:seogo"], ["서당으로 데려다 줘요", "walk:seodang"], ["공방으로 데려다 줘요", "walk:gongbang"], ["혼자 돌아볼게요", "end"]] }],
     who: [{ t: `"${PROFILE.headline}"\n게임을 하면 재미의 구조부터 뜯어 보고, 그걸 표와 공식으로 옮기는 게 제 일이에요.` },
       { t: "문서로 끝내지 않고, 필요하면 AI로 화면 목업까지 만들어 팀과 같은 그림을 봅니다.", c: [["자기소개서를 보여줘요", "open:letter,career"], ["고마워요", "end"]] }],
-    finale: [{ t: "보세요, 마을의 등불이 전부 켜졌습니다.\n누군가 제 기록을 끝까지 봐 준 덕분이에요. 정말 감사합니다." }, { t: () => gotScrolls.length >= 3 ? "기획 조각까지 모두 모으셨군요! 이 마을의 모든 이야기를 아는 분은 당신이 처음입니다." : `기획 조각은 ${gotScrolls.length}/3개 모으셨네요. 남은 조각은 마을 북쪽 숲 가장자리에 있어요.` }, { t: "마음에 드셨다면 편하게 연락 주세요. 함께 기억에 남는 게임을 만들고 싶습니다.", c: [["연락처 보기", "open:contact"], ["자기소개서 전체 보기", "act:resume"], ["마을을 더 둘러볼게요", "end"]] }],
+    finale: [{ t: "보세요, 마을의 등불이 전부 켜졌습니다.\n누군가 제 기록을 끝까지 봐 준 덕분이에요. 정말 감사합니다." }, { t: () => gotScrolls.length >= 3 ? "기획 조각까지 모두 모으셨군요! 이 마을의 모든 이야기를 아는 분은 당신이 처음입니다." : `기획 조각은 ${gotScrolls.length}/3개 모으셨네요. 남은 조각은 마을 건물 안 어딘가에 숨어 있어요.` }, { t: "마음에 드셨다면 편하게 연락 주세요. 함께 기억에 남는 게임을 만들고 싶습니다.", c: [["연락처 보기", "open:contact"], ["자기소개서 전체 보기", "act:resume"], ["마을을 더 둘러볼게요", "end"]] }],
     seodang: [{ t: "허허, 서당에 온 걸 환영하네. 안쪽 전시관에 그 기획자의 자기소개서가 한 폭씩 걸려 있지." },
       { t: `이 사람의 목표가 무엇인지 아는가?\n"${PROFILE.goal}"`, c: [["전시관에 들어간다", "hall:seodang"], ["자기소개서 원본 PDF", "act:pdf"], ["다음에 올게요", "end"]] }],
     gongbang: [{ t: "여긴 Project Joseon 공방이오. 조선 판타지 탑뷰 액션이지.\n캐릭터 강함은 레벨이 아니라 인벤토리에 뭘 붙이느냐로만 정해진다네." },
@@ -157,7 +163,7 @@
     jumak2: [{ t: () => REVIEW_LINES[Math.floor(Math.random() * REVIEW_LINES.length)], c: [["분석 도감 전부 보기", "open:reviews"], ["하나 더!", "node:jumak2"], ["잘 먹고 갑니다", "end"]] }],
     yeokcham: [{ t: "파발이오! 기획자에게 전할 말이 있으면 내가 날라다 주지." }, { t: `이메일은 ${PROFILE.email}.\n노션 기록과 포트폴리오 폴더도 여기서 바로 열 수 있소.`, c: [["연락처 · 링크 보기", "open:contact"], ["이메일 복사", "act:copy"], ["괜찮소", "end"]] }],
     sign: [{ t: "【기획마을 안내판】\n① 가운데 기획서관으로 이동해 개인 기획서를 감상해 보시오.\n② 서당 · 공방 · 관아 · 주막 · 역참을 돌며 등불 6개를 모두 밝혀 보시오. 등불마다 기획자의 기록이 📖 기록첩에 쌓이오." },
-      { t: "③ 마을 북쪽 숲 가장자리로 이동해 반짝이는 기획 조각 3개를 얻어 보시오. 조각마다 기획자의 기록이 하나씩 들어 있소.\n④ 모두 마치면 광장의 기획자에게 가서 마지막 이야기를 들어 보시오." },
+      { t: "③ 입구 바로 앞의 기획 조각 하나, 그리고 다섯 건물 중 두 곳에 숨은 조각을 찾아 모두 기획 조각 3개를 얻어 보시오. 조각마다 기획자의 기록이 하나씩 들어 있소.\n④ 모두 마치면 광장의 기획자에게 가서 마지막 이야기를 들어 보시오." },
       { t: "【조작법】 이동: 방향키 · WASD · 화면 탭 · 조이스틱 (Shift 달리기)\n대화 · 입장: Space · Enter · E · 대상 탭 / 전시관: ← → 걷기 · Esc 나가기", c: [["알겠소", "end"], ["처음부터 다시 (등불 · 조각 초기화)", "act:reset"]] }],
   };
   // building doors map to the NPC's node
@@ -180,13 +186,13 @@
         p.hidden = false; p.innerHTML = `<kbd>${matchMedia("(pointer: coarse)").matches ? "탭" : "Space"}</kbd>${esc(it.name)}${it.sub ? ` <span style="color:#93b3a6">· ${esc(it.sub)}</span>` : ""}`;
       },
       onStep: () => Snd.fx("step"),
-      onPickup: (i, n, total) => { gotScrolls = World.scrolls().filter(x => x.got).map(x => x.i); store.set("scrolls", gotScrolls); Snd.fx("quest"); paintQuest(); const r = SCROLL_REWARDS[Math.min(n, 3) - 1]; ui.toast(`기획 조각 ${n}/${total} · ${r.t} 획득!`, 2600); setTimeout(() => r.contact ? showContact() : showLink(r, n), 900); }
+      onPickup: i => { awardScroll(i); setTimeout(flushReward, 700); }
     });
     updateMini = World.minimap($("#mini"));
     setInterval(() => { if (mode === "game" && Dlg.closed && $("#scroll").hidden) updateMini(visited); }, 250);
     World.setScrolls(gotScrolls); World.setVisited(visited); paintQuest(); paintTravel(); World.setLit(visited.length);
     Gallery.init({ esc, style: VISITOR_STYLE, step: () => Snd.fx("step"), move: () => Snd.fx("move"), lightbox: (k, i) => LB.open(k, i), openPanel: a => Scroll.open(a, null),
-      exit: hall => { setTimeout(announce, 500); mode = "game"; World.sleep(false); World.pause(false); $("#game").hidden = false; Snd.fx("close"); $("#world").focus({ preventScroll: true }); } });
+      exit: hall => { setTimeout(announce, 500); mode = "game"; World.sleep(false); World.pause(false); $("#game").hidden = false; Snd.fx("close"); $("#world").focus({ preventScroll: true }); flushReward(); } });
   }
 
   /* ── halls (전시관) ── */
@@ -199,8 +205,22 @@
     Gallery.enter(h);
   }
 
+  function awardScroll(i, where) {
+    if (gotScrolls.includes(i)) return;
+    gotScrolls.push(i); store.set("scrolls", gotScrolls); World.setScrolls(gotScrolls); Snd.fx("quest"); paintQuest();
+    const n = gotScrolls.length, r = SCROLL_REWARDS[n - 1];
+    ui.toast(`${where ? where + "에서 " : ""}기획 조각 ${n}/3 발견 · ${r.t}`, 3200); pendingReward = n; if (where) setTimeout(flushReward, 400);
+  }
+  // 대화 · 전시관 · 문서 창이 모두 닫혀 마을로 돌아왔을 때 보상 창을 띄운다
+  function flushReward() {
+    if (!pendingReward || mode !== "game" || !Dlg.closed || !$("#scroll").hidden || !$("#reward").hidden || !$("#journal").hidden) return;
+    const n = pendingReward, r = SCROLL_REWARDS[n - 1]; pendingReward = null;
+    setTimeout(() => r.contact ? showContact() : showLink(r, n), 350);
+  }
   function markVisit(place) {
-    if (!place || visited.includes(place)) return;
+    const k = scrollHalls.indexOf(place), fresh = place && !visited.includes(place);
+    if (k >= 0 && !gotScrolls.includes(k + 1)) setTimeout(() => awardScroll(k + 1, PLACES[place]), fresh ? 1800 : 300);
+    if (!fresh) return;
     visited.push(place); store.set("visited", visited); paintQuest(); paintTravel();
     World.setVisited(visited); World.setLit(visited.length); Snd.fx("quest"); ui.toast(`등불 ${visited.length}/6 · ${PLACES[place]} — 기록 「${LORE[place].t}」이 📖 기록첩에 담겼습니다`, 3600);
     if (visited.length === 6) setTimeout(() => { ui.toast("모든 등불이 켜졌습니다! 광장의 기획자에게 안내합니다"); World.walkTo("designer", () => World.interact()); }, 2200);
@@ -215,8 +235,9 @@
   ];
   function objective() {
     const next = OBJ_ORDER.find(([id]) => !visited.includes(id));
+    if (!gotScrolls.includes(0)) return { step: "기획 조각 0/3", text: "바로 앞에서 반짝이는 기획 조각을 주워 보시오" };
     if (next) return { step: `등불 ${visited.length}/6`, text: next[1], id: next[0] };
-    if (gotScrolls.length < 3) return { step: `기획 조각 ${gotScrolls.length}/3`, text: "마을 북쪽 숲 가장자리로 이동해 반짝이는 기획 조각을 얻어 보시오" };
+    if (gotScrolls.length < 3) { const h = scrollHalls.find((x, k) => !gotScrolls.includes(k + 1)); return { step: `기획 조각 ${gotScrolls.length}/3`, text: `${PLACES[h]}에 숨은 기획 조각을 찾아보시오`, id: h }; }
     return { step: "마지막", text: "광장의 기획자에게 가서 마지막 이야기를 들어 보시오", id: "designer" };
   }
   function paintObjective(flash) {
@@ -274,7 +295,7 @@
       else if (kind === "act") { this.close(); if (arg === "reset") { resetProgress(); return; } if (arg === "resume") go("resume"); if (arg === "pdf") window.open(PF.LETTER_PDF, "_blank", "noopener"); if (arg === "copy") { navigator.clipboard && navigator.clipboard.writeText(PROFILE.email).then(() => ui.toast("이메일을 복사했습니다")).catch(() => ui.toast(PROFILE.email)); } }
     },
     moveSel(d) { const bs = $$("#dlgChoices button"); if (!bs.length) return; this.sel = (this.sel + d + bs.length) % bs.length; bs.forEach((b, j) => b.classList.toggle("sel", j === this.sel)); bs[this.sel].focus({ preventScroll: true }); Snd.fx("move"); },
-    close(keepPaused) { clearInterval(this._iv); this.closed = true; $("#dlg").hidden = true; if (!keepPaused) World.pause(false); Snd.fx("close"); }
+    close(keepPaused) { clearInterval(this._iv); this.closed = true; $("#dlg").hidden = true; if (!keepPaused) { World.pause(false); flushReward(); } Snd.fx("close"); }
   };
   $("#dlgChoices").addEventListener("click", e => { const b = e.target.closest("button"); if (b) Dlg.choose(+b.dataset.j); });
   $("#dlg").addEventListener("click", e => { if (!e.target.closest("button")) Dlg.advance(); });
@@ -292,7 +313,7 @@
       $("#scroll").hidden = false; if (mode !== "gallery") World.pause(true); Snd.fx("open");
       setTimeout(() => $("#scrollClose").focus(), 30);
     },
-    close() { $("#scroll").hidden = true; $("#scrollBody").innerHTML = ""; Snd.fx("close"); if (mode === "gallery") { $("#galView").focus({ preventScroll: true }); return; } if (mode === "game") World.pause(false); $("#world").focus({ preventScroll: true }); }
+    close() { $("#scroll").hidden = true; $("#scrollBody").innerHTML = ""; Snd.fx("close"); if (mode === "gallery") { $("#galView").focus({ preventScroll: true }); return; } if (mode === "game") { World.pause(false); flushReward(); } $("#world").focus({ preventScroll: true }); }
   };
   $("#scrollClose").onclick = () => Scroll.close();
   $("#scroll").addEventListener("click", e => { if (e.target.id === "scroll") Scroll.close(); });
@@ -345,7 +366,7 @@
       : `<article class="jcard"><span class="jtag">· ${esc(PLACES[id])}</span><b>???</b><p>${esc(PLACES[id])}에 들어가 등불을 켜면 기록이 드러납니다.</p><button class="btn sm" type="button" data-jact="walk:${id}">여기로 이동</button></article>`; }).join("");
     $("#jScrolls").innerHTML = SCROLL_REWARDS.map((r, k) => k < gotScrolls.length
       ? `<article class="jcard on gold"><span class="jtag">📜 조각 ${k + 1}</span><b>${esc(r.t)}</b><p>${esc(r.d)}</p>${r.contact ? `<button class="btn sm" type="button" data-jact="act:contact">연락처 보기</button>` : `<a class="btn sm" href="${r.u}" target="_blank" rel="noopener">${esc(r.btn)} ↗</a>`}</article>`
-      : `<article class="jcard"><span class="jtag">· 조각 ${k + 1}</span><b>???</b><p>북쪽 숲 가장자리의 반짝이는 조각을 찾아보세요.</p></article>`).join("");
+      : `<article class="jcard"><span class="jtag">· 조각 ${k + 1}</span><b>???</b><p>${k === 0 ? "입구 바로 앞에서 반짝이고 있습니다." : "다섯 건물 중 어딘가에 숨어 있습니다."}</p></article>`).join("");
   }
   function openJournal() { World.pause(true); paintJournal(); $("#journal").hidden = false; Snd.fx("open"); setTimeout(() => $("#journalClose").focus(), 30); }
   function closeJournal() { $("#journal").hidden = true; Snd.fx("close"); if (mode === "game" && Dlg.closed && $("#scroll").hidden) World.pause(false); }
@@ -359,7 +380,7 @@
     else if (v === "pdf") window.open(PF.LETTER_PDF, "_blank", "noopener");
   });
   function resetProgress() {
-    visited = []; gotScrolls = []; store.set("visited", []); store.set("scrolls", []); World.teleport("designer");
+    visited = []; gotScrolls = []; pendingReward = null; store.set("visited", []); store.set("scrolls", []); scrollHalls = rollHalls(); World.warp(22, 25);
     World.setVisited([]); World.setScrolls([]); World.setLit(0); paintQuest(); paintTravel(); updateMini && updateMini(visited);
     Snd.fx("close"); ui.toast("등불과 기획 조각을 모두 초기화했습니다. 처음부터 다시 시작해 보세요"); setTimeout(announce, 600);
   }

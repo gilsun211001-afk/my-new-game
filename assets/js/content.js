@@ -83,7 +83,6 @@
   ];
 
   const NOTION = [
-    { t: "My Game Design Insights", d: "플레이한 게임의 장단점과 분석 자료를 모은 메인 노션", u: "https://www.notion.so/23e5bb2a4bb380feaa84f6f4bd089b75?v=23e5bb2a4bb381e6ba11000c90f76c0c&source=copy_link" },
     { t: "게임 리뷰 데이터베이스", d: "리뷰 페이지를 한곳에 모은 노션 DB", u: "https://www.notion.so/123dac2a20db4e8490e230cb0841472f?v=2aee0f66b97845ebaa723d821230b502&source=copy_link" },
     { t: "게임 분석 자료 (허브)", d: "리뷰 · 업계 스크랩 · 제작 정보 · 용어 사전", u: "https://app.notion.com/p/314c1342e11f80aa9a65c7666a35977a" },
     { t: "캐주얼 모바일 게임 분석", d: "약 20종의 매출 · 논란 · 강점/개선점 표", u: "https://app.notion.com/p/375c1342e11f808f9ef9f5b12174c343" },
