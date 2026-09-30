@@ -440,7 +440,7 @@
     },
     bindInput() {
       addEventListener("keydown", e => {
-        if (S.paused) return;
+        if (S.paused || e.defaultPrevented) return;
         const k = e.key.length === 1 ? e.key.toLowerCase() : e.key;
         if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", " "].includes(e.key)) e.preventDefault();
         if (k === " " || k === "Enter" || k === "e") { this.interact(); return; }

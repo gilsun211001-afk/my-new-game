@@ -70,6 +70,9 @@
     $$("#chapters .chapter").forEach(c => io.observe(c));
     $("#toc").addEventListener("click", e => { const a = e.target.closest("a"); if (!a) return; e.preventDefault(); document.getElementById("c-" + a.dataset.toc).scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" }); });
     drawAvatar();
+    $("#mnav").innerHTML = `<option value="">목차로 이동…</option>` + CHAPTERS.map(([id, label]) => `<option value="${id}">${esc(label)}</option>`).join("");
+    $("#mnav").onchange = e => { const v = e.target.value; if (v) document.getElementById("c-" + v).scrollIntoView(); e.target.value = ""; };
+    $("#totop").onclick = () => window.scrollTo({ top: 0, behavior: "smooth" });
   }
   function drawAvatar() {
     const cv = $("#avatar"), g = cv.getContext("2d"); g.imageSmoothingEnabled = false;
@@ -116,7 +119,7 @@
   const REVIEW_LINES = PF.REVIEWS.map(r => `「${r.n}」 말이우? "${r.k}"`);
   const D = {
     hello: [{ t: `어서 오세요! 저는 게임 기획자 ${PROFILE.name}입니다.\n이 마을은 제 기획서와 게임으로 지은 '기획마을'이에요.` },
-      { t: "건물마다 제 작업이 하나씩 들어 있습니다. 여섯 곳을 모두 둘러보시면 작은 선물이 있어요.", c: [["어디부터 가면 좋을까요?", "node:route"], ["당신은 어떤 기획자인가요?", "node:who"], ["자기소개서로 한 번에 볼래요", "act:resume"], ["둘러볼게요", "end"]] }],
+      { t: "건물마다 제 작업이 하나씩 들어 있습니다. 여섯 곳을 모두 둘러보신 뒤 광장으로 돌아오시면 마지막 이야기를 들려드릴게요.", c: [["어디부터 가면 좋을까요?", "node:route"], ["당신은 어떤 기획자인가요?", "node:who"], ["자기소개서로 한 번에 볼래요", "act:resume"], ["둘러볼게요", "end"]] }],
     route: [{ t: "처음이시라면 북쪽 서당에서 제 소개를, 동쪽 공방에서 지금 하고 있는 조선 판타지 프로젝트를 보시길 권해요.\n성루에서는 제가 AI로 만든 게임을 직접 플레이할 수 있습니다.", c: [["서당으로 데려다 줘요", "walk:seodang"], ["공방으로 데려다 줘요", "walk:gongbang"], ["성루로 데려다 줘요", "walk:seoru"], ["혼자 돌아볼게요", "end"]] }],
     who: [{ t: `"${PROFILE.headline}"\n게임을 하면 재미의 구조부터 뜯어 보고, 그걸 표와 공식으로 옮기는 게 제 일이에요.` },
       { t: "문서로 끝내지 않고, 필요하면 AI로 플레이 가능한 프로토타입까지 직접 만들어 확인합니다.", c: [["자기소개서를 보여줘요", "open:letter,career"], ["고마워요", "end"]] }],
@@ -154,7 +157,7 @@
       onNear: it => {
         const p = $("#prompt");
         if (!it || !Dlg.closed) { p.hidden = true; return; }
-        p.hidden = false; p.innerHTML = `<kbd>Space</kbd>${esc(it.name)}${it.sub ? ` <span style="color:#93b3a6">· ${esc(it.sub)}</span>` : ""}`;
+        p.hidden = false; p.innerHTML = `<kbd>${matchMedia("(pointer: coarse)").matches ? "탭" : "Space"}</kbd>${esc(it.name)}${it.sub ? ` <span style="color:#93b3a6">· ${esc(it.sub)}</span>` : ""}`;
       },
       onStep: () => Snd.fx("step")
     });
@@ -235,22 +238,28 @@
       $("#scroll").hidden = false; World.pause(true); Snd.fx("open");
       setTimeout(() => $("#scrollClose").focus(), 30);
     },
-    close() { $("#scroll").hidden = true; $("#scrollBody").innerHTML = ""; World.pause(false); Snd.fx("close"); }
+    close() { $("#scroll").hidden = true; $("#scrollBody").innerHTML = ""; World.pause(false); Snd.fx("close"); $("#world").focus({ preventScroll: true }); }
   };
   $("#scrollClose").onclick = () => Scroll.close();
   $("#scroll").addEventListener("click", e => { if (e.target.id === "scroll") Scroll.close(); });
 
+  function trap(e, box) {
+    const f = [...box.querySelectorAll('button,a[href],input,[tabindex]:not([tabindex="-1"])')].filter(x => x.offsetParent !== null);
+    if (!f.length) return; const first = f[0], last = f[f.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  }
   /* ── lightbox ── */
   const LB = {
     set: [], i: 0,
-    open(key, i) { this.set = PF.images(key); if (!this.set.length) return; this.i = i; $("#lb").hidden = false; this.paint(); Snd.fx("open"); $("#lbClose").focus(); },
+    open(key, i) { this.set = PF.images(key); if (!this.set.length) return; this.i = i; this.back = document.activeElement; $("#lb").hidden = false; this.paint(); Snd.fx("open"); $("#lbClose").focus(); },
     paint() {
       const it = this.set[this.i]; $("#lbImg").src = it.src; $("#lbImg").alt = it.cap; $("#lbCap").textContent = it.cap;
       $("#lbThumbs").innerHTML = this.set.map((s, j) => `<button type="button" data-j="${j}" class="${j === this.i ? "on" : ""}" aria-label="${j + 1}번째"><img src="${esc(s.src)}" alt="" loading="lazy"></button>`).join("");
       const on = $("#lbThumbs .on"); on && on.scrollIntoView({ block: "nearest", inline: "center" });
     },
     step(d) { this.i = (this.i + d + this.set.length) % this.set.length; this.paint(); Snd.fx("move"); },
-    close() { $("#lb").hidden = true; Snd.fx("close"); }
+    close() { $("#lb").hidden = true; Snd.fx("close"); if (this.back && this.back.focus) this.back.focus({ preventScroll: true }); }
   };
   $("#lbPrev").onclick = () => LB.step(-1); $("#lbNext").onclick = () => LB.step(1); $("#lbClose").onclick = () => LB.close();
   $("#lbThumbs").addEventListener("click", e => { const b = e.target.closest("button"); if (b) { LB.i = +b.dataset.j; LB.paint(); } });
@@ -295,12 +304,15 @@
 
   // global keys
   addEventListener("keydown", e => {
-    if (!$("#lb").hidden) { if (e.key === "Escape") LB.close(); if (e.key === "ArrowLeft") LB.step(-1); if (e.key === "ArrowRight") LB.step(1); return; }
+    if (!$("#lb").hidden) { if (e.key === "Escape") { e.preventDefault(); LB.close(); } if (e.key === "ArrowLeft") LB.step(-1); if (e.key === "ArrowRight") LB.step(1); if (e.key === "Tab") trap(e, $("#lb")); return; }
+    if (mode === "resume" && !$("#scroll").hidden && e.key === "Escape") { Scroll.close(); return; }
     if (mode === "title") { if (e.key === "Enter" && document.activeElement.tagName !== "BUTTON") { $("#startGame").click(); } return; }
     if (mode !== "game") return;
-    if (!$("#scroll").hidden) { if (e.key === "Escape") Scroll.close(); return; }
+    if (!$("#scroll").hidden) { if (e.key === "Escape") { e.preventDefault(); Scroll.close(); } else if (e.key === "Tab") trap(e, $("#scroll")); return; }
     if (!Dlg.closed) {
-      e.preventDefault();
+      const handled = ["Escape", "ArrowDown", "ArrowUp", "s", "w", " ", "Enter", "e", "1", "2", "3", "4"].includes(e.key);
+      if (!handled) return;
+      e.preventDefault(); e.stopPropagation();
       if (e.key === "Escape") return Dlg.close();
       if (e.key === "ArrowDown" || e.key === "s") return Dlg.moveSel(1);
       if (e.key === "ArrowUp" || e.key === "w") return Dlg.moveSel(-1);

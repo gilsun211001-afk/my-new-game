@@ -1,450 +1,362 @@
 [
-  {
-    "slug": "mudang",
-    "title": "무당 캐릭터 기획 체크시트",
-    "sourceId": "1CF45KX1Ev6U7PBB1TmMEeshHfmOqFbDhLu37t9TlyD0",
-    "pages": [
-      "p01.webp",
-      "p02.webp",
-      "p03.webp",
-      "p04.webp",
-      "p05.webp",
-      "p06.webp",
-      "p07.webp",
-      "p08.webp",
-      "p09.webp",
-      "p10.webp"
-    ],
-    "pageCount": 10,
-    "sourcePages": [
-      1,
-      2,
-      3,
-      4,
-      5,
-      6,
-      7,
-      8,
-      9,
-      10
-    ],
-    "note": "Google Slides export (10p, 전부 포함). 따뜻한 베이지/크림 톤 슬라이드: 확정/미정 상태 배지가 붙은 시스템 규칙 표, 인벤토리 소켓 격자 다이어그램, 무당 캐릭터 일러스트 3컷+텍스트 카드, 전투 처리 플로우차트(판정 다이아몬드) 포함."
-  },
-  {
-    "slug": "combat-v2",
-    "title": "전투 시스템 속성 체계 v2.0",
-    "sourceId": "1my0YYH3V_wk5lBW0z9zCdJGBBuYW0wVx3guSf9Kx8sI",
-    "pages": [
-      "p01.webp",
-      "p02.webp",
-      "p03.webp",
-      "p04.webp",
-      "p05.webp",
-      "p06.webp",
-      "p07.webp",
-      "p08.webp",
-      "p09.webp",
-      "p10.webp",
-      "p11.webp",
-      "p12.webp"
-    ],
-    "pageCount": 18,
-    "sourcePages": [
-      1,
-      2,
-      3,
-      5,
-      6,
-      8,
-      9,
-      11,
-      12,
-      14,
-      16,
-      18
-    ],
-    "note": "Google Slides export (18p 중 12p). 다크 배경에 기(청록)/신(황토)/요(보라) 3색 코딩: 무기·방어구·장신구·접합 흐름 박스, 속성 컨셉 카드, 장비 장착 단계별 격자 인벤토리 도해, 구성 요소 표."
-  },
-  {
-    "slug": "coreloop",
-    "title": "Project Joseon 코어루프 기획서 v0.3",
-    "sourceId": "1DFkp94NCJynU_s3fq9BSCXQytGSPqCkKZthp43naTAY",
-    "pages": [
-      "p01.webp",
-      "p02.webp",
-      "p03.webp",
-      "p04.webp",
-      "p05.webp",
-      "p06.webp",
-      "p07.webp",
-      "p08.webp",
-      "p09.webp",
-      "p10.webp",
-      "p11.webp",
-      "p12.webp"
-    ],
-    "pageCount": 18,
-    "sourcePages": [
-      1,
-      2,
-      3,
-      5,
-      6,
-      8,
-      9,
-      11,
-      12,
-      14,
-      15,
-      17
-    ],
-    "note": "Google Slides export (18p 중 12p). 블랙+골드 미니멀 에디토리얼 스타일: 대형 한 줄 정의 슬라이드, 전투/세팅 구간 2단 박스, 루프 4단 구조 흐름도, 스테이지 구성 카드. 이미지보다 구조 다이어그램 중심."
-  },
-  {
-    "slug": "map",
-    "title": "Project Joseon 맵 기획서 v1.1",
-    "sourceId": "103awi5bn8avSCu66FKHb3BTnx_fv_b2hBkpN8ywix64",
-    "pages": [
-      "p01.webp",
-      "p02.webp",
-      "p03.webp",
-      "p04.webp",
-      "p05.webp",
-      "p06.webp",
-      "p07.webp",
-      "p08.webp",
-      "p09.webp",
-      "p10.webp",
-      "p11.webp",
-      "p12.webp"
-    ],
-    "pageCount": 16,
-    "sourcePages": [
-      1,
-      2,
-      3,
-      4,
-      6,
-      7,
-      8,
-      10,
-      11,
-      12,
-      14,
-      15
-    ],
-    "note": "Google Slides export (16p 중 12p). 다크+골드 톤, 표지에 어두운 배경 아트: 문서 범위 표, 스테이지 워프 연결도, 거리 비교 막대 차트(1m=40px), 전체 맵 조감 다이어그램, 탑다운 스테이지 도면과 스펙 표."
-  },
-  {
-    "slug": "seonbi",
-    "title": "Project Joseon 선비 캐릭터 기획서 v1.1",
-    "sourceId": "1_0rZYLFeRonpQFMFWqvQZRDy0RA3fnGqFitlkSPN5Kc",
-    "pages": [
-      "p01.webp",
-      "p02.webp",
-      "p03.webp",
-      "p04.webp",
-      "p05.webp",
-      "p06.webp",
-      "p07.webp",
-      "p08.webp"
-    ],
-    "pageCount": 8,
-    "sourcePages": [
-      1,
-      2,
-      3,
-      4,
-      5,
-      6,
-      7,
-      8
-    ],
-    "note": "Google Slides export (8p 전부, 세로로 긴 페이지는 하단 빈 여백을 잘라냄). 다크 카드형 레이아웃: 캐릭터 프로필 카드와 기획 의도, 외형 키워드 태그, 흑의 선비 키아트+제작 사양 표, 삼각 소켓 배치 격자, 장검 공격 범위 탑뷰 도해, 모션 목록 표."
-  },
-  {
-    "slug": "asgard",
-    "title": "아스가르드 폴 오리진스 신규 모드 기획",
-    "sourceId": "1T6bIyweJPCG2jJVr_vfzMTBE-L-cVXLW",
-    "pages": [
-      "p01.webp",
-      "p02.webp",
-      "p03.webp",
-      "p04.webp",
-      "p05.webp",
-      "p06.webp",
-      "p07.webp",
-      "p08.webp",
-      "p09.webp",
-      "p10.webp",
-      "p11.webp",
-      "p12.webp"
-    ],
-    "pageCount": 12,
-    "sourcePages": [
-      1,
-      2,
-      3,
-      4,
-      5,
-      6,
-      7,
-      8,
-      9,
-      10,
-      11,
-      12
-    ],
-    "note": "원본 PDF (12p 전부). 픽셀아트 로고와 네온 핑크/시안 레트로 게임 UI 스타일: INDEX, 문제점 분석(게임 스크린샷), 아이콘 3단 해결 방향, RAGNAROK MODE 규칙/퀘스트 생성조건 표, 인게임 플레이 캡처."
-  },
-  {
-    "slug": "item-v1",
-    "title": "Project Joseon 아이템 기획서 v1.0",
-    "sourceId": "1HE1NOY11l5wSSzgAcfalWGWdGwj6ycLp",
-    "pages": [
-      "p01.webp",
-      "p02.webp",
-      "p03.webp",
-      "p04.webp",
-      "p05.webp",
-      "p06.webp",
-      "p07.webp",
-      "p08.webp",
-      "p09.webp",
-      "p10.webp",
-      "p11.webp",
-      "p12.webp"
-    ],
-    "pageCount": 19,
-    "sourcePages": [
-      1,
-      2,
-      3,
-      5,
-      6,
-      8,
-      10,
-      12,
-      13,
-      15,
-      17,
-      18
-    ],
-    "note": ".pptx 원본을 LibreOffice로 PDF 변환 (19p 중 12p). 흰 배경+다크브라운 헤더 문서형 슬라이드: 기획 의도 번호 카드, 변경 내역·분류 규칙 표, 속성 삼각구조 다이어그램, 아이템 아이콘이 들어간 방어구 스펙 표. 변환 시 원본 폰트(Calibri/Georgia) 대체됨."
-  },
-  {
-    "slug": "map-setting",
-    "title": "맵 설정 기획서 (스토리와 튜토리얼 동선)",
-    "sourceId": "11FspCQPtE3kL-o57hPRpTh3TwZdHEHFR",
-    "pages": [],
-    "pageCount": null,
-    "note": "미수록: Drive 커넥터 다운로드 한도(10MB) 초과로 받지 못함."
-  },
-  {
-    "slug": "enemy",
-    "title": "Project Joseon 적 유닛 기획서 v1.0",
-    "sourceId": "1iWTQRqyHQcbdFT98ZwrAniUozT7AfCIcsmVygsBqflk",
-    "pages": [
-      "p01.webp",
-      "p02.webp",
-      "p03.webp",
-      "p04.webp",
-      "p05.webp",
-      "p06.webp",
-      "p07.webp",
-      "p08.webp",
-      "p09.webp",
-      "p10.webp"
-    ],
-    "pageCount": 22,
-    "sourcePages": [
-      1,
-      3,
-      5,
-      6,
-      9,
-      11,
-      15,
-      17,
-      18,
-      22
-    ],
-    "note": "Google Slides export (22p 중 10p). 흰 배경 문서형, 적갈색 포인트: 보스 두억신 컨셉 아트, 판정 반경 원형 다이어그램, 스탯/판정 수치 표 2단, 치우기 모션 3단 도해(전조-판정-후딜), 카운터 구현안 비교 표."
-  },
-  {
-    "slug": "weapon",
-    "title": "Project Joseon 무기 스킬 기획서 v1 (weapon_skill_v1)",
-    "sourceId": "1-u3X4WWc64GZD-eFCM_U6I2Fp5NQDXCaosdxBSIRfhY",
-    "pages": [
-      "p01.webp",
-      "p02.webp",
-      "p03.webp",
-      "p04.webp",
-      "p05.webp",
-      "p06.webp",
-      "p07.webp",
-      "p08.webp",
-      "p09.webp",
-      "p10.webp"
-    ],
-    "pageCount": 25,
-    "sourcePages": [
-      1,
-      2,
-      5,
-      9,
-      11,
-      12,
-      16,
-      18,
-      22,
-      23
-    ],
-    "note": "Google Slides export (25p 중 10p). 블랙+골드 다크 UI 스타일: 아이템 아이콘 4종(사인검·장창·귀신 썬 부채·천갑옷)과 스펙 표, UI 피드백 규칙 카드, 부채꼴 판정 범위 도해, 프레임 데이터 타임라인 바, 호랑이 소환 행동 패턴 도해."
-  },
-  {
-    "slug": "uiux",
-    "title": "Project Joseon UIUX 기획서 v2",
-    "sourceId": "116ipdBSKHpTCAOd_muAxFdbZw8y-RWb6",
-    "pages": [
-      "p01.webp",
-      "p02.webp",
-      "p03.webp",
-      "p04.webp",
-      "p05.webp",
-      "p06.webp",
-      "p07.webp",
-      "p08.webp",
-      "p09.webp",
-      "p10.webp"
-    ],
-    "pageCount": 17,
-    "sourcePages": [
-      1,
-      2,
-      3,
-      6,
-      7,
-      9,
-      10,
-      13,
-      14,
-      16
-    ],
-    "note": ".pptx를 LibreOffice로 PDF 변환 (17p 중 10p). 흰 배경+다크브라운/레드 헤더 문서형: 번호 목차, 화면 구성 와이어프레임(주석 박스 포함), 단축키 표, 마우스 클릭 구조 표, 스탯 연결 4단 카드(일부 슬라이드에 원본 그대로의 핑크 \"수정 예정\" 박스 있음)."
-  },
-  {
-    "slug": "castle-units",
-    "title": "Castle Survival 유닛 시스템 v4",
-    "sourceId": "1ygfgB2urLxBve1hWZee5xQsF8u9l7Oqy",
-    "pages": [
-      "p01.webp",
-      "p02.webp",
-      "p03.webp",
-      "p04.webp",
-      "p05.webp",
-      "p06.webp",
-      "p07.webp",
-      "p08.webp"
-    ],
-    "pageCount": 11,
-    "sourcePages": [
-      1,
-      2,
-      3,
-      4,
-      6,
-      8,
-      9,
-      10
-    ],
-    "note": ".pptx를 LibreOffice로 PDF 변환 (11p 중 8p). 컬러풀한 인포그래픽 스타일(빨강/파랑/녹색 계열 구분): 유닛 업그레이드 트리 다이어그램, 계열별 분기 카드, 스탯·코스트 비교표, 트레이드오프 원칙 3단, 이벤트 카드, 전투 건축물 7종 카드."
-  },
-  {
-    "slug": "analysis",
-    "title": "테일즈런너 개선 기획서",
-    "sourceId": "1rXvFJdYxRcDJhN97NLHoVDNttWbEY1kM",
-    "pages": [
-      "p01.webp",
-      "p02.webp",
-      "p03.webp",
-      "p04.webp",
-      "p05.webp",
-      "p06.webp",
-      "p07.webp",
-      "p08.webp",
-      "p09.webp",
-      "p10.webp"
-    ],
-    "pageCount": 12,
-    "sourcePages": [
-      1,
-      2,
-      3,
-      4,
-      5,
-      6,
-      8,
-      9,
-      10,
-      11
-    ],
-    "note": "원본 PDF (12p 중 10p). 테일즈런너 개선안: 네이비+오렌지 대각 도형 디자인, 게임 캐릭터 단체 이미지와 마스코트, 인게임 스크린샷 비교, 커뮤니티 반응 캡처와 이슈 요약 박스."
-  },
-  {
-    "slug": "coverletter",
-    "title": "임창민 자기소개서",
-    "sourceId": "1YOwp8sBHujCVGqjmKeSPkcS6Vp6gIxGU",
-    "pages": [],
-    "pageCount": null,
-    "note": "미수록: 다운로드는 됐지만, 개인정보 가림 작업이 권한 분류기(개인정보 처리)에 막힘 — 사용자 확인 필요."
-  },
-  {
-    "slug": "resume",
-    "title": "이력서",
-    "sourceId": "1rRNbGYNS9TFREI2TJutdiaPFh5yLHd4G",
-    "pages": [],
-    "pageCount": null,
-    "note": "미수록: 자기소개서와 같은 사유(개인정보 처리 차단)."
-  },
-  {
-    "slug": "castle-gdd",
-    "title": "Castle Survival: Chronicle GDD v1.5",
-    "sourceId": "1Xp5fOea38CM7vni-AJFxE2J0276OVjM9",
-    "pages": [],
-    "pageCount": null,
-    "note": "미수록: .docx 8.2MB — 다운로드 중 Drive 커넥터 세션이 끊김(약 5MB 넘는 파일은 매번 실패). 텍스트는 읽을 수 있었음."
-  },
-  {
-    "slug": "castle-endings",
-    "title": "캐슬 엔딩 종류",
-    "sourceId": "1QB1Au9dohcWATmw8H6kYyV-P5J8TaWaM",
-    "pages": [],
-    "pageCount": null,
-    "note": "미수록: .pptx 25.8MB, 10MB 다운로드 한도 초과."
-  },
-  {
-    "slug": "ow2",
-    "title": "오버워치 신규 영웅 기획서(2024년 3월 오버워치 기준제작)",
-    "sourceId": "1hTsQkzpTS0nTeOEd9FquwBNMDyd0Hia1",
-    "pages": [],
-    "pageCount": null,
-    "note": "미수록: PDF 6.9MB — 두 번 시도 모두 커넥터 세션이 끊김."
-  },
-  {
-    "slug": "genshin",
-    "title": "원신 신규 보스 기획서(2024년 4월 원신 기준제작)",
-    "sourceId": "1Ye6kY5oeJlRN58VWjsg_8-1baIatwgTN",
-    "pages": [],
-    "pageCount": null,
-    "note": "미수록: PDF 10.06MB — 한도 근처라 세션 끊김 확률이 높아 시도하지 않음."
-  },
-  {
-    "slug": "limbus",
-    "title": "림버스 컴퍼니 전투 기획서 (인격)",
-    "sourceId": "1RkD9e_qikzJ0Rv8Rm60oHN7cjbtL3_Zz",
-    "pages": [],
-    "pageCount": null,
-    "note": "미수록: PDF 10.97MB, 10MB 한도 초과. (EGO편 13DQn0rs_28nbd0eNF41vxij9LyjHH0HI, 9.76MB도 같은 이유로 받지 못함)"
-  }
+ {
+  "slug": "mudang",
+  "title": "무당 캐릭터 기획 체크시트",
+  "pages": [
+   "p01.webp",
+   "p02.webp",
+   "p03.webp",
+   "p04.webp",
+   "p05.webp",
+   "p06.webp",
+   "p07.webp",
+   "p08.webp",
+   "p09.webp",
+   "p10.webp"
+  ],
+  "pageCount": 10,
+  "sourcePages": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10
+  ]
+ },
+ {
+  "slug": "combat-v2",
+  "title": "전투 시스템 속성 체계 v2.0",
+  "pages": [
+   "p01.webp",
+   "p02.webp",
+   "p03.webp",
+   "p04.webp",
+   "p05.webp",
+   "p06.webp",
+   "p07.webp",
+   "p08.webp",
+   "p09.webp",
+   "p10.webp",
+   "p11.webp",
+   "p12.webp"
+  ],
+  "pageCount": 18,
+  "sourcePages": [
+   1,
+   2,
+   3,
+   5,
+   6,
+   8,
+   9,
+   11,
+   12,
+   14,
+   16,
+   18
+  ]
+ },
+ {
+  "slug": "coreloop",
+  "title": "Project Joseon 코어루프 기획서 v0.3",
+  "pages": [
+   "p01.webp",
+   "p02.webp",
+   "p03.webp",
+   "p04.webp",
+   "p05.webp",
+   "p06.webp",
+   "p07.webp",
+   "p08.webp",
+   "p09.webp",
+   "p10.webp",
+   "p11.webp",
+   "p12.webp"
+  ],
+  "pageCount": 18,
+  "sourcePages": [
+   1,
+   2,
+   3,
+   5,
+   6,
+   8,
+   9,
+   11,
+   12,
+   14,
+   15,
+   17
+  ]
+ },
+ {
+  "slug": "map",
+  "title": "Project Joseon 맵 기획서 v1.1",
+  "pages": [
+   "p01.webp",
+   "p02.webp",
+   "p03.webp",
+   "p04.webp",
+   "p05.webp",
+   "p06.webp",
+   "p07.webp",
+   "p08.webp",
+   "p09.webp",
+   "p10.webp",
+   "p11.webp",
+   "p12.webp"
+  ],
+  "pageCount": 16,
+  "sourcePages": [
+   1,
+   2,
+   3,
+   4,
+   6,
+   7,
+   8,
+   10,
+   11,
+   12,
+   14,
+   15
+  ]
+ },
+ {
+  "slug": "seonbi",
+  "title": "Project Joseon 선비 캐릭터 기획서 v1.1",
+  "pages": [
+   "p01.webp",
+   "p02.webp",
+   "p03.webp",
+   "p04.webp",
+   "p05.webp",
+   "p06.webp",
+   "p07.webp",
+   "p08.webp"
+  ],
+  "pageCount": 8,
+  "sourcePages": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8
+  ]
+ },
+ {
+  "slug": "asgard",
+  "title": "아스가르드 폴 오리진스 신규 모드 기획",
+  "pages": [
+   "p01.webp",
+   "p02.webp",
+   "p03.webp",
+   "p04.webp",
+   "p05.webp",
+   "p06.webp",
+   "p07.webp",
+   "p08.webp",
+   "p09.webp",
+   "p10.webp",
+   "p11.webp",
+   "p12.webp"
+  ],
+  "pageCount": 12,
+  "sourcePages": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12
+  ]
+ },
+ {
+  "slug": "item-v1",
+  "title": "Project Joseon 아이템 기획서 v1.0",
+  "pages": [
+   "p01.webp",
+   "p02.webp",
+   "p03.webp",
+   "p04.webp",
+   "p05.webp",
+   "p06.webp",
+   "p07.webp",
+   "p08.webp",
+   "p09.webp",
+   "p10.webp",
+   "p11.webp",
+   "p12.webp"
+  ],
+  "pageCount": 19,
+  "sourcePages": [
+   1,
+   2,
+   3,
+   5,
+   6,
+   8,
+   10,
+   12,
+   13,
+   15,
+   17,
+   18
+  ]
+ },
+ {
+  "slug": "enemy",
+  "title": "Project Joseon 적 유닛 기획서 v1.0",
+  "pages": [
+   "p01.webp",
+   "p02.webp",
+   "p03.webp",
+   "p04.webp",
+   "p05.webp",
+   "p06.webp",
+   "p07.webp",
+   "p08.webp",
+   "p09.webp",
+   "p10.webp"
+  ],
+  "pageCount": 22,
+  "sourcePages": [
+   1,
+   3,
+   5,
+   6,
+   9,
+   11,
+   15,
+   17,
+   18,
+   22
+  ]
+ },
+ {
+  "slug": "weapon",
+  "title": "Project Joseon 무기 스킬 기획서 v1 (weapon_skill_v1)",
+  "pages": [
+   "p01.webp",
+   "p02.webp",
+   "p03.webp",
+   "p04.webp",
+   "p05.webp",
+   "p06.webp",
+   "p07.webp",
+   "p08.webp",
+   "p09.webp",
+   "p10.webp"
+  ],
+  "pageCount": 25,
+  "sourcePages": [
+   1,
+   2,
+   5,
+   9,
+   11,
+   12,
+   16,
+   18,
+   22,
+   23
+  ]
+ },
+ {
+  "slug": "uiux",
+  "title": "Project Joseon UIUX 기획서 v2",
+  "pages": [
+   "p01.webp",
+   "p02.webp",
+   "p03.webp",
+   "p04.webp",
+   "p05.webp",
+   "p06.webp",
+   "p07.webp",
+   "p08.webp",
+   "p09.webp",
+   "p10.webp"
+  ],
+  "pageCount": 17,
+  "sourcePages": [
+   1,
+   2,
+   3,
+   6,
+   7,
+   9,
+   10,
+   13,
+   14,
+   16
+  ]
+ },
+ {
+  "slug": "castle-units",
+  "title": "Castle Survival 유닛 시스템 v4",
+  "pages": [
+   "p01.webp",
+   "p02.webp",
+   "p03.webp",
+   "p04.webp",
+   "p05.webp",
+   "p06.webp",
+   "p07.webp",
+   "p08.webp"
+  ],
+  "pageCount": 11,
+  "sourcePages": [
+   1,
+   2,
+   3,
+   4,
+   6,
+   8,
+   9,
+   10
+  ]
+ },
+ {
+  "slug": "analysis",
+  "title": "테일즈런너 개선 기획서",
+  "pages": [
+   "p01.webp",
+   "p02.webp",
+   "p03.webp",
+   "p04.webp",
+   "p05.webp",
+   "p06.webp",
+   "p07.webp",
+   "p08.webp",
+   "p09.webp",
+   "p10.webp"
+  ],
+  "pageCount": 12,
+  "sourcePages": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   8,
+   9,
+   10,
+   11
+  ]
+ }
 ]

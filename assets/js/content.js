@@ -7,6 +7,8 @@
   const DOCS = global.DOCS || [];                       // assets/js/docs.js (manifest)
   const doc = slug => DOCS.find(d => d.slug === slug && d.pages && d.pages.length);
   const pageSrc = (d, i) => `assets/docs/${d.slug}/${d.pages[i]}`;
+  const srcNo = (d, i) => (d.sourcePages && d.sourcePages[i]) || i + 1;          // 원본 쪽 번호
+  const total = d => d.pageCount || d.pages.length;
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const ext = u => `href="${esc(u)}" target="_blank" rel="noopener"`;
 
@@ -27,19 +29,23 @@
 
   const TIMELINE = [
     { w: "2026.08 –", t: "Project Joseon · 팀 기획", d: "조선 판타지 익스트랙션 액션. 아이템 49종, 전투·속성 체계, 캐릭터(무당·선비), 맵, UIUX 기획", g: 1 },
-    { w: "2026.06 – 07", t: "Castle Survival: Chronicle", d: "1인 개발 · 코드 전량 AI 생성 · 기획/디렉팅. 비주얼노벨 + 전략 디펜스", g: 1 },
+    { w: "2026.06 – 07", t: "Castle Survival: Chronicle", d: "1인 개발 · 코드 전량 AI 생성 · 기획/디렉팅. 비주얼노벨 + 전략 전투", g: 1 },
     { w: "2025.10 – 2026.01", t: "달콤소프트 · 운영 기획", d: "SuperStar 시리즈 라이브 서비스 개선안 기획, 점수 산출 로직 검증, 신규 시스템 도입 전 콘텐츠 테스트", g: 1 },
     { w: "2025.07 – 2026.01", t: "S.I 프로젝트 · 팀 (Unity)", d: "맵 동선·배치 기획과 QA 담당", g: 1 },
     { w: "2024 – 2025", t: "개인 기획서 작업", d: "오버워치2 신규 영웅, 원신 신규 보스, 림버스 컴퍼니 전투 기획서(인격·E.G.O), 아스가르드 폴 신규 모드, 테일즈런너 개선 기획서", g: 1 },
     { w: "2024.06 – 07", t: "보드게임 제작", d: "보드게임 카페를 돌며 수요층과 인기 장르를 조사, 특허를 통한 정식 출시를 목표로 제작", g: 1 },
     { w: "2024.08", t: "대구대학교 산림자원학과 졸업", d: "" },
     { w: "2023.12", t: "교내 캡스톤 대회 우수상", d: "" },
-    { w: "2023 – 2024", t: "마케팅 · 이벤트 기획", d: "㈜에버이엔씨 마케팅, 현대백화점 이벤트 기획 스태프, 오비맥주 신제품 홍보" }
+    { w: "2024.03 – 06", t: "대구직업전문학교 · 인턴", d: "행정" },
+    { w: "2023.09 – 2024.02", t: "한국 청소년 체험 세상", d: "체험 프로그램 기획·운영" },
+    { w: "2023.03 – 08", t: "㈜에버이엔씨 · 마케팅", d: "" },
+    { w: "2022.05 – 2023.07", t: "오비맥주 · 신제품 홍보", d: "" },
+    { w: "~ 2024", t: "현대백화점 · 이벤트 기획 스태프", d: "대기 줄 옆 행거 배치 제안" }
   ];
 
   const ACHV = [
     { big: "LIVE", t: "달콤소프트 · SuperStar 시리즈", d: "라이브 서비스 개선안을 기획하고, 점수 산출 로직을 코드 테스트로 검증했습니다. 신규 시스템 'themeplay' 도입 전 콘텐츠 테스트를 맡았습니다." },
-    { big: "×1.2", t: "현대백화점 · 동선 제안", d: "대기 줄 옆에 행거를 배치하자고 제안해 매출이 약 1.2배 늘었습니다. 유저의 기다리는 시간을 콘텐츠로 바꾼 경험입니다." },
+    { big: "×1.2", t: "현대백화점 · 행거 배치 제안", d: "이벤트 기획 스태프로 일하며 대기 줄 옆에 행거를 배치하자고 제안했고, 매출이 약 1.2배 늘었습니다." },
     { big: "×8", t: "블로그 마케팅 · 6개월 전담", d: "방문자 수를 8배로 늘렸고, 1억 원 규모 B2B 계약 체결에 기여했습니다." }
   ];
 
@@ -47,16 +53,16 @@
     { k: "01 · 프로필 & 노력", h: "재미를 분해하는 습관", p: [
       "여러 장르를 직접 플레이하며 핵심 재미, 시스템, BM, 조작감을 리뷰로 남깁니다. 게임 뉴스를 스크랩해 시장 트렌드와 유저 동향을 함께 봅니다.",
       "2024년에는 보드게임 카페를 직접 돌며 수요층과 인기 장르를 조사해 보드게임을 만들었고, 2025년부터는 Unity 팀 프로젝트에서 맵 동선·배치와 QA를 맡았습니다."
-    ], img: [["coverletter", 1], ["analysis", 2]] },
+    ], img: [["coverletter", 1], ["analysis", 0]] },
     { k: "02 · 작업물", h: "기존 게임에 새 콘텐츠를 얹는 연습", p: [
-      "오버워치2 신규 힐러 영웅, 원신 신규 보스, 림버스 컴퍼니 신규 인격·E.G.O와 데이터 테이블, 아스가르드 폴 오리진스 신규 모드까지. 원작의 규칙을 먼저 분석하고, 그 안에서 새 콘텐츠가 설 자리를 찾는 방식으로 기획서를 썼습니다."
-    ], img: [["coverletter", 3], ["asgard", 0]] },
+      "오버워치2 신규 힐러 영웅, 원신 신규 보스, 림버스 컴퍼니 신규 인격·E.G.O와 데이터 테이블, 그리고 게임 분석·개선안. 원작의 규칙을 먼저 분석하고, 그 안에서 새 콘텐츠가 설 자리를 찾는 방식으로 기획서를 썼습니다."
+    ], img: [["coverletter", 3], ["analysis", 2]] },
     { k: "03 · 업무 성과", h: "현장에서 숫자로 확인한 제안", p: [
       "달콤소프트에서 SuperStar 시리즈 라이브 서비스 개선안을 기획하고 점수 산출 로직을 검증했습니다. 게임 밖에서도 현대백화점 동선 제안으로 매출 약 1.2배, 블로그 마케팅으로 방문자 8배를 만들었습니다."
     ], img: [["coverletter", 6]] },
     { k: "04 · 기획자가 된 이유", h: "기억에 남는 게임", p: [
       "창작자로서 콘텐츠를 만들고 유저의 반응에서 재미의 본질을 연구해 왔습니다. 입사 후에는 기획 감각을 실제 수익으로 연결하는 기획자가 되겠습니다."
-    ], img: [["coverletter", 8], ["castle-units", 0]] },
+    ], img: [["coverletter", 8]] },
   ];
 
   const NOTION = [
@@ -114,10 +120,10 @@
   const img = (src, alt, cls = "") => `<img src="${esc(src)}" alt="${esc(alt)}" loading="lazy" decoding="async" class="${cls}">`;
   function strip(slug, max = 99) {
     const d = doc(slug); if (!d) return "";
-    return `<div class="strip">${d.pages.slice(0, max).map((p, i) => `<button class="page" data-lb="${d.slug}" data-i="${i}" type="button">${img(pageSrc(d, i), `${d.title} ${i + 1}쪽`)}<span>${String(i + 1).padStart(2, "0")} / ${d.pages.length}</span></button>`).join("")}</div>`;
+    return `<div class="strip">${d.pages.slice(0, max).map((p, i) => `<button class="page" data-lb="${d.slug}" data-i="${i}" type="button">${img(pageSrc(d, i), `${d.title} ${i + 1}쪽`)}<span>원본 ${srcNo(d, i)}쪽 / ${total(d)}</span></button>`).join("")}</div>`;
   }
   function shot(src, cap, lbKey, i) { return `<figure class="shot" ${lbKey ? `data-lb="${lbKey}" data-i="${i}"` : ""}>${img(src, cap)}<figcaption>${esc(cap)}</figcaption></figure>`; }
-  function docPage(slug, i, cap) { const d = doc(slug); if (!d) return ""; i = Math.min(i, d.pages.length - 1); return `<figure class="shot" data-lb="${slug}" data-i="${i}">${img(pageSrc(d, i), cap || d.title)}<figcaption>${esc(cap || d.title + " · " + (i + 1) + "쪽")}</figcaption></figure>`; }
+  function docPage(slug, i, cap) { const d = doc(slug); if (!d) return ""; i = Math.min(i, d.pages.length - 1); return `<figure class="shot" data-lb="${slug}" data-i="${i}">${img(pageSrc(d, i), cap || d.title)}<figcaption>${esc(cap || d.title + " · 원본 " + srcNo(d, i) + "쪽")}</figcaption></figure>`; }
 
   const SHOTS = {
     castle: [
@@ -153,7 +159,7 @@
   S.letter = () => `<div class="letter">
     ${LETTER.map(l => {
       const hit = (l.img || []).find(([sl]) => doc(sl)); const d = hit && doc(hit[0]); const pi = d ? Math.min(hit[1], d.pages.length - 1) : 0;
-      const pic = d ? `<figure class="shot" data-lb="${d.slug}" data-i="${pi}" style="margin:0">${img(pageSrc(d, pi), d.title)}<figcaption>${esc(d.title)} · ${pi + 1}쪽</figcaption></figure>` : "";
+      const pic = d ? `<figure class="shot" data-lb="${d.slug}" data-i="${pi}" style="margin:0">${img(pageSrc(d, pi), d.title)}<figcaption>${esc(d.title)} · 원본 ${srcNo(d, pi)}쪽</figcaption></figure>` : "";
       return `<article class="card letter-item"><div><div class="eyebrow">${esc(l.k)}</div><h3>${esc(l.h)}</h3>${l.p.map(x => `<p>${esc(x)}</p>`).join("")}</div>${pic}</article>`;
     }).join("")}
     <blockquote class="pull" style="margin:0">${esc(PROFILE.goal)}<cite>— 자기소개서 · 기획자가 된 이유</cite></blockquote>
@@ -170,7 +176,7 @@
         <h3>Project Joseon</h3>
         <p class="muted">조선을 배경으로 한 익스트랙션 액션. 캐릭터의 강함은 레벨이 아니라 그리드 인벤토리 「의식판」에 무엇을 어떻게 붙이느냐로만 정해집니다. 2026년 8월 기획자로 합류해 아이템·데이터·전투 체계와 캐릭터, 맵, UIUX 문서를 맡고 있습니다.</p>
       </div>
-      <div class="spec"><div><span>ROLE</span><span>시스템 · 아이템 · 캐릭터 기획</span></div><div><span>JOINED</span><span>2026.08</span></div><div><span>진영</span><span>조정 · 반란군 · 귀</span></div><div><span>속성</span><span>요력 · 기력 · 신력</span></div><div><span>조작</span><span>WASD · 마우스 · 1/2/3 · Tab</span></div></div>
+      <div class="spec"><div><span>ROLE</span><span>시스템 · 아이템 · 캐릭터 기획</span></div><div><span>JOINED</span><span>2026.08</span></div><div><span>진영</span><span>조정 · 반란군 · 귀</span></div><div><span>속성</span><span>요력 · 기력 · 신력</span></div><div><span>ENGINE</span><span>언리얼 (팀 문서 기준)</span></div><div><span>조작</span><span>WASD · 마우스 · 1/2/3 · Tab</span></div></div>
     </div>
     <div class="tabs" role="tablist">
       <button class="tab" role="tab" aria-selected="true" data-tab="item">아이템 v1.0</button>
@@ -238,7 +244,7 @@
     </div>
   </article>`;
 
-  function bookHTML(l) { const d = doc(l.slug); return `<button class="book" data-lb="${l.slug}" data-i="0" type="button">${img(`assets/docs/${l.slug}/${d.pages[0]}`, l.t + " 표지")}<span class="meta"><b>${esc(l.t)}</b><small>${esc(l.s)} · ${d.pageCount || d.pages.length}쪽</small></span></button>`; }
+  function bookHTML(l) { const d = doc(l.slug); return `<button class="book" data-lb="${l.slug}" data-i="0" type="button">${img(`assets/docs/${l.slug}/${d.pages[0]}`, l.t + " 표지")}<span class="meta"><b>${esc(l.t)}</b><small>${esc(l.s)} · ${d.pages.length < total(d) ? `${total(d)}쪽 중 ${d.pages.length}쪽 발췌` : `${total(d)}쪽`}</small></span></button>`; }
 
   S.castle = () => `<article class="card proj" data-proj="castle">
     <div class="proj-top">
@@ -247,7 +253,7 @@
         <p class="muted">마왕이 1년 뒤 쳐들어온다는 예언을 받은 작은 왕국. 매달 조언자 에이라와 징집·훈련·보급을 결정하고, 그 결과로 방어전을 치릅니다. 기획서(GDD)를 쓰고 AI에게 코드를 생성시키며 직접 디렉팅한 1인 프로젝트입니다.</p>
         <p class="quote">1인 개발 / 코드 전량 AI 생성 / 기획·디렉팅: 임창민<cite>Castle Survival GDD v1.5</cite></p>
       </div>
-      <div class="spec"><div><span>ROLE</span><span>기획 · 디렉팅 (코드 AI 생성)</span></div><div><span>GENRE</span><span>비주얼노벨 + 전략 전투</span></div><div><span>PERIOD</span><span>2026.06.13 – 07.10 계획</span></div><div><span>AI TOOLS</span><span>Claude · Cursor · AI Studio</span></div><div><span>PLAN</span><span>Steam · 12챕터 · 엔딩 10종</span></div><div><span>WEB BUILD</span><span>1–2월 플레이 가능</span></div></div>
+      <div class="spec"><div><span>ROLE</span><span>기획 · 디렉팅 (코드 AI 생성)</span></div><div><span>GENRE</span><span>비주얼노벨 + 전략 전투</span></div><div><span>PERIOD</span><span>2026.06.13 – 07.10 계획</span></div><div><span>GDD 스택</span><span>Ren'Py + AI Studio · 코드 Claude/Cursor</span></div><div><span>PLAN</span><span>Steam · 12챕터 · 엔딩 10종</span></div><div><span>이 사이트</span><span>HTML 웹 빌드 · 1–2월</span></div></div>
     </div>
     <div class="tabs" role="tablist">
       <button class="tab" role="tab" aria-selected="true" data-tab="play">플레이</button>
@@ -257,7 +263,7 @@
     <div class="tabpanel" data-panel="play" role="tabpanel">
       <div class="gameframe" data-gameframe><div class="scaler"></div>
         <div class="cover-play" style="background-image:linear-gradient(rgba(10,8,5,.35),rgba(10,8,5,.85)),url('assets/shots/cs-dialog.webp')"><div><div class="eyebrow" style="color:#e8c66a">CHAPTER 1 · 1월</div><h4>마왕까지 남은 시간, 1년</h4><p style="color:#d8cbb0;margin-bottom:14px">효과음이 있습니다. 휴대폰에서는 새 탭으로 여는 편이 편합니다.</p>
-        <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><button class="btn em" data-boot type="button">▶ 여기서 플레이</button><a class="btn" href="games/castle-survival/index.html" target="_blank" rel="noopener">새 탭 ↗</a></div></div></div>
+        <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><button class="btn em inline-play" data-boot type="button">▶ 여기서 플레이</button><a class="btn newtab-play" href="games/castle-survival/index.html" target="_blank" rel="noopener">새 탭에서 플레이 ↗</a></div></div></div>
       </div>
     </div>
     <div class="tabpanel" data-panel="design" role="tabpanel" hidden>
@@ -293,7 +299,7 @@
       { k: "플레이 & 분석", h: "재미를 분해해서 기록한다", p: `플레이한 게임을 인게임 · 아웃게임 · 재화 · BM으로 나눠 노션에 정리합니다. 지금까지 도감에 ${REVIEWS.length}종을 담았습니다. 분석에서 찾은 문제점이 신규 콘텐츠 제안서의 출발점이 됩니다.`, tools: ["Notion"], vis: docPage("asgard", 2, "문제점 분석 → 해결 방향 (아스가르드 폴 제안서)") },
       { k: "의도와 규칙", h: "한 줄 기획 의도부터 쓴다", p: "모든 아이템과 캐릭터에 기획 의도를 먼저 붙이고, 규칙은 그 의도를 지키는 방향으로만 추가합니다.", tools: ["Google Slides", "PowerPoint"], vis: docPage("item-v1", 1, "아이템 기획서 v1.0 · 기획 의도") },
       { k: "수치와 데이터", h: "공식과 테이블로 옮긴다", p: "장검 4~6을 기준점으로 수치를 파생하고, Effects 시트로 모든 효과를 한 형식의 데이터 행으로 적습니다. 팀 개발자가 바로 구현할 수 있는 형태가 목표입니다.", tools: ["Google Sheets", "Excel"], vis: docPage("combat-v2", 4, "전투 시스템 v2.0 · 속성과 공식") },
-      { k: "화면으로 검증", h: "AI로 UI 목업을 만든다", p: "문서만으로 전달이 어려운 인벤토리 배치 규칙은 AI로 HTML 목업을 만들어 팀과 화면으로 확인했습니다.", tools: ["AI 코드 생성", "HTML"], vis: P[0] ? shot(P[0][0], "AI로 만든 인벤토리 UI 목업", "proto", 0) : docPage("uiux", 0) },
+      { k: "화면으로 검증", h: "AI로 UI 목업을 만든다", p: "문서만으로 전달이 어려운 인벤토리 배치 규칙을 AI로 HTML 목업까지 만들어, 화면으로 바로 검토할 수 있게 했습니다.", tools: ["AI 코드 생성", "HTML"], vis: P[0] ? shot(P[0][0], "AI로 만든 인벤토리 UI 목업", "proto", 0) : docPage("uiux", 0) },
       { k: "플레이 가능한 결과물", h: "기획서를 게임으로 만든다", p: "Castle Survival은 GDD를 먼저 쓰고, AI에게 코드를 생성시키며 기획자로서 디렉팅했습니다. 문서의 수치가 실제 플레이에서 어떻게 느껴지는지 직접 확인할 수 있었습니다.", tools: ["GDD", "Claude · Cursor (GDD 기재)", "AI 픽셀아트", "플레이테스트"], vis: shot("assets/shots/cs-battle.webp", "Castle Survival · 방어전 화면", "castle", 4) },
       { k: "검수와 회고", h: "스스로 약점을 적는다", p: "체크시트에 확정/미정 상태를 표시하고, 서사와 메커닉이 어긋나는 지점을 검수 메모로 남깁니다. 피드백을 받으면 버전을 올려 방향을 바꿉니다 (예: 전투 v1.0 상성 → v2.0 상성 제거).", tools: ["체크시트", "버전 관리"], vis: docPage("mudang", 1, "무당 캐릭터 체크시트 · 확정/미정 표시") }
     ];
@@ -418,7 +424,7 @@
     if (key === "castle") return SHOTS.castle.map(s => ({ src: s[0], cap: s[1] }));
     if (key === "proto") return (global.PROTO_SHOTS || []).map(s => ({ src: s[0], cap: s[1] }));
     const d = doc(key); if (!d) return [];
-    return d.pages.map((p, i) => ({ src: pageSrc(d, i), cap: `${d.title} · ${i + 1} / ${d.pages.length}` }));
+    return d.pages.map((p, i) => ({ src: pageSrc(d, i), cap: `${d.title} · 원본 ${srcNo(d, i)}쪽 / ${total(d)}${d.pages.length < total(d) ? ` (발췌 ${i + 1}/${d.pages.length})` : ""}` }));
   }
 
   global.PF = { PROFILE, TIMELINE, REVIEWS, NOTION, LIB, S, bind, images, doc, esc };
