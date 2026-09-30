@@ -90,7 +90,8 @@
   const REACH = new Uint8Array(MAP_W * MAP_H); (function () { const q = [idx(22, 25)]; REACH[q[0]] = 1; while (q.length) { const c = q.shift(), cx = c % MAP_W, cy = (c / MAP_W) | 0; [[1, 0], [-1, 0], [0, 1], [0, -1]].forEach(([dx, dy]) => { const nx = cx + dx, ny = cy + dy, n = idx(nx, ny); if (inb(nx, ny) && !REACH[n] && !solid[n]) { REACH[n] = 1; q.push(n); } }); } })();
   const nearestReach = (x, y) => { let best = null, bd = 1e9; for (let j = 1; j < MAP_H - 1; j++) for (let i = 1; i < MAP_W - 1; i++) { const n = idx(i, j); if (!REACH[n] || tiles[n] !== 0) continue; const d = (i - x) ** 2 + (j - y) ** 2; if (d < bd) { bd = d; best = [i, j]; } } return best; };
   // 기획자를 만나면 그 옆에 나타나는 한 개 — 나머지 두 조각은 건물 안에 숨어 있다
-  const SCROLLS = [[24, 21]]
+  const JUMAK_DOOR = BUILDINGS.find(b => b.id === "jumak").door;
+  const SCROLLS = [[24, 21], [JUMAK_DOOR.x, JUMAK_DOOR.y + 1]] // 0: 기획자 옆 · 1: 주막 문 앞 (주막에 조각이 숨겨졌을 때만)
     .map(([x, y], i) => { const [tx, ty] = REACH[idx(x, y)] ? [x, y] : nearestReach(x, y); return { i, x: tx, y: ty, got: false, hidden: true }; });
   /* wandering villagers & a cat — decoration that makes the village feel alive */
   const CRITTERS = [
@@ -516,6 +517,7 @@
     warp(tx, ty) { S.player.x = tx * T; S.player.y = ty * T - 5; S.path = null; },
     debugInfo: () => ({ scrolls: SCROLLS.map(sc => [sc.x, sc.y, !!REACH[idx(sc.x, sc.y)]]), lanterns: LANTERNS.map(p => [p.x, p.y, p.hall]), doors: BUILDINGS.map(b => [b.id, b.door.x, b.door.y, !!REACH[idx(b.door.x, b.door.y)], tiles[idx(b.door.x, b.door.y)]]), npcs: NPCS.map(n => [n.id, n.x, n.y, tiles[idx(n.x, n.y)]]) }),
     scrolls: () => SCROLLS.map(sc => ({ i: sc.i, got: sc.got })),
+    drawScrollIcon(c) { const g = c.getContext("2d"), k = c.width / 12; g.imageSmoothingEnabled = false; g.clearRect(0, 0, c.width, c.height); g.setTransform(k, 0, 0, k, 0, 0); drawScroll(g, 2, 1, 0); g.setTransform(1, 0, 0, 1, 0, 0); },
     revealScroll(i, on = true) { const sc = SCROLLS[i]; if (!sc) return; if (on && sc.hidden && !sc.got) burst(sc.x * T + 8, sc.y * T + 6, "#f3dea0", 22); sc.hidden = !on; },
     setScrolls(got) { SCROLLS.forEach(sc => sc.got = got.includes(sc.i)); },
     setLit(n, total = 6) { const v = S.visited || []; LANTERNS.forEach(p => { const was = p.lit; p.lit = !!p.hall && v.includes(p.hall); if (p.lit && !was && S.litOnce) burst(p.x * T + 8, p.y * T + 2, "#8ff0c8", 22); }); S.litOnce = true; S.dark = .38 * (1 - Math.min(1, n / total)); },

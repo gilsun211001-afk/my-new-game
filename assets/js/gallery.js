@@ -37,14 +37,16 @@
       view.addEventListener("touchend", e => { if (sx === null) return; const dx = e.changedTouches[0].clientX - sx; if (Math.abs(dx) > 50) this.jump(dx < 0 ? 1 : -1); sx = null; });
       addEventListener("resize", () => { if (this.open) { this.render(); this.wake(); } });
     },
-    enter(hall) {
+    enter(hall, opts = {}) {
       this.hall = hall; this.open = true; this.items = hall.items.map((it, i) => Object.assign({}, it, { x: START + i * GAP }));
       this.len = START + (this.items.length - 1) * GAP + 420;
       this.x = 120; this._cam = undefined; this.seenSet = new Set(); this.seen = 0; this.dwell = 0; this.dir = 3; this.active = -1; this.target = null; this.idle = 0; this.sleeping = false;
+      this.pick = opts.scroll ? { x: 270, got: false } : null;
       $("#galName").innerHTML = `${hall.name}<small>${hall.sub}</small>`;
-      $("#galWall").innerHTML = `<div class="door" aria-hidden="true"><span>출구</span></div>` + this.items.map((it, i) => this.frameHTML(it, i)).join("") + `<div class="wall-end" style="left:${this.len - 60}px"></div>`;
+      $("#galWall").innerHTML = `<div class="door" aria-hidden="true"><span>출구</span></div>` + this.items.map((it, i) => this.frameHTML(it, i)).join("") + `<div class="wall-end" style="left:${this.len - 60}px"></div>` + (this.pick ? `<canvas class="gal-pick" id="galPick" width="48" height="48" style="left:${this.pick.x - 24}px" aria-label="기획 조각"></canvas>` : "");
       $("#galWall").style.width = this.len + "px";
       $("#gallery").hidden = false;
+      if (this.pick) World.drawScrollIcon($("#galPick"));
       this.banner(hall);
       this.last = 0; cancelAnimationFrame(this.raf); this.raf = requestAnimationFrame(t => this.loop(t));
       setTimeout(() => $("#galView").focus({ preventScroll: true }), 30);
@@ -75,6 +77,7 @@
       if (v) { this.x = Math.max(60, Math.min(this.len - 120, this.x + Math.max(-3, Math.min(3, v)) * 300 * dt)); v = Math.sign(v); this.dir = v < 0 ? 2 : 3; this.anim += dt * 9; this.frame = Math.floor(this.anim) % 2; if (Math.floor(this.anim) !== this._ls) { this._ls = Math.floor(this.anim); this.cb.step && this._ls % 2 === 0 && this.cb.step(); } }
       else this.frame = 0;
       if (this.x <= 62 && v < 0) { this.close(); return; }
+      if (this.pick && !this.pick.got && Math.abs(this.x - this.pick.x) < 34) { this.pick.got = true; $("#galPick").classList.add("got"); this.cb.pickup && this.cb.pickup(this.hall); }
       // nearest exhibit
       if (this.active >= 0 && !v) { this.dwell += dt; if (this.dwell > .6 && !this.seenSet.has(this.active)) { this.seenSet.add(this.active); this.seen = this.seenSet.size; } } else this.dwell = 0;
       let best = -1, bd = 190; this.items.forEach((it, i) => { const d = Math.abs(it.x - this.x); if (d < bd) { bd = d; best = i; } });

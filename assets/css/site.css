@@ -595,3 +595,9 @@ h1,h2,h3,h4{word-break:keep-all}
 @media (max-width:600px){.hud .quest{display:none}}
 .guide-box,.jcard,.reward-box,.obj-banner{word-break:keep-all}
 .goals b,.goals span{text-wrap:pretty}
+.gal-pick{position:absolute;bottom:calc(42% + 2px);width:48px;height:48px;image-rendering:pixelated;pointer-events:none;filter:drop-shadow(0 0 10px rgba(255,222,140,.8));animation:pickbob 1.4s ease-in-out infinite}
+.gal-pick.got{animation:pickgot .6s ease-out forwards}
+@keyframes pickbob{50%{transform:translateY(-6px)}}
+@keyframes pickgot{to{transform:translateY(-70px) scale(1.4);opacity:0}}
+@media (max-width:760px){.gal-pick{bottom:calc(50% + 2px);width:40px;height:40px}}
+@media (prefers-reduced-motion:reduce){.gal-pick{animation:none}}
