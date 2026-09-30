@@ -563,7 +563,7 @@
     portrait(canvas, style, dir = 0) {
       const g = canvas.getContext("2d"); g.imageSmoothingEnabled = false; g.clearRect(0, 0, canvas.width, canvas.height);
       const bust = canvas.width >= 48, k = bust ? Math.floor(canvas.width / 11) : Math.floor(canvas.width / 16);
-      if (bust) g.setTransform(k, 0, 0, k, Math.round(-2.5 * k), Math.round(3 * k)); else g.setTransform(k, 0, 0, k, 0, Math.round(k * 2));
+      if (bust) g.setTransform(k, 0, 0, k, Math.round(-2.5 * k), Math.round(3.6 * k)); else g.setTransform(k, 0, 0, k, 0, Math.round(k * 2));
       drawPerson(g, 0, 0, dir, 0, style); g.setTransform(1, 0, 0, 1, 0, 0);
     },
     minimap(canvas) {

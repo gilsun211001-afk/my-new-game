@@ -408,6 +408,8 @@
     World._draw = (g, x, y, dir, f, style) => { World.portrait(off, style, dir); g.drawImage(off, x, y - 2); };
   })();
 
+  // pixel-art emblem (title seal + homepage logo): the designer's bust
+  [["#sealArt"], ["#logoArt"]].forEach(([sel]) => { const c = $(sel); if (c) World.portrait(c, DESIGNER_STYLE, 0); });
   // boot
   const h = location.hash.slice(1);
   if (h === "resume" || h.startsWith("c-")) { go("resume"); if (h.startsWith("c-")) setTimeout(() => { const el = document.getElementById(h); el && el.scrollIntoView(); }, 60); }
