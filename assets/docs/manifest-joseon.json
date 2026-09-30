@@ -425,8 +425,6 @@
   "title": "Project Joseon UIUX 기획서",
   "pages": [
    "p01.webp",
-   "p04.webp",
-   "p05.webp",
    "p06.webp",
    "p07.webp",
    "p08.webp",
@@ -438,8 +436,6 @@
   "pageCount": 17,
   "sourcePages": [
    1,
-   4,
-   5,
    6,
    7,
    11,
@@ -459,8 +455,6 @@
   ],
   "pageNotes": [
    "표지",
-   "캐릭터 패널과 인벤토리 제작 유의사항",
-   "설정 화면 구조: ESC로 진입",
    "단축키 정리(I·ESC·우클릭·Ctrl+Z·F)",
    "보드 마우스 클릭 구조",
    "의식판 조작 규칙(배치·회전·삭제)",
