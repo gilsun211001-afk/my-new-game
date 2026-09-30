@@ -390,6 +390,10 @@
       seoru: { name: "관아 · 경험과 성과관", sub: "현장에서 확인한 기획", intro: "팀 프로젝트, 보드게임 제작, 그리고 현장 업무에서 숫자로 확인한 제안들입니다.", items: [
         ...["teamproj", "boardgame", "work"].map(x => docItem(x, "경험")).filter(Boolean),
         ...ACHV.map(a => ({ kind: "text", tag: "성과", title: a.big, lede: a.t, meta: a.t, summary: a.d }))
+      ] },
+      jumak: { name: "주막 · 게임 분석 도감", sub: "플레이하고 뜯어 본 게임들", intro: "기획자가 게임을 할 때마다 들러 장단점과 개선안을 적어 둔 자리입니다. 한 잔씩 걸어 둔 분석을 읽어 보세요.", items: [
+        { kind: "widget", tag: "도감", title: `게임 분석 ${REVIEWS.length}종`, lede: "장르를 가리지 않는 덕력", summary: "직접 플레이한 게임마다 재미의 구조와 문제점, 그리고 개선안을 노션에 기록했습니다.", open: "reviews", openLabel: "분석 도감 전부 보기" },
+        ...REVIEWS.map(r => ({ kind: "text", tag: r.g, title: r.n, lede: `${r.g} · ${r.m}`, meta: `${r.g} · ${r.m}`, summary: r.k, url: r.u }))
       ] }
     };
   }

@@ -90,8 +90,7 @@
   const REACH = new Uint8Array(MAP_W * MAP_H); (function () { const q = [idx(22, 25)]; REACH[q[0]] = 1; while (q.length) { const c = q.shift(), cx = c % MAP_W, cy = (c / MAP_W) | 0; [[1, 0], [-1, 0], [0, 1], [0, -1]].forEach(([dx, dy]) => { const nx = cx + dx, ny = cy + dy, n = idx(nx, ny); if (inb(nx, ny) && !REACH[n] && !solid[n]) { REACH[n] = 1; q.push(n); } }); } })();
   const nearestReach = (x, y) => { let best = null, bd = 1e9; for (let j = 1; j < MAP_H - 1; j++) for (let i = 1; i < MAP_W - 1; i++) { const n = idx(i, j); if (!REACH[n] || tiles[n] !== 0) continue; const d = (i - x) ** 2 + (j - y) ** 2; if (d < bd) { bd = d; best = [i, j]; } } return best; };
   // 기획자를 만나면 그 옆에 나타나는 한 개 — 나머지 두 조각은 건물 안에 숨어 있다
-  const JUMAK_DOOR = BUILDINGS.find(b => b.id === "jumak").door;
-  const SCROLLS = [[24, 21], [JUMAK_DOOR.x, JUMAK_DOOR.y + 1]] // 0: 기획자 옆 · 1: 주막 문 앞 (주막에 조각이 숨겨졌을 때만)
+  const SCROLLS = [[24, 21]] // 기획자 옆
     .map(([x, y], i) => { const [tx, ty] = REACH[idx(x, y)] ? [x, y] : nearestReach(x, y); return { i, x: tx, y: ty, got: false, hidden: true }; });
   /* wandering villagers & a cat — decoration that makes the village feel alive */
   const CRITTERS = [

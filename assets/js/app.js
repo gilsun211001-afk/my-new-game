@@ -144,7 +144,7 @@
   const REVIEW_LINES = PF.REVIEWS.map(r => `「${r.n}」 말이우? "${r.k}"`);
   const D = {
     hello: [{ t: () => `오셨군요! 저는 이 마을의 기록을 걸어 둔 기획자 ${PROFILE.name}입니다.` + (gotScrolls.includes(0) ? "" : "\n제 옆에 기획 조각 하나를 놓아 두었어요. 이야기가 끝나면 주워 보세요.") },
-      { t: "기획서관 · 서당 · 공방 · 관아에는 전시관을, 주막과 역참에는 이야기를 두었어요. 한 곳을 둘러보실 때마다 마을의 등불이 하나씩 다시 켜집니다.\n여섯 곳을 모두 밝혀 주시면, 광장에서 마지막 이야기를 들려드릴게요.\n참, 마을에 흩어진 '기획 조각' 세 개를 모두 찾으시면 제 연락처를 드릴게요.", c: [["가운데 기획서관부터 볼게요", "walk:seogo"], ["어디부터 가면 좋을까요?", "node:route"], ["당신은 어떤 기획자인가요?", "node:who"], ["혼자 둘러볼게요", "end"]] }],
+      { t: "기획서관 · 서당 · 공방 · 관아 · 주막에는 전시관을, 역참에는 연락 창구를 두었어요. 한 곳을 둘러보실 때마다 마을의 등불이 하나씩 다시 켜집니다.\n여섯 곳을 모두 밝혀 주시면, 광장에서 마지막 이야기를 들려드릴게요.\n참, 마을에 흩어진 '기획 조각' 세 개를 모두 찾으시면 제 연락처를 드릴게요.", c: [["가운데 기획서관부터 볼게요", "walk:seogo"], ["어디부터 가면 좋을까요?", "node:route"], ["당신은 어떤 기획자인가요?", "node:who"], ["혼자 둘러볼게요", "end"]] }],
     route: [{ t: "바로 뒤, 마을 한가운데가 제 대표 기획서를 모아 둔 기획서관입니다.\n왼쪽 위 서당에는 자기소개서, 오른쪽 위 공방에는 지금 하고 있는 조선 판타지 프로젝트가 있어요.", c: [["기획서관으로 데려다 줘요", "walk:seogo"], ["서당으로 데려다 줘요", "walk:seodang"], ["공방으로 데려다 줘요", "walk:gongbang"], ["혼자 돌아볼게요", "end"]] }],
     who: [{ t: `"${PROFILE.headline}"\n게임을 하면 재미의 구조부터 뜯어 보고, 그걸 표와 공식으로 옮기는 게 제 일이에요.` },
       { t: "문서로 끝내지 않고, 필요하면 AI로 화면 목업까지 만들어 팀과 같은 그림을 봅니다.", c: [["자기소개서를 보여줘요", "open:letter,career"], ["고마워요", "end"]] }],
@@ -160,7 +160,7 @@
     seogo: [{ t: "쉿, 기획서관입니다. 마을 한가운데, 그분이 가장 아끼는 곳이지요. 그분이 기존 게임에 새 콘텐츠를 얹어 본 기획서들이 걸려 있어요.\n몇 권은 너무 두꺼워서, 해설과 원본 링크로만 모셔 두었지요." },
       { t: "오버워치2, 원신, 림버스 컴퍼니, 테일즈런너, 아스가르드 폴… 작품 앞에 서면 어떤 내용인지 해설이 열립니다.", c: [["전시관에 들어간다", "hall:seogo"], ["작업 방식을 보고 싶어요", "open:process"], ["조용히 나간다", "end"]] }],
     jumak: [{ t: "어서 오시우! 우리 기획자 양반은 게임만 하면 꼭 여기 앉아서 분석을 적더라고." },
-      { t: () => REVIEW_LINES[Math.floor(Math.random() * REVIEW_LINES.length)], c: [["분석 도감 전부 보기", "open:reviews"], ["다른 얘기도 해줘요", "node:jumak2"], ["잘 먹고 갑니다", "end"]] }],
+      { t: () => REVIEW_LINES[Math.floor(Math.random() * REVIEW_LINES.length)], c: [["주막 안으로 들어간다", "hall:jumak"], ["다른 얘기도 해줘요", "node:jumak2"], ["잘 먹고 갑니다", "end"]] }],
     jumak2: [{ t: () => REVIEW_LINES[Math.floor(Math.random() * REVIEW_LINES.length)], c: [["분석 도감 전부 보기", "open:reviews"], ["하나 더!", "node:jumak2"], ["잘 먹고 갑니다", "end"]] }],
     yeokcham: [{ t: "파발이오! 기획자에게 전할 말이 있으면 내가 날라다 주지." }, { t: `이메일은 ${PROFILE.email}.\n노션 기록과 포트폴리오 폴더도 여기서 바로 열 수 있소.`, c: [["연락처 · 링크 보기", "open:contact"], ["이메일 복사", "act:copy"], ["괜찮소", "end"]] }],
     sign: [{ t: "【기획마을 안내판】\n① 가운데 기획서관으로 이동해 개인 기획서를 감상해 보시오.\n② 서당 · 공방 · 관아 · 주막 · 역참을 돌며 등불 6개를 모두 밝혀 보시오. 등불마다 기획자의 기록이 📖 기록첩에 쌓이오." },
@@ -187,7 +187,7 @@
         p.hidden = false; p.innerHTML = `<kbd>${matchMedia("(pointer: coarse)").matches ? "탭" : "Space"}</kbd>${esc(it.name)}${it.sub ? ` <span style="color:#93b3a6">· ${esc(it.sub)}</span>` : ""}`;
       },
       onStep: () => Snd.fx("step"),
-      onPickup: i => { if (i === 1) awardScroll(scrollHalls.indexOf("jumak") + 1, "주막"); else awardScroll(0); setTimeout(flushReward, 700); }
+      onPickup: () => { awardScroll(0); setTimeout(flushReward, 700); }
     });
     updateMini = World.minimap($("#mini"));
     setInterval(() => { if (mode === "game" && Dlg.closed && $("#scroll").hidden) updateMini(visited); }, 250);
@@ -197,7 +197,7 @@
   }
 
   /* ── halls (전시관) ── */
-  const HALL_IDS = ["seodang", "gongbang", "seogo", "seoru"];
+  const HALL_IDS = ["seodang", "gongbang", "seogo", "seoru", "jumak"];
   let HALLS = null;
   function enterHall(id) {
     HALLS = HALLS || PF.halls();
@@ -207,9 +207,7 @@
   }
 
   const hallScroll = id => { const k = scrollHalls.indexOf(id); return k >= 0 && !gotScrolls.includes(k + 1) ? k + 1 : 0; };
-  const jumakScrollOpen = () => hallScroll("jumak") > 0;
-  // 마을 지도 위 조각: 0 = 기획자 옆, 1 = 주막 문 앞
-  function syncWorldScrolls() { const w = []; if (gotScrolls.includes(0)) w.push(0); if (!jumakScrollOpen()) w.push(1); World.setScrolls(w); if (!jumakScrollOpen() || !visited.includes("jumak")) World.revealScroll(1, false); else World.revealScroll(1); }
+  function syncWorldScrolls() { World.setScrolls(gotScrolls.includes(0) ? [0] : []); }
   function awardScroll(i, where) {
     if (gotScrolls.includes(i)) return;
     gotScrolls.push(i); store.set("scrolls", gotScrolls); syncWorldScrolls(); Snd.fx("quest"); paintQuest();
@@ -224,7 +222,6 @@
   }
   function markVisit(place) {
     const fresh = place && !visited.includes(place);
-    if (place === "jumak" && jumakScrollOpen()) { World.revealScroll(1); setTimeout(() => ui.toast("주막 문 앞에 기획 조각이 떨어져 있습니다! 한 걸음 내려와 주워 보세요", 3600), fresh ? 2400 : 200); }
     if (!fresh) return;
     visited.push(place); store.set("visited", visited); paintQuest(); paintTravel();
     World.setVisited(visited); World.setLit(visited.length); Snd.fx("quest"); ui.toast(`등불 ${visited.length}/6 · ${PLACES[place]} — 기록 「${LORE[place].t}」이 📖 기록첩에 담겼습니다`, 3600);
@@ -235,7 +232,7 @@
     ["seodang", "왼쪽 위 서당으로 이동해 자기소개서를 읽어 보시오"],
     ["gongbang", "오른쪽 위 공방으로 이동해 조선 프로젝트 기획서를 살펴보시오"],
     ["seoru", "오른쪽 관아로 이동해 경험과 성과 기록을 확인해 보시오"],
-    ["jumak", "왼쪽 주막으로 이동해 게임 분석 이야기를 들어 보시오"],
+    ["jumak", "왼쪽 주막으로 이동해 게임 분석 도감을 읽어 보시오"],
     ["yeokcham", "입구 옆 역참으로 이동해 연락 수단을 알아보시오"]
   ];
   function objective() {
