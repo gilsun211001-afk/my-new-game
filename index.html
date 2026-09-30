@@ -26,6 +26,8 @@
     <button class="hbtn" id="helpBtn" type="button" aria-label="조작법">?</button>
     <button class="hbtn em" id="toResume" type="button" aria-label="자기소개서로 보기">📜 <span class="hide-sm">자기소개서로 보기</span></button>
   </div>
+  <button class="objective" id="objective" type="button" aria-live="polite"><span class="obj-step" id="objStep"></span><span class="obj-text" id="objText"></span><span class="obj-go">▶ 이동</span></button>
+  <div class="obj-banner" id="objBanner" hidden></div>
   <div class="travel" id="travel" hidden></div>
   <div class="minimap"><div class="lbl"><span>기획마을</span><span>● 방문</span></div><canvas id="mini" width="176" height="128"></canvas></div>
   <div class="prompt" id="prompt" hidden></div>
@@ -114,8 +116,10 @@
     <h3 id="guideTitle">목표와 조작법</h3>
     <div class="guide-grid">
       <section><h4>목표</h4>
-        <ol class="goals"><li><b>등불 6개 밝히기</b><span>기획서관 · 서당 · 공방 · 관아 · 주막 · 역참을 하나씩 둘러보면 그곳의 등불이 켜집니다.</span></li>
-        <li><b>기획 조각 3개 모으기</b><span>마을 북쪽 숲 가장자리에 반짝이는 두루마리가 있습니다. 다 모으면 <em>연락처</em>가 열립니다.</span></li></ol></section>
+        <ol class="goals"><li><b>가운데 기획서관으로 이동해 개인 기획서를 감상해 보시오</b><span>문 앞에서 Space를 누르면 전시관에 들어갑니다.</span></li>
+        <li><b>서당 · 공방 · 관아 · 주막 · 역참을 돌며 등불 6개를 밝혀 보시오</b><span>들어가는 곳마다 그곳의 등불이 켜집니다.</span></li>
+        <li><b>북쪽 숲 가장자리로 이동해 기획 조각 3개를 얻어 보시오</b><span>다 모으면 기획자의 <em>연락처</em>를 얻습니다.</span></li></ol>
+        <p style="font-size:.8rem;color:#93b3a6;margin-top:10px">화면 위 <b style="color:#2ee6a6">할 일</b> 표시줄을 누르면 목적지로 자동 이동합니다.</p></section>
       <section><h4>조작법</h4>
         <dl class="keys2"><dt>이동</dt><dd>방향키 · WASD · 화면 탭(누른 곳까지 자동 이동) · 모바일 조이스틱</dd><dt>달리기</dt><dd>Shift</dd><dt>대화 · 입장</dt><dd>Space · Enter · E · 대상 탭</dd><dt>전시관</dt><dd>← → 걷기 · Space 자세히 · Esc 나가기</dd><dt>장소 이동</dt><dd>☰ 장소 목록에서 바로 이동</dd></dl></section>
     </div>
@@ -129,8 +133,8 @@
     <div class="eyebrow">기획 조각 3/3 · 보상</div>
     <h3 id="rewardTitle">연락하기</h3>
     <p class="muted-l">모든 조각을 모으셨습니다. 끝까지 봐 주셔서 감사합니다. 함께 기억에 남는 게임을 만들고 싶습니다.</p>
-    <p class="reward-mail" id="rewardMail"></p>
-    <div class="reward-act"><button class="btn em" id="rewardCopy" type="button">이메일 복사</button><a class="btn" id="rewardMailA" href="#">메일 쓰기</a><button class="btn" id="rewardMore" type="button">노션 · 포트폴리오 링크</button><button class="btn" id="rewardClose" type="button">계속 둘러보기</button></div>
+    <p class="reward-mail" id="rewardMail"></p><p class="reward-mail phone" id="rewardPhone"></p>
+    <div class="reward-act"><button class="btn em" id="rewardCopy" type="button">이메일 복사</button><a class="btn" id="rewardMailA" href="#">메일 쓰기</a><a class="btn" id="rewardTel" href="#">전화 걸기</a><button class="btn" id="rewardMore" type="button">노션 · 포트폴리오 링크</button><button class="btn" id="rewardClose" type="button">계속 둘러보기</button></div>
   </div>
 </div>
 

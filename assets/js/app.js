@@ -145,7 +145,9 @@
       { t: () => REVIEW_LINES[Math.floor(Math.random() * REVIEW_LINES.length)], c: [["분석 도감 전부 보기", "open:reviews"], ["다른 얘기도 해줘요", "node:jumak2"], ["잘 먹고 갑니다", "end"]] }],
     jumak2: [{ t: () => REVIEW_LINES[Math.floor(Math.random() * REVIEW_LINES.length)], c: [["분석 도감 전부 보기", "open:reviews"], ["하나 더!", "node:jumak2"], ["잘 먹고 갑니다", "end"]] }],
     yeokcham: [{ t: "파발이오! 기획자에게 전할 말이 있으면 내가 날라다 주지." }, { t: `이메일은 ${PROFILE.email}.\n노션 기록과 포트폴리오 폴더도 여기서 바로 열 수 있소.`, c: [["연락처 · 링크 보기", "open:contact"], ["이메일 복사", "act:copy"], ["괜찮소", "end"]] }],
-    sign: [{ t: "【기획마을 안내판】\n이동: 방향키 · WASD (Shift 달리기) · 화면 탭\n대화: Space · Enter · E · 가까이서 탭\n패널 닫기: Esc", c: [["알겠다", "end"], ["처음부터 다시 (등불 · 프롤로그 초기화)", "act:reset"]] }]
+    sign: [{ t: "【기획마을 안내판】\n① 가운데 기획서관으로 이동해 개인 기획서를 감상해 보시오.\n② 서당 · 공방 · 관아 · 주막 · 역참을 돌며 등불 6개를 모두 밝혀 보시오." },
+      { t: "③ 마을 북쪽 숲 가장자리로 이동해 반짝이는 기획 조각 3개를 얻어 보시오. 다 모으면 기획자의 연락처를 얻을 수 있소.\n④ 모두 마치면 광장의 기획자에게 가서 마지막 이야기를 들어 보시오." },
+      { t: "【조작법】 이동: 방향키 · WASD · 화면 탭 · 조이스틱 (Shift 달리기)\n대화 · 입장: Space · Enter · E · 대상 탭 / 전시관: ← → 걷기 · Esc 나가기", c: [["알겠소", "end"], ["처음부터 다시 (등불 · 조각 초기화)", "act:reset"]] }],
   };
   // building doors map to the NPC's node
   const DOOR_NODE = { seodang: "seodang", gongbang: "gongbang", seoru: "seoru", seogo: "seogo", jumak: "jumak", yeokcham: "yeokcham" };
@@ -173,7 +175,7 @@
     setInterval(() => { if (mode === "game" && Dlg.closed && $("#scroll").hidden) updateMini(visited); }, 250);
     World.setScrolls(gotScrolls); World.setVisited(visited); paintQuest(); paintTravel(); World.setLit(visited.length);
     Gallery.init({ esc, style: VISITOR_STYLE, step: () => Snd.fx("step"), move: () => Snd.fx("move"), lightbox: (k, i) => LB.open(k, i), openPanel: a => Scroll.open(a, null),
-      exit: hall => { mode = "game"; World.sleep(false); World.pause(false); $("#game").hidden = false; Snd.fx("close"); $("#world").focus({ preventScroll: true }); } });
+      exit: hall => { setTimeout(announce, 500); mode = "game"; World.sleep(false); World.pause(false); $("#game").hidden = false; Snd.fx("close"); $("#world").focus({ preventScroll: true }); } });
   }
 
   /* ── halls (전시관) ── */
@@ -192,7 +194,27 @@
     World.setVisited(visited); World.setLit(visited.length); Snd.fx("quest"); ui.toast(`등불 하나가 켜졌습니다 · ${PLACES[place]} (${visited.length}/6)`);
     if (visited.length === 6) setTimeout(() => { ui.toast("모든 등불이 켜졌습니다! 광장의 기획자에게 안내합니다"); World.walkTo("designer", () => World.interact()); }, 2200);
   }
-  function paintQuest() { $("#qText").innerHTML = `등불 <b>${visited.length}</b>/6 · 기획 조각 <b>${gotScrolls.length}</b>/3`; $("#qBar").style.width = (visited.length / 6 * 100) + "%"; }
+  const OBJ_ORDER = [
+    ["seogo", "가운데 기획서관으로 이동해 개인 기획서를 감상해 보시오"],
+    ["seodang", "왼쪽 위 서당으로 이동해 자기소개서를 읽어 보시오"],
+    ["gongbang", "오른쪽 위 공방으로 이동해 조선 프로젝트 기획서를 살펴보시오"],
+    ["seoru", "오른쪽 관아로 이동해 경험과 성과 기록을 확인해 보시오"],
+    ["jumak", "왼쪽 주막으로 이동해 게임 분석 이야기를 들어 보시오"],
+    ["yeokcham", "입구 옆 역참으로 이동해 연락 수단을 알아보시오"]
+  ];
+  function objective() {
+    const next = OBJ_ORDER.find(([id]) => !visited.includes(id));
+    if (next) return { step: `등불 ${visited.length}/6`, text: next[1], id: next[0] };
+    if (gotScrolls.length < 3) return { step: `기획 조각 ${gotScrolls.length}/3`, text: "마을 북쪽 숲 가장자리로 이동해 반짝이는 기획 조각을 얻어 보시오" };
+    return { step: "마지막", text: "광장의 기획자에게 가서 마지막 이야기를 들어 보시오", id: "designer" };
+  }
+  function paintObjective(flash) {
+    const o = objective(); $("#objStep").textContent = o.step; $("#objText").textContent = o.text;
+    const el = $("#objective"); el.dataset.go = o.id || "";
+    if (flash) { el.classList.remove("flash"); void el.offsetWidth; el.classList.add("flash"); }
+  }
+  function announce() { const o = objective(); const b = $("#objBanner"); b.innerHTML = `<small>할 일 · ${esc(o.step)}</small>${esc(o.text)}`; b.hidden = false; b.classList.remove("out"); clearTimeout(announce._t); announce._t = setTimeout(() => { b.classList.add("out"); setTimeout(() => b.hidden = true, 600); }, 4200); }
+  function paintQuest() { paintObjective(true); $("#qText").innerHTML = `등불 <b>${visited.length}</b>/6 · 기획 조각 <b>${gotScrolls.length}</b>/3`; $("#qBar").style.width = (visited.length / 6 * 100) + "%"; }
   function paintTravel() {
     $("#travel").innerHTML = `<button class="hbtn" data-walk="designer" type="button">${visited.length >= 6 ? '<span class="v">★</span>' : "·"} 광장 <span style="color:#6a8a7e">기획자 임창민</span></button>` + Object.entries(PLACES).map(([id, n]) => `<button class="hbtn" data-walk="${id}" type="button">${visited.includes(id) ? '<span class="v">✓</span>' : "·"} ${n} <span style="color:#6a8a7e">${World.BUILDINGS.find(b => b.id === id).sub}</span></button>`).join("");
   }
@@ -289,7 +311,7 @@
   /* ═════════ 연락처 보상 · 조작 안내 ═════════ */
   function showContact() {
     World.pause(true); Snd.fx("quest");
-    $("#reward").hidden = false; $("#rewardMail").textContent = PROFILE.email; $("#rewardMailA").href = "mailto:" + PROFILE.email;
+    $("#reward").hidden = false; $("#rewardMail").textContent = PROFILE.email; $("#rewardPhone").textContent = PROFILE.phone; $("#rewardTel").href = "tel:" + PROFILE.phone.replace(/-/g, ""); $("#rewardMailA").href = "mailto:" + PROFILE.email;
     setTimeout(() => $("#rewardCopy").focus(), 30);
   }
   function closeReward() { $("#reward").hidden = true; if (mode === "game" && Dlg.closed && $("#scroll").hidden) World.pause(false); }
@@ -325,7 +347,7 @@
     $("#resume").hidden = m !== "resume";
     document.body.style.overflow = m === "resume" ? "" : "hidden";
     if (m === "title") { initWorld(); World.sleep(false); World.pause(true); setTimeout(() => $("#startResume").focus(), 50); }
-    if (m === "game") { initWorld(); World.sleep(false); World.pause(false); $("#world").focus(); if (!store.get("greeted", false)) { store.set("greeted", true); Story.play(() => showGuide(() => Dlg.run("hello", NPC_DEFS[0]))); } }
+    if (m === "game") { initWorld(); World.sleep(false); World.pause(false); $("#world").focus(); paintObjective(); if (!store.get("greeted", false)) { store.set("greeted", true); Story.play(() => showGuide(() => { announce(); Dlg.run("hello", NPC_DEFS[0]); })); } else setTimeout(announce, 400); }
     if (m === "resume") { buildResume(); avatarKick(); if (worldReady) { World.pause(true); World.sleep(true); } window.scrollTo(0, 0); }
     try { history.replaceState(null, "", m === "title" ? location.pathname + location.search : "#" + m); } catch (e) { }
   }
@@ -339,6 +361,7 @@
   $("#travel").addEventListener("click", e => { const b = e.target.closest("[data-walk]"); if (!b) return; $("#travel").hidden = true; World.walkTo(b.dataset.walk, () => World.interact()); });
   $("#helpBtn").onclick = () => showGuide();
   $("#prompt").onclick = () => World.interact();
+  $("#objective").onclick = () => { const id = $("#objective").dataset.go; if (id && mode === "game") { Snd.fx("move"); World.walkTo(id, () => World.interact()); } };
   $("#act").addEventListener("click", () => { if (!Dlg.closed) Dlg.advance(); else World.interact(); });
   function paintSnd() { $$("[data-snd]").forEach(b => { b.innerHTML = `♪<span class="hide-sm"> 소리 ${Snd.on ? "켬" : "끔"}</span>`; b.setAttribute("aria-pressed", Snd.on); }); }
   $$("[data-snd]").forEach(b => b.onclick = () => { Snd.on = !Snd.on; store.set("snd", Snd.on); paintSnd(); Snd.fx("ok"); }); paintSnd();

@@ -565,3 +565,16 @@ h1,h2,h3,h4{word-break:keep-all}
 .muted-l{color:#b9d4c9;max-width:48ch;margin:0 auto}
 .reward-mail{font:700 clamp(1.3rem,4vw,1.9rem) var(--f-display);color:#f3dea0;margin:18px 0;user-select:all;word-break:break-all}
 .reward-act{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+/* objective (할 일) */
+.objective{position:absolute;left:50%;top:calc(12px + env(safe-area-inset-top,0px));transform:translateX(-50%);z-index:3;display:flex;align-items:center;gap:10px;max-width:min(620px,calc(100% - 560px));padding:8px 12px;border-radius:10px;border:2px solid #2ee6a6;background:rgba(7,17,14,.9);color:#e4f1eb;font:400 .86rem var(--f-pixel);cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.35),0 0 20px rgba(46,230,166,.25);text-align:left}
+.objective .obj-step{flex:none;background:#2ee6a6;color:#04140e;border-radius:6px;padding:1px 8px;font-size:.74rem}
+.objective .obj-text{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.objective .obj-go{flex:none;color:#2ee6a6;font-size:.74rem}
+.objective.flash{animation:objflash 1.2s ease}
+@keyframes objflash{0%{box-shadow:0 0 0 0 rgba(46,230,166,.9)}100%{box-shadow:0 0 0 18px rgba(46,230,166,0)}}
+.obj-banner{position:absolute;left:50%;top:26%;transform:translateX(-50%);z-index:4;width:min(640px,calc(100% - 32px));text-align:center;padding:18px 20px;border-radius:14px;background:rgba(7,17,14,.94);border:2px solid #2ee6a6;color:#f3fbf7;font:700 clamp(1rem,2.6vw,1.35rem)/1.5 var(--f-display);box-shadow:0 0 0 4px #04140e,0 20px 60px rgba(0,0,0,.6);transition:opacity .6s;pointer-events:none}
+.obj-banner small{display:block;font:400 .78rem var(--f-pixel);color:#2ee6a6;margin-bottom:6px}
+.obj-banner.out{opacity:0}
+.reward-mail.phone{font-size:clamp(1.1rem,3.4vw,1.5rem);margin-top:-8px}
+@media (max-width:1100px){.objective{left:14px;right:14px;transform:none;max-width:none;top:calc(64px + env(safe-area-inset-top,0px))}}
+@media (max-width:1100px){.travel{top:calc(118px + env(safe-area-inset-top,0px))}}

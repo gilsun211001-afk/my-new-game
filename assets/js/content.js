@@ -18,6 +18,7 @@
     headline: "덕력과 분석력을 가진 기획자",
     role: "게임 기획자 · 콘텐츠 / 시스템",
     email: "gd30330@naver.com",
+    phone: "010-9183-9968",
     facts: [
       ["학력", "대구대학교 산림자원학과 (2024.08 졸업)"],
       ["경력", "달콤소프트 운영 기획 (2025.10 – 2026.01)"],
@@ -300,7 +301,7 @@
       <div class="reviews" data-reviews></div><p class="note" data-empty hidden style="margin-top:12px">검색 결과가 없습니다.</p>`;
   };
 
-  S.contact = () => `<div class="card contact"><div><div class="eyebrow">CONTACT</div><p class="addr" data-email>${esc(PROFILE.email)}</p><p class="muted" style="font-size:.88rem;margin-top:6px">함께 재미있는 게임을 만들 기회를 기다리고 있습니다.</p></div>
+  S.contact = () => `<div class="card contact"><div><div class="eyebrow">CONTACT</div><p class="addr" data-email>${esc(PROFILE.email)}</p><p class="addr" style="font-size:1.1rem;margin-top:4px">${esc(PROFILE.phone)}</p><p class="muted" style="font-size:.88rem;margin-top:6px">함께 재미있는 게임을 만들 기회를 기다리고 있습니다.</p></div>
       <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn em" data-copy type="button">이메일 복사</button><a class="btn" href="mailto:${esc(PROFILE.email)}">메일 쓰기</a></div></div>
     <div class="links" style="margin-top:14px">${NOTION.map(n => `<a class="card lnk" ${ext(n.u)}><b>${esc(n.t)}</b><small>${esc(n.d)}</small><span class="go">노션 열기 ↗</span></a>`).join("")}
       <a class="card lnk" ${ext(FOLDER)}><b>포트폴리오 폴더</b><small>기획서 원본 (Google Drive)</small><span class="go">드라이브 열기 ↗</span></a></div>`;
