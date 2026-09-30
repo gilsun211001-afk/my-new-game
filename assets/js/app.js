@@ -382,7 +382,7 @@
   function resetProgress() {
     visited = []; gotScrolls = []; pendingReward = null; store.set("visited", []); store.set("scrolls", []); scrollHalls = rollHalls(); World.warp(22, 25);
     World.setVisited([]); World.setScrolls([]); World.setLit(0); paintQuest(); paintTravel(); updateMini && updateMini(visited);
-    Snd.fx("close"); ui.toast("등불과 기획 조각을 모두 초기화했습니다. 처음부터 다시 시작해 보세요"); setTimeout(announce, 600);
+    Snd.fx("close"); ui.toast("등불과 기획 조각을 모두 초기화했습니다. 처음부터 다시 시작해 보세요"); $("#travel").hidden = true; showGuide(() => announce());
   }
   (function () {
     const b = $("#resetBtn"), lbl = $("#resetLbl"); let armed = 0;
@@ -421,7 +421,7 @@
     $("#resume").hidden = m !== "resume";
     document.body.style.overflow = m === "resume" ? "" : "hidden";
     if (m === "title") { initWorld(); World.sleep(false); World.pause(true); setTimeout(() => $("#startResume").focus(), 50); }
-    if (m === "game") { initWorld(); World.sleep(false); World.pause(false); $("#world").focus(); paintObjective(); if (!store.get("greeted", false)) { store.set("greeted", true); showGuide(() => { announce(); Dlg.run("hello", NPC_DEFS[0]); }); } else setTimeout(announce, 400); }
+    if (m === "game") { initWorld(); World.sleep(false); World.pause(false); $("#world").focus(); paintObjective(); const first = !store.get("greeted", false); store.set("greeted", true); showGuide(() => { announce(); if (first) Dlg.run("hello", NPC_DEFS[0]); }); }
     if (m === "resume") { buildResume(); avatarKick(); if (worldReady) { World.pause(true); World.sleep(true); } window.scrollTo(0, 0); }
     try { history.replaceState(null, "", m === "title" ? location.pathname + location.search : "#" + m); } catch (e) { }
   }
