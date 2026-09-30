@@ -116,7 +116,7 @@
   // 기획 조각 보상 — 모은 순서대로 노션 → 리뷰 DB → 연락처
   const SCROLL_REWARDS = [
     { t: PF.NOTION[0].t, d: "플레이한 게임의 장단점과 분석 자료를 모아 둔 메인 노션입니다.", u: PF.NOTION[0].u, btn: "노션 열기" },
-    { t: PF.NOTION[1].t, d: "게임 리뷰 페이지를 한곳에 모은 노션 데이터베이스입니다.", u: PF.NOTION[1].u, btn: "리뷰 DB 열기" },
+    { t: "게임 리뷰 · 기사 스크랩", d: "게임 리뷰와 업계 기사 스크랩, 제작 정보를 모아 둔 노션입니다.", u: "https://app.notion.com/p/314c1342e11f80aa9a65c7666a35977a?source=copy_link", btn: "노션 열기" },
     { t: "연락처", d: "마지막 조각 · 기획자의 이메일과 전화번호", contact: true }
   ];
 
@@ -157,7 +157,7 @@
     jumak2: [{ t: () => REVIEW_LINES[Math.floor(Math.random() * REVIEW_LINES.length)], c: [["분석 도감 전부 보기", "open:reviews"], ["하나 더!", "node:jumak2"], ["잘 먹고 갑니다", "end"]] }],
     yeokcham: [{ t: "파발이오! 기획자에게 전할 말이 있으면 내가 날라다 주지." }, { t: `이메일은 ${PROFILE.email}.\n노션 기록과 포트폴리오 폴더도 여기서 바로 열 수 있소.`, c: [["연락처 · 링크 보기", "open:contact"], ["이메일 복사", "act:copy"], ["괜찮소", "end"]] }],
     sign: [{ t: "【기획마을 안내판】\n① 가운데 기획서관으로 이동해 개인 기획서를 감상해 보시오.\n② 서당 · 공방 · 관아 · 주막 · 역참을 돌며 등불 6개를 모두 밝혀 보시오. 등불마다 기획자의 기록이 📖 기록첩에 쌓이오." },
-      { t: "③ 마을 북쪽 숲 가장자리로 이동해 반짝이는 기획 조각 3개를 얻어 보시오. 조각마다 기획자의 노션 기록이, 마지막 조각엔 연락처가 들어 있소.\n④ 모두 마치면 광장의 기획자에게 가서 마지막 이야기를 들어 보시오." },
+      { t: "③ 마을 북쪽 숲 가장자리로 이동해 반짝이는 기획 조각 3개를 얻어 보시오. 조각마다 기획자의 기록이 하나씩 들어 있소.\n④ 모두 마치면 광장의 기획자에게 가서 마지막 이야기를 들어 보시오." },
       { t: "【조작법】 이동: 방향키 · WASD · 화면 탭 · 조이스틱 (Shift 달리기)\n대화 · 입장: Space · Enter · E · 대상 탭 / 전시관: ← → 걷기 · Esc 나가기", c: [["알겠소", "end"], ["처음부터 다시 (등불 · 조각 초기화)", "act:reset"]] }],
   };
   // building doors map to the NPC's node
@@ -400,7 +400,7 @@
     $("#resume").hidden = m !== "resume";
     document.body.style.overflow = m === "resume" ? "" : "hidden";
     if (m === "title") { initWorld(); World.sleep(false); World.pause(true); setTimeout(() => $("#startResume").focus(), 50); }
-    if (m === "game") { initWorld(); World.sleep(false); World.pause(false); $("#world").focus(); paintObjective(); if (!store.get("greeted", false)) { store.set("greeted", true); Story.play(() => showGuide(() => { announce(); Dlg.run("hello", NPC_DEFS[0]); })); } else setTimeout(announce, 400); }
+    if (m === "game") { initWorld(); World.sleep(false); World.pause(false); $("#world").focus(); paintObjective(); if (!store.get("greeted", false)) { store.set("greeted", true); showGuide(() => { announce(); Dlg.run("hello", NPC_DEFS[0]); }); } else setTimeout(announce, 400); }
     if (m === "resume") { buildResume(); avatarKick(); if (worldReady) { World.pause(true); World.sleep(true); } window.scrollTo(0, 0); }
     try { history.replaceState(null, "", m === "title" ? location.pathname + location.search : "#" + m); } catch (e) { }
   }

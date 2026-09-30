@@ -50,7 +50,7 @@ p{margin:0}
 .seal{width:72px;height:72px;margin:0 auto 18px;border-radius:12px;background:#0a8f64;display:grid;place-items:center;box-shadow:0 0 0 3px #04140e,0 0 0 5px #2ee6a6,0 0 40px rgba(46,230,166,.45);font:700 34px var(--f-display);color:#04140e;image-rendering:pixelated}
 .title h1{font-size:clamp(2.2rem,7vw,4rem);font-weight:900;letter-spacing:-.01em;color:#f2fbf7;text-shadow:0 2px 0 #04140e,0 0 30px rgba(46,230,166,.35)}
 .title h1 small{display:block;font:400 .95rem var(--f-pixel);letter-spacing:.3em;color:#2ee6a6;margin-top:10px;text-shadow:none}
-.title .lede{margin:18px auto 30px;color:#b9d4c9;max-width:44ch}
+.title .lede{margin:18px auto 30px;color:#b9d4c9;max-width:none;word-break:keep-all;text-wrap:balance}
 .title-btns{display:grid;gap:12px;max-width:380px;margin:0 auto}
 .tbtn{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:12px;border:2px solid #1e3a30;background:#0d1b16;color:#e4f1eb;cursor:pointer;text-align:left;font-family:var(--f-pixel);font-size:1rem;transition:transform .15s,border-color .15s,background .15s}
 .tbtn:hover,.tbtn:focus-visible{border-color:#2ee6a6;transform:translateY(-2px)}
@@ -593,3 +593,5 @@ h1,h2,h3,h4{word-break:keep-all}
 .jcard.on.gold{border-color:#e8c66a;box-shadow:0 0 18px rgba(232,198,106,.18)}.jcard.on.gold .jtag{color:#e8c66a}
 .reward-link{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:20px}
 @media (max-width:600px){.hud .quest{display:none}}
+.guide-box,.jcard,.reward-box,.obj-banner{word-break:keep-all}
+.goals b,.goals span{text-wrap:pretty}
